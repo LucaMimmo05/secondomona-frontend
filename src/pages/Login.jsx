@@ -47,7 +47,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="loginForm">
           <div className="inputGroup">
             <label htmlFor="username" className="inputLabel">
-              Nome utente
+              Email
             </label>
             <input
               id="username"
@@ -78,7 +78,7 @@ export default function LoginPage() {
             className="loginButton"
             disabled={loading}
           >
-            {loading ? 'Caricamento...' : 'Sign in'}
+            {loading ? 'Caricamento...' : 'Accedi'}
           </button>
         </form>
       </div>
