@@ -1,20 +1,40 @@
-import { useState } from 'react'
-import './App.css'
-import { Route } from 'react-router-dom'
-import Home from './pages/Home'
-import Login from './pages/Login'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
 
-function App() {
-  const [count, setCount] = useState(0)
+import Login from "./pages/Login";
+import React from 'react';
+
+import Navbar from "./components/Navbar";
+
+const Layout = () => {
+  const location = useLocation();
+  const hideNavbarRoutes = ["/login"];
+
 
   return (
     <>
+      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
       <Routes>
-        <Route path="/" element={<Home/>}/>
-        <Route path="/login" element={<Login/>} />
+        <Route path="/login" element={<Login />} />       
+        <Route path="/" element={<Home />} />      
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
-  )
-}
+  );
+};
 
-export default App
+const App = () => {
+  return (
+    <Router>
+      <Layout />
+    </Router>
+  );
+};
+
+export default App;
