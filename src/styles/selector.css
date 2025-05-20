@@ -1,0 +1,18 @@
+.selector {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  gap: 10px;
+  align-self: stretch;
+  border-radius: 6px;
+}
+
+.active {
+  color: #0088ff;
+  background-color: var(--dashboard-color);
+
+  .selector-icon {
+    stroke: #0088ff;
+  }
+}
+
