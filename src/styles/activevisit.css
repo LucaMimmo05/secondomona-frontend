@@ -1,0 +1,158 @@
+.active-visit {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.active-visit h1 {
+  color: #1e1e1e;
+  text-align: center;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.active-top {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+}
+
+.filters-date {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-filter-date {
+  display: flex;
+  height: 40px;
+  padding: 10px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  background-color: #f4f4f4;
+  border: none;
+  border-radius: 4px;
+  border: 1px solid #c8c8c8;
+  background: #f4f4f4;
+  width: 276px;
+  color: #7f7f7f;
+}
+
+.filter-date-text {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+
+  & p {
+    color: #7f7f7f;
+    text-align: center;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+}
+
+.line {
+  width: 1px;
+  height: 8px;
+  background-color: #d8d8d8;
+  display: flex;
+  align-items: center;
+  border: none;
+}
+
+.filter-results {
+  display: flex;
+  padding: 10px;
+  gap: 10px;
+
+  & p {
+    color: #7f7f7f;
+    text-align: center;
+
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+}
+
+.filters-top {
+  display: flex;
+  gap: 50px;
+  flex-direction: column;
+}
+
+.active-filter-box {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+}
+
+.table {
+  border-radius: 6px;
+}
+.table th,
+.table td {
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+.table th {
+  color: #7f7f7f;
+  font-weight: 600;
+}
+
+.table td {
+  color: #1e1e1e;
+}
+
+.table thead {
+  border-bottom: 2px solid #e2e2e2;
+}
+
+.badge.bg-primary {
+  background-color: #007bff;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
+/* Centra la tabella */
+.rdt_Table {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 900px;
+}
+
+@media (max-width: 768px) {
+  .active-visit {
+    padding: 8px;
+  }
+  .active-top,
+  .active-filter-box {
+    max-width: 100%;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .rdt_Table {
+    max-width: 100%;
+  }
+}

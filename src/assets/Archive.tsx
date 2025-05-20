@@ -27,7 +27,7 @@ const Archive01Icon: React.FC<Archive01IconProps> = ({ active = false, ...props 
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
-      fill={active ? "#1e1e1e" : "none"} // <-- Qui il puntino interno riempito solo se active
+      fill="none"
     />
     <path
       d="M6 17H6.00898"

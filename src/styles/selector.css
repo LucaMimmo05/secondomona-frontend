@@ -16,3 +16,26 @@
   }
 }
 
+.logout {
+  color: #ff0000;
+  border-radius: 6px;
+
+  &:hover {
+    background-color: #ff000020;
+  }
+}
+
+.home-content {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  padding: 60px 69px 0 69px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .home-content {
+    padding: 16px 8px 0 8px;
+  }
+}
