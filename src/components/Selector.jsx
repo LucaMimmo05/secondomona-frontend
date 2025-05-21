@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../styles/selector.css";
 
 const Selector = ({ icon: Icon, text, active, onClick, isLogout }) => {
+
   return (
       <div
       className={`selector ${active ? "active" : ""} ${isLogout ? "logout" : ""}`}

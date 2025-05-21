@@ -1,11 +1,3 @@
-.active-visit {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
-}
-
 .active-visit h1 {
   color: #1e1e1e;
   text-align: center;
@@ -16,14 +8,18 @@
 }
 
 .active-top {
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  justify-content: center;
+  gap: 20px;
+  margin: 0;
+
+}
+
+@media (max-width: 768px) {
+  .active-top {
+    align-items: center;
+    margin: 0 auto;
+  }
 }
 
 .filters-date {
@@ -51,7 +47,6 @@
 .filter-date-text {
   display: flex;
   gap: 10px;
-  justify-content: center;
 
   & p {
     color: #7f7f7f;
@@ -95,13 +90,9 @@
 }
 
 .active-filter-box {
-  width: 100%;
-  max-width: 900px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  justify-content: center;
+  gap: 40px;
 }
 
 .table {
@@ -131,28 +122,4 @@
   font-size: 12px;
   padding: 5px 10px;
   border-radius: 20px;
-}
-
-/* Centra la tabella */
-.rdt_Table {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 900px;
-}
-
-@media (max-width: 768px) {
-  .active-visit {
-    padding: 8px;
-  }
-  .active-top,
-  .active-filter-box {
-    max-width: 100%;
-    padding: 0;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-  .rdt_Table {
-    max-width: 100%;
-  }
 }

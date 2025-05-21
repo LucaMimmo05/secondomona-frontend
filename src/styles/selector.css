@@ -16,13 +16,13 @@
   }
 }
 
-.logout {
+.selector.logout {
   color: #ff0000;
   border-radius: 6px;
+}
 
-  &:hover {
-    background-color: #ff000020;
-  }
+.selector.logout:hover {
+  background-color: #ff000020;
 }
 
 .home-content {
