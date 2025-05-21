@@ -1,0 +1,158 @@
+.sidebar {
+  display: flex;
+  width: 300px;
+  height: 100dvh;
+  min-height: 100dvh;
+  position: sticky;
+  top: 0;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+  background-color: #f4f4f4;
+}
+
+.logo {
+  width: 133px;
+  height: 94px;
+  aspect-ratio: 133/94;
+}
+
+.top-logo {
+  display: flex;
+  justify-content: center;
+}
+
+.profile-picture {
+  width: 50px;
+  height: 50px;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+}
+
+.profile {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+
+  & .profile-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    & h1 {
+      color: var(--text-color);
+      font-weight: normal;
+      font-size: 16px;
+    }
+
+    & p {
+      color: #7f7f7f;
+      font-size: 12px;
+      font-weight: 400;
+    }
+  }
+}
+
+.profile-row {
+  width: 100%;
+  background-color: var(--stroke);
+  height: 1px;
+  border: none;
+  margin: 0;
+}
+
+.profile-cont {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar-top {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.sidebar-selectors {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.controls {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.mobile-sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1200;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mobile-sidebar {
+  background: #fff;
+  width: 80vw;
+  max-width: 320px;
+  height: 100dvh;
+  padding: 32px 16px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #888;
+  cursor: pointer;
+  z-index: 2;
+}
+
+@media (max-width: 991.98px) {
+  .sidebar,
+  aside.sidebar,
+  .d-md-flex.sidebar {
+    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-sidebar-overlay,
+  .mobile-sidebar {
+    display: none !important;
+  }
+}
+
+.offcanvas.offcanvas-start {
+  left: 0;
+  right: auto;
+  transform: translateX(-100%);
+}
+.offcanvas.show.offcanvas-start {
+  transform: translateX(0);
+}
+
+.offcanvas {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.offcanvas-backdrop {
+  background: rgba(0, 0, 0, 0.35) !important;
+}
