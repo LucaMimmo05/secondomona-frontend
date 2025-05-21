@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Selector from "./Selector";
 import VisiteIcon from "../assets/Visit";
-import ArchivioIcon from "../assets/Archive";
-import AssignBadge from "../assets/AssignBadge";
-import Employee from "../assets/Employee";
-import Logout from "../assets/Logout";
+import AssignBadgeIcon from "../assets/AssignBadge";
+import LogoutIcon from "../assets/Logout";
 
-const Sidebar = ({ activeSelector, setActiveSelector }) => {
+const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [isDesktop, setIsDesktop] = useState(
     typeof window !== "undefined" && window.innerWidth >= 992
   );
 
-  // Blocca lo scroll quando il menu mobile è aperto
+  // Blocca scroll body quando offcanvas aperto
   useEffect(() => {
     if (showOffcanvas) {
       document.body.style.overflow = "hidden";
@@ -24,7 +22,7 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
     };
   }, [showOffcanvas]);
 
-  // Aggiorna isDesktop al resize
+  // Aggiorna isDesktop al resize finestra
   useEffect(() => {
     const handleResize = () => {
       setIsDesktop(window.innerWidth >= 992);
@@ -35,7 +33,7 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
 
   return (
     <>
-      {/* Sidebar desktop SOLO su desktop */}
+      {/* Sidebar visibile solo su desktop */}
       {isDesktop && (
         <aside
           className="sidebar d-lg-flex flex-column bg-light p-4 vh-100"
@@ -57,7 +55,7 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
             />
             <div>
               <h5 className="mb-0">Luca Rossi</h5>
-              <small className="text-muted">Portineria</small>
+              <small className="text-muted">Dipendente</small>
             </div>
           </div>
           <hr />
@@ -69,27 +67,15 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
               onClick={() => setActiveSelector("Visite Attive")}
             />
             <Selector
-              icon={ArchivioIcon}
-              text="Archivio Visite"
-              active={activeSelector === "Archivio Visite"}
-              onClick={() => setActiveSelector("Archivio Visite")}
-            />
-            <Selector
-              icon={AssignBadge}
-              text="Assegna Badge"
-              active={activeSelector === "Assegna Badge"}
-              onClick={() => setActiveSelector("Assegna Badge")}
-            />
-            <Selector
-              icon={Employee}
-              text="Dipendenti"
-              active={activeSelector === "Dipendenti"}
-              onClick={() => setActiveSelector("Dipendenti")}
+              icon={AssignBadgeIcon}
+              text="Aggiungi Visita"
+              active={activeSelector === "Aggiungi Visita"}
+              onClick={() => setActiveSelector("Aggiungi Visita")}
             />
           </div>
           <div className="mt-auto">
             <Selector
-              icon={Logout}
+              icon={LogoutIcon}
               text="Logout"
               active={activeSelector === "Logout"}
               onClick={null}
@@ -97,7 +83,8 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
           </div>
         </aside>
       )}
-      {/* Burger menu mobile/tablet SOLO su mobile/tablet */}
+
+      {/* Burger menu e offcanvas solo su mobile/tablet */}
       {!isDesktop && (
         <>
           {!showOffcanvas && (
@@ -120,7 +107,7 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
               aria-label="Menu"
               onClick={() => setShowOffcanvas(true)}
             >
-              {/* Material Design burger icon */}
+              {/* Icona burger */}
               <svg
                 width="32"
                 height="32"
@@ -134,11 +121,8 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
               </svg>
             </button>
           )}
-          {/* Offcanvas Bootstrap mobile sidebar */}
           <div
-            className={`offcanvas offcanvas-start${
-              showOffcanvas ? " show" : ""
-            }`}
+            className={`offcanvas offcanvas-start${showOffcanvas ? " show" : ""}`}
             tabIndex="-1"
             style={{
               visibility: showOffcanvas ? "visible" : "hidden",
@@ -153,7 +137,8 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
               <img
                 src="/transparent-logo.png"
                 alt="Logo"
-                style={{ width: "133px", height: "94px", objectFit: "contain" }}></img>
+                style={{ width: "133px", height: "94px", objectFit: "contain" }}
+              />
               <button
                 type="button"
                 className="btn-close text-reset"
@@ -175,35 +160,17 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
                 }}
               />
               <Selector
-                icon={ArchivioIcon}
-                text="Archivio"
-                active={activeSelector === "Archivio Visite"}
-                onClick={() => {
-                  setActiveSelector("Archivio Visite");
-                  setShowOffcanvas(false);
-                }}
-              />
-              <Selector
-                icon={AssignBadge}
+                icon={AssignBadgeIcon}
                 text="Badge"
-                active={activeSelector === "Assegna Badge"}
+                active={activeSelector === "Aggiungi Visita"}
                 onClick={() => {
-                  setActiveSelector("Assegna Badge");
-                  setShowOffcanvas(false);
-                }}
-              />
-              <Selector
-                icon={Employee}
-                text="Dipendenti"
-                active={activeSelector === "Dipendenti"}
-                onClick={() => {
-                  setActiveSelector("Dipendenti");
+                  setActiveSelector("Aggiungi Visita");
                   setShowOffcanvas(false);
                 }}
               />
               <div style={{ flex: 1 }} />
               <Selector
-                icon={Logout}
+                icon={LogoutIcon}
                 text="Logout"
                 active={activeSelector === "Logout"}
                 onClick={null}
@@ -225,4 +192,4 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
   );
 };
 
-export default Sidebar;
+export default EmployeeSidebar;
