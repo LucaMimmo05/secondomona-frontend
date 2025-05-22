@@ -13,6 +13,7 @@
     "@react-router/fs-routes": "^7.6.0",
     "boostrap": "^2.0.0",
     "bootstrap": "^5.3.6",
+    "classnames": "^2.5.1",
     "datatables.net": "^2.3.1",
     "datatables.net-dt": "^2.3.1",
     "jquery": "^3.7.1",

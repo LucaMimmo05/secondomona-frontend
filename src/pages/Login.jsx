@@ -1,60 +1,62 @@
-'use client';
-
-import { useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import '../styles/login.css';
+import { useAuth } from "../context/AuthContext";  // adjust path as needed
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../styles/login.css";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (!username.trim() || !password.trim()) {
-      toast.error('Per favore compila tutti i campi.');
-      return;
-    }
-    setLoading(true);
-    try {
-      await new Promise((res) => setTimeout(res, 1500));
-      if (username === 'admin' && password === 'password') {
-        toast.success('Login avvenuto con successo!');
-        // Redirigi o salva token
-      } else {
-        toast.error('Credenziali non valide.');
-      }
-    } catch (error) {
-      toast.error('Si è verificato un errore. Riprova più tardi.');
-    } finally {
-      setLoading(false);
-    }
+    // const response = await fetch("http://localhost:8080/login", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ email, password }),
+    // });
+    // const data = await response.json();
+
+    // if (data.token) {
+    //   // Puoi anche decodificare il JWT lato client per estrarre il ruolo, se il token lo contiene
+    //   const userRole = data.role; // oppure estrai dal token
+    //   login(data.token, userRole);
+
+    //   // Redirect alla pagina giusta
+    //   if (userRole === "admin") navigate("/admin");
+    //   else if (userRole === "reception") navigate("/reception");
+    //   else if (userRole === "employee") navigate("/employee");
+    //   else navigate("/unauthorized");
+    // }
   };
 
   return (
     <div className="mainContainer">
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       <div className="formContainer">
-      <img
-        src="src\assets\logo-blu.jpg"
-        alt="Logo"
-        width="180"
-        height="127"
-        className="logo"
-      />
+        <img
+          src="src\assets\logo-blu.jpg"
+          alt="Logo"
+          width="180"
+          height="127"
+          className="logo"
+        />
 
-        <form onSubmit={handleSubmit} className="loginForm">
+        <form onSubmit={handleLogin} className="loginForm">
           <div className="inputGroup">
             <label htmlFor="username" className="inputLabel">
               Email
             </label>
             <input
-              id="username"
-              type="text"
+              id="email"
+              type="email"
               className="inputField"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
             />
           </div>
@@ -73,12 +75,8 @@ export default function LoginPage() {
             />
           </div>
 
-          <button
-            type="submit"
-            className="loginButton"
-            disabled={loading}
-          >
-            {loading ? 'Caricamento...' : 'Accedi'}
+          <button type="submit" className="loginButton" disabled={loading}>
+            {loading ? "Caricamento..." : "Accedi"}
           </button>
         </form>
       </div>
