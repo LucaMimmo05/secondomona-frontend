@@ -123,8 +123,9 @@ const ActiveVisits = () => {
                             placeholder="gg/mm/aaaa"
                             style={{
                                 minWidth: 80,
-                                maxWidth: 160,
+                                maxWidth: 300,
                                 width: "100%",
+                                fontSize: "14px",
                             }}
                         />
                     </div>
