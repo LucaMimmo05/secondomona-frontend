@@ -4,7 +4,7 @@ import VisiteIcon from "../assets/Visit";
 import ArchivioIcon from "../assets/Archive";
 import AssignBadge from "../assets/AssignBadge";
 import Employee from "../assets/Employee";
-import Logout from "../assets/logout";
+import Logout from "../assets/Logout";
 
 const Sidebar = ({ activeSelector, setActiveSelector }) => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
