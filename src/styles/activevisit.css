@@ -24,7 +24,6 @@
 .filters-date {
     display: flex;
     flex-direction: column;
-    gap: 10px;
 }
 
 .input-filter-date {
@@ -69,11 +68,12 @@
     display: flex;
     padding: 10px;
     gap: 10px;
+    align-items: center;
 
     & p {
         color: #7f7f7f;
         text-align: center;
-
+        margin: 0;
         font-size: 12px;
         font-style: normal;
         font-weight: 400;

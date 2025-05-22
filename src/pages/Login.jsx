@@ -31,11 +31,14 @@ export default function LoginPage() {
 
       const data = await response.json();
       console.log("Risposta login:", data);
+      
 
       if (response.ok && data) {
         toast.success("Accesso effettuato con successo");
         const decodedToken = parseJwt(data.accessToken);
         console.log(decodedToken);
+        localStorage.setItem("name", decodedToken?.name);
+      localStorage.setItem("surname", decodedToken?.surname);
 
         const groups = decodedToken?.groups || [];
         const userRole = groups.find((g) => g !== "access-token") || null;
