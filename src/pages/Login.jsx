@@ -1,9 +1,8 @@
 import { useAuth } from "../context/AuthContext"; // adjust path as needed
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import "../styles/login.css";
+import { toast, ToastContainer } from "react-toastify";
 import { parseJwt } from "../utils/parseJwt";
 
 export default function LoginPage() {
@@ -19,8 +18,6 @@ export default function LoginPage() {
       toast.error("Compila tutti i campi");
       return;
     }
-    toast.info("Caricamento in corso...");
-    setLoading(true);
 
     try {
       const response = await fetch("http://localhost:8080/auth/login", {
@@ -65,7 +62,18 @@ export default function LoginPage() {
 
   return (
     <div className="mainContainer">
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+          <ToastContainer
+            position="top-center"
+            autoClose={2000}
+            hideProgressBar
+            closeOnClick
+            draggable
+            className="toastContainer"
+            toastClassName="customToast"
+            bodyClassName="toastBody"
+            closeButton={false} 
+          />
+                  
       <div className="formContainer">
         <img
           src="src\assets\logo-blu.jpg"
