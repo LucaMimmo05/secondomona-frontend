@@ -124,6 +124,17 @@
   margin-top: 205px;
 }
 
+.selector.employee-logout-button{
+  color: #ff4444;
+}
+
+/* Solo il logout al passaggio */
+.selector.employee-logout-button:hover {
+  background-color: #ff000020;
+  border-radius: 6px;
+}
+
+
 @media (max-width: 991.98px) {
   .employee-sidebar,
   aside.employee-sidebar,

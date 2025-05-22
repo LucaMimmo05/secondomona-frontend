@@ -3,6 +3,7 @@ import Selector from "./Selector";
 import VisiteIcon from "../assets/Visit";
 import AssignBadgeIcon from "../assets/AssignBadge";
 import LogoutIcon from "../assets/Logout";
+import "../styles/employeesidebar.css";
 
 const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -12,11 +13,7 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
 
   // Blocca scroll body quando offcanvas aperto
   useEffect(() => {
-    if (showOffcanvas) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = showOffcanvas ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
@@ -79,6 +76,7 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
               text="Logout"
               active={activeSelector === "Logout"}
               onClick={null}
+              className="employee-logout-button"
             />
           </div>
         </aside>
@@ -175,6 +173,7 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
                 active={activeSelector === "Logout"}
                 onClick={null}
                 isLogout
+                className="employee-logout-button"
               />
             </div>
           </div>
