@@ -6,11 +6,11 @@ const ProtectedRoute = ({ allowedRoles }) => {
   const { token, role } = useAuth();
 
   if (!token) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
 
   if (!allowedRoles.includes(role)) {
-    return <Navigate to="/unauthorized" />;
+    return <Navigate to="/" />;
   }
 
   return <Outlet />;

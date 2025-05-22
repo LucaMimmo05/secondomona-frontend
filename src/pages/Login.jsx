@@ -1,9 +1,10 @@
-import { useAuth } from "../context/AuthContext";  // adjust path as needed
+import { useAuth } from "../context/AuthContext"; // adjust path as needed
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/login.css";
+import { parseJwt } from "../utils/parseJwt";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,24 +15,49 @@ export default function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    // const response = await fetch("http://localhost:8080/login", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ email, password }),
-    // });
-    // const data = await response.json();
+    if (!email || !password) {
+      toast.error("Compila tutti i campi");
+      return;
+    }
+    toast.info("Caricamento in corso...");
+    setLoading(true);
 
-    // if (data.token) {
-    //   // Puoi anche decodificare il JWT lato client per estrarre il ruolo, se il token lo contiene
-    //   const userRole = data.role; // oppure estrai dal token
-    //   login(data.token, userRole);
+    try {
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    //   // Redirect alla pagina giusta
-    //   if (userRole === "admin") navigate("/admin");
-    //   else if (userRole === "reception") navigate("/reception");
-    //   else if (userRole === "employee") navigate("/employee");
-    //   else navigate("/unauthorized");
-    // }
+      const data = await response.json();
+      console.log("Risposta login:", data);
+
+      if (response.ok && data) {
+        toast.success("Accesso effettuato con successo");
+        const decodedToken = parseJwt(data.accessToken);
+        console.log(decodedToken);
+
+        const groups = decodedToken?.groups || [];
+        const userRole = groups.find((g) => g !== "access-token") || null;
+        console.log("Ruolo utente:", userRole);
+
+        login(data.accessToken, userRole);
+        
+
+        // reindirizzamento
+        if (userRole === "Admin") navigate("/admin");
+        else if (userRole === "Portineria") navigate("/reception");
+        else if (userRole === "Dipendente") navigate("/employee");
+        else return navigate("/");
+      } else {
+        toast.error("Credenziali errate o token mancante");
+      }
+    } catch (error) {
+      console.error("Errore durante il login:", error);
+      toast.error("Errore di connessione al server");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
