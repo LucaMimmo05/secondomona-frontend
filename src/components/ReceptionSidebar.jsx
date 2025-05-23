@@ -5,6 +5,7 @@ import ArchivioIcon from "../assets/Archive";
 import AssignBadge from "../assets/AssignBadge";
 import Employee from "../assets/Employee";
 import Logout from "../assets/Logout";
+import AddVisit from "../assets/AddVisit";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
  
@@ -83,6 +84,12 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
               text="Assegna Badge"
               active={activeSelector === "Assegna Badge"}
               onClick={() => setActiveSelector("Assegna Badge")}
+            />
+            <Selector
+              icon={AddVisit}
+              text="Aggiungi Visita"
+              active={activeSelector === "Aggiungi Visita"}
+              onClick={() => setActiveSelector("Aggiungi Visita")}
             />
             <Selector
               icon={Employee}

@@ -5,6 +5,7 @@ import ActiveVisits from './ActiveVisits';
 import ArchiveVisits from './ArchiveVisits';
 import AssignBadge from './AssignBadge';
 import Employee from './Employee';
+import AddVisit from './AddVisit';
 const Home = () => {
   const [activeSelector, setActiveSelector] = useState('Visite Attive');
 
@@ -16,6 +17,8 @@ const Home = () => {
         return <ArchiveVisits />;
       case 'Assegna Badge':
         return <AssignBadge />;
+      case 'Aggiungi Visita':
+        return <AddVisit />;
       case 'Dipendenti':
         return <Employee/>;
       default:
