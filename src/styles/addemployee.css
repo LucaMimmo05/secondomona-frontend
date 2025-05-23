@@ -4,12 +4,16 @@ body {
     margin: 0;
     padding: 0;
 }
- 
+
 .add-visit-container {
     margin: 0 auto;
     padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
- 
+
 .add-visit-container h1 {
     color: #1e1e1e;
     text-align: center;
@@ -19,7 +23,7 @@ body {
     line-height: normal;
     margin-bottom: 4rem;
 }
- 
+
 .progress-checkboxes {
     display: flex;
     justify-content: center;
@@ -28,20 +32,20 @@ body {
     color: var(--subtext-color);
     margin-bottom: 40px;
 }
- 
+
 .checkbox-item {
     position: relative;
     padding-left: 25px;
     cursor: default;
     user-select: none;
 }
- 
+
 .checkbox-item input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
 }
- 
+
 .checkmark {
     position: absolute;
     left: 0;
@@ -52,37 +56,38 @@ body {
     border: 1px solid #ccc;
     border-radius: 6px;
 }
- 
-.checkbox-item input:checked ~ .checkmark {
+
+.checkbox-item input:checked~.checkmark {
     background-color: var(--text-color);
 }
- 
+
 .visit-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    width: 50%;
 }
- 
+
 .form-row {
     display: flex;
     justify-content: space-between;
     gap: 20px;
     flex-wrap: wrap;
 }
- 
+
 .input-group {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-width: 280px;
 }
- 
+
 .input-group label {
     margin-bottom: 5px;
     font-size: 16px;
     color: var(--text-color);
 }
- 
+
 .input-group input {
     padding: 10px 12px;
     border: 1px solid var(--stroke);
@@ -91,16 +96,17 @@ body {
     background-color: var(--input-bg);
     transition: border 0.3s ease;
 }
- 
+
 .input-group input:focus {
     border: 1px solid var(--text-color);
     outline: none;
     background-color: #fff;
 }
- 
+
 .prenota-button {
     display: flex;
     align-items: center;
+    justify-content: center;
     padding: 10px 20px;
     background-color: var(--primary-color);
     color: #ffffff;
@@ -111,16 +117,16 @@ body {
     margin-top: auto;
     transition: background-color 0.3s ease;
     height: 42px;
+    width: 30%;
 }
- 
+
 .prenota-button:hover {
     background-color: var(--primary-hover);
 }
- 
+
 @media (max-width: 768px) {
     .add-visit-container h1 {
         margin-top: 4rem;
         font-size: 20px;
     }
 }
- 

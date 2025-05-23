@@ -1,16 +1,47 @@
 import React, { useEffect, useState } from 'react';
+import AdminSidebar from '../components/AdminSidebar';
+import ActiveVisits from './ActiveVisits';
+import ArchiveVisits from './ArchiveVisits';
+import AssignBadge from './AssignBadge';
+import Employee from './Employee';
+import AddVisit from './AddVisit';
+import "../styles/home.css";
+import AddEmployee from './AddEmployee';
+
 
 const AdminDashboard = () => {
-  const [name, setName] = useState("Admin");
-  const [surname, setSurname] = useState("Admin");
+  const [activeSelector, setActiveSelector] = useState('Visite Attive');
 
-  useEffect(() => {
-    setName(localStorage.getItem("name"));
-    setSurname(localStorage.getItem("surname"));
-  }, []);
+  const renderContent = () => {
+    switch (activeSelector) {
+      case 'Visite Attive':
+        return <ActiveVisits />;
+      case 'Archivio Visite':
+        return <ArchiveVisits />;
+      case 'Assegna Badge':
+        return <AssignBadge />;
+      case 'Aggiungi Visita':
+        return <AddVisit />;
+      case 'Aggiungi Dipendente':
+        return <AddEmployee />;
+      case 'Dipendenti':
+        return <Employee />;
+      default:
+        return <div>Sezione non trovata</div>;
+    }
+  }
 
   return (
-    <div>Ciao {name} {surname}</div>
+    <div className='home'>
+      <AdminSidebar
+        activeSelector={activeSelector}
+        setActiveSelector={setActiveSelector} />
+      <div className="home-content">
+        {renderContent()}
+      </div>
+
+    </div>
+
   );
 };
 

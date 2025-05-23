@@ -6,7 +6,7 @@ import ArchiveVisits from './ArchiveVisits';
 import AssignBadge from './AssignBadge';
 import Employee from './Employee';
 import AddVisit from './AddVisit';
-const Home = () => {
+const ReceptionDashboard = () => {
   const [activeSelector, setActiveSelector] = useState('Visite Attive');
 
   const renderContent = () => {
@@ -40,4 +40,4 @@ const Home = () => {
   );
 }
 
-export default Home;
+export default ReceptionDashboard;
