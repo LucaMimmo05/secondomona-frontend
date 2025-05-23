@@ -1,115 +1,115 @@
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: #ffffff;
-  margin: 0;
-  padding: 0;
+    font-family: "Inter", sans-serif;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
 }
 
 .add-visit-container {
-  max-width: 900px;
-  margin: 80px auto;
-  padding: 0 20px;
+    max-width: 900px;
+    margin: 80px auto;
+    padding: 0 20px;
 }
 
 .add-visit-container h1 {
-  text-align: center;
-  font-size: 28px;
-  color: var(--text-color);
-  margin-bottom: 40px;
+    text-align: center;
+    font-size: 28px;
+    color: var(--text-color);
+    margin-bottom: 40px;
 }
 
 .progress-checkboxes {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  font-size: 14px;
-  color: var(--subtext-color);
-  margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    font-size: 14px;
+    color: var(--subtext-color);
+    margin-bottom: 40px;
 }
 
 .checkbox-item {
-  position: relative;
-  padding-left: 25px;
-  cursor: default;
-  user-select: none;
+    position: relative;
+    padding-left: 25px;
+    cursor: default;
+    user-select: none;
 }
 
 .checkbox-item input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
 }
 
 .checkmark {
-  position: absolute;
-  left: 0;
-  top: 3px;
-  height: 14px;
-  width: 14px;
-  background-color: var(--input-bg);
-  border: 1px solid #ccc;
-  border-radius: 3px;
+    position: absolute;
+    left: 0;
+    top: 3px;
+    height: 14px;
+    width: 14px;
+    background-color: var(--input-bg);
+    border: 1px solid #ccc;
+    border-radius: 6px;
 }
 
 .checkbox-item input:checked ~ .checkmark {
-  background-color: var(--text-color);
+    background-color: var(--text-color);
 }
 
 .visit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .form-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 .input-group {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 280px;
 }
 
 .input-group label {
-  margin-bottom: 5px;
-  font-size: 14px;
-  color: var(--text-color);
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: var(--text-color);
 }
 
 .input-group input {
-  padding: 10px 12px;
-  border: 1px solid var(--stroke);
-  border-radius: 6px;
-  font-size: 14px;
-  background-color: var(--input-bg);
-  transition: border 0.3s ease;
+    padding: 10px 12px;
+    border: 1px solid var(--stroke);
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: var(--input-bg);
+    transition: border 0.3s ease;
 }
 
 .input-group input:focus {
-  border: 1px solid var(--text-color);
-  outline: none;
-  background-color: #fff;
+    border: 1px solid var(--text-color);
+    outline: none;
+    background-color: #fff;
 }
 
 .prenota-button {
-  align-self: flex-end;
-  padding: 12px 24px;
-  background-color: var(--text-color);
-  color: #ffffff;
-  font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: auto;
-  transition: background-color 0.3s ease;
-  height: 42px;
+    align-self: flex-end;
+    padding: 12px 24px;
+    background-color: var(--text-color);
+    color: #ffffff;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: auto;
+    transition: background-color 0.3s ease;
+    height: 42px;
 }
 
 .prenota-button:hover {
-  background-color: var(--primary-color);
+    background-color: var(--primary-color);
 }
