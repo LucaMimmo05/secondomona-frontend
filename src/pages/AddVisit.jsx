@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/addvisit.css";
-
+ 
 const AddVisit = () => {
     return (
         <div className="add-visit-container">
@@ -16,7 +16,7 @@ const AddVisit = () => {
                         <input type="date" />
                     </div>
                 </div>
-
+ 
                 <div className="form-row">
                     <div className="input-group">
                         <label>Numero di telefono</label>
@@ -27,7 +27,7 @@ const AddVisit = () => {
                         <input type="time" />
                     </div>
                 </div>
-
+ 
                 <div className="form-row">
                     <div className="input-group">
                         <label>Email</label>
@@ -38,7 +38,7 @@ const AddVisit = () => {
                         <input type="time" />
                     </div>
                 </div>
-
+ 
                 <div className="form-row">
                     <div className="input-group">
                         <label>Codice fiscale</label>
@@ -52,5 +52,6 @@ const AddVisit = () => {
         </div>
     );
 };
-
+ 
 export default AddVisit;
+ 
