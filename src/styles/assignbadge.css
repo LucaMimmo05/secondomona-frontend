@@ -1,0 +1,232 @@
+.badge-container {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.badge-header {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.badge-title {
+    font-family: Inter, sans-serif;
+    font-size: 32px;
+    color: #1e1e1e;
+}
+
+.badge-table-wrapper {
+    width: 100%;
+}
+
+.badge-table {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.badge-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.header-row {
+    gap: 10px;
+    padding: 10px;
+}
+
+.columns-row {
+    gap: 25px;
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid #e2e2e2;
+}
+
+.data-row {
+    justify-content: space-between;
+    padding: 20px;
+    border: 1px solid #e2e2e2;
+    border-radius: 4px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.badge-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.date-cell,
+.time-cell,
+.duration-cell,
+.status-cell,
+.guest-cell,
+.employee-cell {
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+.icon-cell {
+    width: 20px;
+    height: 20px;
+    background-image: url('../assets/images/your-icon.svg'); /* aggiungi qui la tua icona */
+    background-size: cover;
+    background-position: center;
+}
+
+.badge-id-cell {
+    /* rimane vuota qui, contiene il button con flag */
+    width: 20px;
+    height: 20px;
+    background-size: cover;
+}
+
+.badge-separator {
+    width: 1px;
+    height: 20px;
+    background-color: var(--input-bg);
+}
+
+.badge-data-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    border: 1px solid var(--input-bg);
+    border-radius: 4px;
+    background-color: var(--input-bg);
+}
+
+.badge-data-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge-label {
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    color: var(--subtext-color);
+    flex: 0 0 150px;
+}
+
+.badge-value {
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+    color: var(--text-color);
+    flex: 1;
+}
+
+/* Pulsante flag cliccabile */
+.badge-flag-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.badge-flag-button:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+    width: 24px;
+    height: 24px;
+}
+
+.badge-flag-icon {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: solid var(--subtext-color);
+    color: var(--text-color);
+}
+
+/* Base: già definito sopra */
+
+/* Tablet e piccoli desktop */
+@media (max-width: 1024px) {
+  .badge-container {
+    padding: 0 16px;
+  }
+  .badge-title {
+    font-size: 28px;
+  }
+  .badge-table-wrapper {
+    overflow-x: auto;
+  }
+}
+
+/* Schermi medi (fino a 768px) */
+@media (max-width: 768px) {
+  .badge-table {
+    /* Trasformiamo la “tabella” in una lista flessibile */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .columns-row {
+    display: none; /* Nascondi intestazioni “righe” */
+  }
+
+  .data-row {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px;
+  }
+
+  .badge-cell {
+    width: 100%;
+    justify-content: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .badge-flag-button {
+    align-self: flex-end;
+  }
+}
+
+/* Mobile stretto (fino a 480px) */
+@media (max-width: 480px) {
+  .badge-header {
+    padding: 0 8px;
+  }
+
+  .badge-title {
+    font-size: 24px;
+  }
+
+  .data-row {
+    padding: 10px;
+  }
+
+  .badge-data-list {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .badge-label {
+    font-size: 12px;
+  }
+
+  .badge-value {
+    font-size: 14px;
+  }
+}
