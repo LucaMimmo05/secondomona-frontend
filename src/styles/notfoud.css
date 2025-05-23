@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: #f8f8f8;
+    background-color: #ffffff;
     font-family: Arial, sans-serif;
 }
 
@@ -31,15 +31,14 @@
 
 .tornahome {
     text-decoration: none;
-    font-size: 18px;
-    color: #1a2a4d;
-    border: 2px solid #1a2a4d;
-    padding: 10px 20px;
-    border-radius: 5px;
+    font-size: 16px;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 40px;
+    border-radius: 6px;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .tornahome:hover {
-    background-color: #1a2a4d;
-    color: white;
+    background-color: var(--primary-hover);
 }
