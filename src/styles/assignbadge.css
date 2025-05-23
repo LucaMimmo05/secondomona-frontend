@@ -11,6 +11,16 @@
     box-sizing: border-box;
 }
 
+.assign-badge-title {
+    color: #1e1e1e;
+    text-align: center;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-bottom: 4rem;
+}
+
 .badge-header {
     display: flex;
     width: 100%;
@@ -81,7 +91,7 @@
 .icon-cell {
     width: 20px;
     height: 20px;
-    background-image: url('../assets/images/your-icon.svg'); /* aggiungi qui la tua icona */
+    background-image: url("../assets/images/your-icon.svg"); /* aggiungi qui la tua icona */
     background-size: cover;
     background-position: center;
 }
@@ -162,71 +172,76 @@
 
 /* Tablet e piccoli desktop */
 @media (max-width: 1024px) {
-  .badge-container {
-    padding: 0 16px;
-  }
-  .badge-title {
-    font-size: 28px;
-  }
-  .badge-table-wrapper {
-    overflow-x: auto;
-  }
+    .badge-container {
+        padding: 0 16px;
+    }
+    .badge-title {
+        font-size: 28px;
+    }
+    .badge-table-wrapper {
+        overflow-x: auto;
+    }
 }
 
 /* Schermi medi (fino a 768px) */
 @media (max-width: 768px) {
-  .badge-table {
-    /* Trasformiamo la “tabella” in una lista flessibile */
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
+    .badge-table {
+        /* Trasformiamo la “tabella” in una lista flessibile */
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
 
-  .columns-row {
-    display: none; /* Nascondi intestazioni “righe” */
-  }
+    .columns-row {
+        display: none; /* Nascondi intestazioni “righe” */
+    }
 
-  .data-row {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 12px;
-  }
+    .data-row {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px;
+    }
 
-  .badge-cell {
-    width: 100%;
-    justify-content: flex-start;
-    margin-bottom: 8px;
-  }
+    .badge-cell {
+        width: 100%;
+        justify-content: flex-start;
+        margin-bottom: 8px;
+    }
 
-  .badge-flag-button {
-    align-self: flex-end;
-  }
+    .badge-flag-button {
+        align-self: flex-end;
+    }
+
+    .assign-badge-title {
+        margin-top: 4rem;
+        font-size: 20px;
+    }
 }
 
 /* Mobile stretto (fino a 480px) */
 @media (max-width: 480px) {
-  .badge-header {
-    padding: 0 8px;
-  }
+    .badge-header {
+        padding: 0 8px;
+    }
 
-  .badge-title {
-    font-size: 24px;
-  }
+    .badge-title {
+        font-size: 24px;
+    }
 
-  .data-row {
-    padding: 10px;
-  }
+    .data-row {
+        padding: 10px;
+    }
 
-  .badge-data-list {
-    padding: 12px;
-    gap: 8px;
-  }
+    .badge-data-list {
+        padding: 12px;
+        gap: 8px;
+    }
 
-  .badge-label {
-    font-size: 12px;
-  }
+    .badge-label {
+        font-size: 12px;
+    }
 
-  .badge-value {
-    font-size: 14px;
-  }
+    .badge-value {
+        font-size: 14px;
+    }
 }

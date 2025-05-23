@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
 import DataTable from "react-data-table-component";
 import "../styles/activevisit.css";
 
 const ArchiveVisits = () => {
-   const columns = [
+    const columns = [
         { name: "Data", selector: (row) => row.data, sortable: true },
         {
             name: "Ora Inizio",
@@ -31,7 +31,7 @@ const ArchiveVisits = () => {
         { name: "Badge", selector: (row) => row.badge, sortable: true },
     ];
 
-     const data = [
+    const data = [
         {
             data: "01/01/2023",
             oraInizio: "08:00",
@@ -66,8 +66,8 @@ const ArchiveVisits = () => {
             badge: "112233",
         },
     ];
-  return (
-    <div className="active-visit">
+    return (
+        <div className="active-visit">
             <div className="active-top">
                 <h1>Archivio Visite</h1>
                 <div className="active-filter-box">
@@ -123,7 +123,7 @@ const ArchiveVisits = () => {
                             style={{
                                 minWidth: 80,
                                 maxWidth: 300,
-                                width: "100%",
+                                width: "100vw",
                                 fontSize: "14px",
                             }}
                         />
@@ -161,7 +161,7 @@ const ArchiveVisits = () => {
                 highlightOnHover
             />
         </div>
-  )
-}
+    );
+};
 
-export default ArchiveVisits
+export default ArchiveVisits;
