@@ -56,29 +56,7 @@ const Employee = () => {
     <div className="employee">
       <h1>Dipendenti</h1>
       <div className="employee-filter-box">
-        <div className="filter-results">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-          >
-            <path
-              d="M11.3334 11.3334L14 14"
-              stroke="#7F7F7F"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333Z"
-              stroke="#7F7F7F"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <p>Filtra per data</p>
-        </div>
+        
       </div>
       <DataTable
         columns={columns}

@@ -7,7 +7,6 @@ export const AuthProvider = ({ children }) => {
   const [role, setRole] = useState(() => localStorage.getItem("role"));
 
   const login = (jwt, userRole) => {
-    localStorage.setItem("token", jwt);
     localStorage.setItem("role", userRole);
     setToken(jwt);
     setRole(userRole);
