@@ -5,12 +5,17 @@ import ArchivioIcon from "../assets/Archive";
 import AssignBadge from "../assets/AssignBadge";
 import Employee from "../assets/Employee";
 import Logout from "../assets/Logout";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+ 
 
 const Sidebar = ({ activeSelector, setActiveSelector }) => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setName(localStorage.getItem("name"));
@@ -22,6 +27,13 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleLogout = () => {
+    
+    logout();
+    navigate("/");
+    
+  }
 
   return (
     <>
@@ -84,7 +96,7 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
               icon={Logout}
               text="Logout"
               active={activeSelector === "Logout"}
-              onClick={null}
+              onClick={handleLogout}
               isLogout={true}
             />
           </div>
