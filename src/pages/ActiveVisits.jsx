@@ -124,7 +124,7 @@ const ActiveVisits = () => {
                             style={{
                                 minWidth: 80,
                                 maxWidth: 300,
-                                width: "100%",
+                                width: "100vw",
                                 fontSize: "14px",
                             }}
                         />
