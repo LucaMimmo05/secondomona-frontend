@@ -44,7 +44,7 @@ const App = () => (
           <Route path="/reception" element={<ReceptionDashboard />} />
         </Route>
         {/* Employee */}
-        <Route element={<ProtectedRoute allowedRoles={['Dipendenti']} />}>
+        <Route element={<ProtectedRoute allowedRoles={['Dipendente']} />}>
           <Route path="/employee" element={<EmployeeDashboard />} />
         </Route>
         {/* Admin */}

@@ -44,7 +44,7 @@ export default function LoginPage() {
         login(data.accessToken, userRole);
         
 
-        // reindirizzamento
+       
         if (userRole === "Admin") navigate("/admin");
         else if (userRole === "Portineria") navigate("/reception");
         else if (userRole === "Dipendente") navigate("/employee");
