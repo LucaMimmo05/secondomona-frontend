@@ -5,9 +5,9 @@ import ArchivioIcon from "../assets/Archive";
 import AssignBadge from "../assets/AssignBadge";
 import Employee from "../assets/Employee";
 import Logout from "../assets/Logout";
+import AddVisit from "../assets/AddVisit";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
- 
 
 const Sidebar = ({ activeSelector, setActiveSelector }) => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -29,11 +29,9 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
   }, []);
 
   const handleLogout = () => {
-    
     logout();
     navigate("/");
-    
-  }
+  };
 
   return (
     <>
@@ -85,6 +83,12 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
               onClick={() => setActiveSelector("Assegna Badge")}
             />
             <Selector
+              icon={AddVisit}
+              text="Aggiungi Visita"
+              active={activeSelector === "Aggiungi Visita"}
+              onClick={() => setActiveSelector("Aggiungi Visita")}
+            />
+            <Selector
               icon={Employee}
               text="Dipendenti"
               active={activeSelector === "Dipendenti"}
@@ -128,15 +132,26 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
             >
               {/* Material Design burger icon */}
               <svg
-                width="32"
-                height="32"
-                viewBox="0 0 32 32"
-                fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                viewBox="0 0 40 40"
+                fill="none"
               >
-                <rect x="4" y="8" width="24" height="3" rx="1.5" fill="#222" />
-                <rect x="4" y="15" width="24" height="3" rx="1.5" fill="#222" />
-                <rect x="4" y="22" width="24" height="3" rx="1.5" fill="#222" />
+                <path
+                  d="M6.66699 15H33.3337"
+                  stroke="#1E1E1E"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M6.66699 25H23.3337"
+                  stroke="#1E1E1E"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
             </button>
           )}
