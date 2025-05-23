@@ -279,7 +279,7 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
               <Selector
                 icon={Logout}
                 text="Logout"
-                onClick={null}
+                onClick={handleLogout}
                 isLogout={true}
               />
             </div>
