@@ -19,26 +19,15 @@ const EmployeeDashboard = () => {
   };
 
   return (
-    <div className="employee-dashboard d-flex" style={{ height: "100vh" }}>
-      <EmployeeSidebar
-        activeSelector={activeSelector}
-        setActiveSelector={setActiveSelector}
+    <div className='home'>
+      <EmployeeSidebar 
+        activeSelector={activeSelector} 
+        setActiveSelector={setActiveSelector} 
       />
-        <main
-        className="dashboard-content"
-        style={{
-            flex: "1 1 0",
-            minWidth: 0,
-            minHeight: 0,
-            width: "100%",
-            padding: "60px 69px 0 69px",
-            boxSizing: "border-box",
-            overflow: "auto",
-        }}
-        >
-        {renderContent()}
-        </main>
-
+      
+      <div className="home-content">
+       {renderContent()}
+      </div>
     </div>
   );
 };
