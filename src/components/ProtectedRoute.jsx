@@ -1,22 +1,22 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { validateTokenRole, getRoleFromToken } from "../utils/apiUtils";
 
 const ProtectedRoute = ({ allowedRoles }) => {
-  const { token, role } = useAuth();
+  const { token } = useAuth();
 
   // Controlla anche nel localStorage se il token non è nell'AuthContext
   const fallbackToken =
     token ||
     localStorage.getItem("accessToken") ||
     localStorage.getItem("token");
-  const fallbackRole = role || localStorage.getItem("role");
 
   console.log(
     "ProtectedRoute - Token:",
     !!fallbackToken,
-    "Role:",
-    fallbackRole
+    "Allowed Roles:",
+    allowedRoles
   );
 
   if (!fallbackToken) {
@@ -24,9 +24,20 @@ const ProtectedRoute = ({ allowedRoles }) => {
     return <Navigate to="/" />;
   }
 
-  if (!allowedRoles.includes(fallbackRole)) {
+  // SICUREZZA: Valida il ruolo dal token JWT, non dal localStorage
+  const isAuthorized = validateTokenRole(fallbackToken, allowedRoles);
+  const tokenRole = getRoleFromToken(fallbackToken);
+
+  console.log(
+    "ProtectedRoute - Ruolo dal token:",
+    tokenRole,
+    "Autorizzato:",
+    isAuthorized
+  );
+
+  if (!isAuthorized) {
     console.log(
-      `Ruolo ${fallbackRole} non autorizzato per ${allowedRoles} - redirect al login`
+      `Ruolo ${tokenRole} non autorizzato per ${allowedRoles} - redirect al login`
     );
     return <Navigate to="/" />;
   }

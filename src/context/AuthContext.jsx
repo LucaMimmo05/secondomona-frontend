@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { getRoleFromToken } from "../utils/apiUtils";
 
 const AuthContext = createContext();
 
@@ -6,15 +7,20 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(
     () => localStorage.getItem("accessToken") || localStorage.getItem("token")
   );
-  const [role, setRole] = useState(() => localStorage.getItem("role"));
 
+  // Il ruolo viene sempre estratto dal token, non dal localStorage
+  const role = token ? getRoleFromToken(token) : null;
   const login = (jwt, userRole) => {
-    // Salva sia accessToken che token per compatibilità
+    // Salva solo il token, il ruolo viene estratto dal token stesso
     localStorage.setItem("accessToken", jwt);
     localStorage.setItem("token", jwt);
-    localStorage.setItem("role", userRole);
+    // NON salviamo più il role nel localStorage per sicurezza
+    // Il ruolo viene sempre estratto dal token JWT
     setToken(jwt);
-    setRole(userRole);
+    console.log(
+      "Login completato - ruolo estratto dal token:",
+      getRoleFromToken(jwt)
+    );
   };
 
   const logout = () => {
@@ -28,22 +34,18 @@ export const AuthProvider = ({ children }) => {
 
     // Reset dello stato
     setToken(null);
-    setRole(null);
+    // Il role viene automaticamente resettato perché dipende dal token
 
     console.log("Logout completato - localStorage pulito");
   };
 
   useEffect(() => {
-    // Controlla sia accessToken che token per compatibilità
+    // Controlla solo il token, il ruolo viene estratto automaticamente
     const storedToken =
       localStorage.getItem("accessToken") || localStorage.getItem("token");
-    const storedRole = localStorage.getItem("role");
 
     if (storedToken) {
       setToken(storedToken);
-    }
-    if (storedRole) {
-      setRole(storedRole);
     }
   }, []);
 

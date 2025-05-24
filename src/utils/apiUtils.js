@@ -17,6 +17,33 @@ export const isTokenExpired = (token) => {
   }
 };
 
+// Funzione per estrarre il ruolo dal token JWT (sicuro)
+export const getRoleFromToken = (token) => {
+  if (!token) return null;
+
+  try {
+    const decoded = parseJwt(token);
+    if (!decoded || !decoded.groups) return null;
+
+    // Estrae il ruolo dai groups, escludendo "access-token"
+    const userRole = decoded.groups.find((group) => group !== "access-token");
+    return userRole || null;
+  } catch (error) {
+    console.error("Errore nell'estrazione del ruolo dal token:", error);
+    return null;
+  }
+};
+
+// Funzione per validare se il token ha un ruolo autorizzato
+export const validateTokenRole = (token, allowedRoles) => {
+  if (!token || !allowedRoles || allowedRoles.length === 0) return false;
+
+  const tokenRole = getRoleFromToken(token);
+  if (!tokenRole) return false;
+
+  return allowedRoles.includes(tokenRole);
+};
+
 export const getValidToken = () => {
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");

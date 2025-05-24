@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
-  useNavigate
+  useNavigate,
 } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -17,12 +17,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 const RequireNoAuth = ({ children }) => {
   const { token, role } = useAuth() || {};
   const navigate = useNavigate();
-
   useEffect(() => {
     if (token && role) {
-      if (role === 'Portineria') navigate('/reception', { replace: true });
-      if (role === 'Dipendenti') navigate('/employee', { replace: true });
-      if (role === 'Admin') navigate('/admin', { replace: true });
+      if (role === "Portineria") navigate("/reception", { replace: true });
+      if (role === "Dipendente") navigate("/employee", { replace: true });
+      if (role === "Admin") navigate("/admin", { replace: true });
     }
   }, [token, role, navigate]);
 
@@ -34,21 +33,24 @@ const App = () => (
   <AuthProvider>
     <Router>
       <Routes>
-        <Route path="/" element={
-          <RequireNoAuth>
-            <Login />
-          </RequireNoAuth>
-        } />
+        <Route
+          path="/"
+          element={
+            <RequireNoAuth>
+              <Login />
+            </RequireNoAuth>
+          }
+        />
         {/* Reception */}
-        <Route element={<ProtectedRoute allowedRoles={['Portineria']} />}>
+        <Route element={<ProtectedRoute allowedRoles={["Portineria"]} />}>
           <Route path="/reception" element={<ReceptionDashboard />} />
         </Route>
         {/* Employee */}
-        <Route element={<ProtectedRoute allowedRoles={['Dipendente']} />}>
+        <Route element={<ProtectedRoute allowedRoles={["Dipendente"]} />}>
           <Route path="/employee" element={<EmployeeDashboard />} />
         </Route>
         {/* Admin */}
-        <Route element={<ProtectedRoute allowedRoles={['Admin']} />}>
+        <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>
           <Route path="/admin" element={<AdminDashboard />} />
         </Route>
         <Route path="*" element={<NotFound />} />
