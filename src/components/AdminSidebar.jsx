@@ -70,7 +70,7 @@ const AdminSidebar = ({ activeSelector, setActiveSelector }) => {
               <h5 className="mb-0">
                 {name} {surname}
               </h5>
-              <small className="text-muted">Portineria</small>
+              <small className="text-muted">Admin</small>
             </div>
           </div>
           <hr />
@@ -259,7 +259,7 @@ const AdminSidebar = ({ activeSelector, setActiveSelector }) => {
                   className="text-muted text-truncate"
                   style={{ fontSize: "clamp(12px, 2.5vw, 1.05rem)" }}
                 >
-                  Portineria
+                  Admin
                 </small>
               </div>
             </div>

@@ -1,23 +1,24 @@
 * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    font-family: "Inter", sans-serif;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
 }
 
 #root,
 body {
-    height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 :root {
-    --primary-color: #0a1429;
-    --text-color: #1e1e1e;
-    --subtext-color: #7f7f7f;
-    --input-bg: #f4f4f4;
-    --stroke: #c8c8c8;
-    --alert-error: #ff0000;
-    --alert-success: #10c600;
-    --dashboard-color: #0088ff20;
-    --primary-hover: #153a88;
+  --primary-color: #0a1429;
+  --text-color: #1e1e1e;
+  --subtext-color: #7f7f7f;
+  --input-bg: #f4f4f4;
+  --stroke: #c8c8c8;
+  --alert-error: #ff0000;
+  --alert-success: #10c600;
+  --dashboard-color: #0088ff20;
+  --primary-hover: #153a88;
 }

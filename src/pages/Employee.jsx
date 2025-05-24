@@ -1,16 +1,38 @@
 import React from "react";
 import "../styles/employee.css";
+import "../styles/datatable-common.css";
 import DataTable from "react-data-table-component";
 const Employee = () => {
   const columns = [
-    { name: "Nome", selector: (row) => row.nome, sortable: true },
-    { name: "Cognome", selector: (row) => row.cognome, sortable: true },
-    { name: "Matricola", selector: (row) => row.matricola, sortable: true },
-    { name: "Azienda", selector: (row) => row.azienda, sortable: true },
+    {
+      name: "Nome",
+      selector: (row) => row.nome,
+      sortable: true,
+      width: "130px",
+    },
+    {
+      name: "Cognome",
+      selector: (row) => row.cognome,
+      sortable: true,
+      width: "130px",
+    },
+    {
+      name: "Matricola",
+      selector: (row) => row.matricola,
+      sortable: true,
+      width: "100px",
+    },
+    {
+      name: "Azienda",
+      selector: (row) => row.azienda,
+      sortable: true,
+      width: "200px",
+    },
     {
       name: "Data Assunzione",
       selector: (row) => row.dataAssunzione,
       sortable: true,
+      width: "140px",
     },
   ];
 
@@ -55,9 +77,7 @@ const Employee = () => {
   return (
     <div className="employee">
       <h1>Dipendenti</h1>
-      <div className="employee-filter-box">
-        
-      </div>
+      <div className="employee-filter-box"></div>
       <DataTable
         columns={columns}
         data={data}

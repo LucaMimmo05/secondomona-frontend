@@ -217,3 +217,45 @@
     transform: scale(1);
   }
 }
+
+/* Stili per il contenitore del filtro data e tasto cancella */
+.date-filter-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.clear-filter-button {
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.clear-filter-button:hover {
+  background: #ff0000;
+}
+
+@media (max-width: 768px) {
+  .date-filter-container {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .clear-filter-button {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+  }
+}

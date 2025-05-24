@@ -10,6 +10,7 @@ const ArchiveVisits = () => {
       name: "Data Inizio",
       selector: (row) => new Date(row.dataInizio).toLocaleDateString("it-IT"),
       sortable: true,
+      width: "110px",
       cell: (row) => (
         <div title={new Date(row.dataInizio).toLocaleDateString("it-IT")}>
           {new Date(row.dataInizio).toLocaleDateString("it-IT")}
@@ -20,6 +21,7 @@ const ArchiveVisits = () => {
       name: "Data Fine",
       selector: (row) => new Date(row.dataFine).toLocaleDateString("it-IT"),
       sortable: true,
+      width: "110px",
       cell: (row) => (
         <div title={new Date(row.dataFine).toLocaleDateString("it-IT")}>
           {new Date(row.dataFine).toLocaleDateString("it-IT")}
@@ -30,6 +32,8 @@ const ArchiveVisits = () => {
       name: "Motivo",
       selector: (row) => row.motivoVisita || "N/A",
       sortable: true,
+      width: "150px",
+      grow: 1,
       cell: (row) => (
         <div title={row.motivoVisita || "N/A"}>{row.motivoVisita || "N/A"}</div>
       ),
@@ -41,6 +45,8 @@ const ArchiveVisits = () => {
           ? `${row.richiedente.nome} ${row.richiedente.cognome}`
           : "N/A",
       sortable: true,
+      width: "150px",
+      grow: 1,
       cell: (row) => {
         const fullName = row.richiedente
           ? `${row.richiedente.nome} ${row.richiedente.cognome}`
@@ -127,9 +133,12 @@ const ArchiveVisits = () => {
       setFilteredData(filtered);
     }
   }, [dateFilter, data]);
-
   const handleDateChange = (e) => {
     setDateFilter(e.target.value);
+  };
+
+  const clearDateFilter = () => {
+    setDateFilter("");
   };
 
   return (
@@ -179,14 +188,25 @@ const ArchiveVisits = () => {
                   stroke="#7F7F7F"
                 />
               </svg>
-              <p>Filtra per data</p>
+              <p>Filtra per data</p>{" "}
             </div>{" "}
-            <input
-              type="date"
-              className="input-filter-date"
-              value={dateFilter}
-              onChange={handleDateChange}
-            />
+            <div className="date-filter-container">
+              <input
+                type="date"
+                className="input-filter-date"
+                value={dateFilter}
+                onChange={handleDateChange}
+              />
+              {dateFilter && (
+                <button
+                  className="clear-filter-button"
+                  onClick={clearDateFilter}
+                  title="Cancella filtro"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           </div>
           <div className="filter-results">
             <svg
