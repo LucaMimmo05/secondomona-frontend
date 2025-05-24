@@ -141,3 +141,79 @@
   padding: 5px 10px;
   border-radius: 20px;
 }
+
+/* Stili per tooltip e celle della tabella */
+.table td div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  cursor: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJDNi40ODYgMiAyIDYuNDg2IDIgMTJTNi40ODYgMjIgMTIgMjJTMjIgMTcuNTE0IDIyIDEyUzE3LjUxNCAyIDEyIDJaTTEyIDRDMTYuNDExIDQgMjAgNy41ODkgMjAgMTJTMTYuNDExIDIwIDEyIDIwUzcuNTg5IDE2IDcuNTg5IDEyUzguNTg5IDQgMTIgNFoiIGZpbGw9IiMwMDdiZmYiLz4KPHBhdGggZD0iTTEyIDhWMTZNOCAxMkgxNiIgc3Ryb2tlPSIjMDA3YmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K")
+      12 12,
+    help;
+  transition: all 0.2s ease;
+}
+
+.table td div:hover {
+  overflow: visible;
+  white-space: normal;
+  word-wrap: break-word;
+  position: relative;
+  z-index: 1;
+  cursor: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJDNi40ODYgMiAyIDYuNDg2IDIgMTJTNi40ODYgMjIgMTIgMjJTMjIgMTcuNTE0IDIyIDEyUzE3LjUxNCAyIDEyIDJaTTEyIDRDMTYuNDExIDQgMjAgNy41ODkgMjAgMTJTMTYuNDExIDIwIDEyIDIwUzcuNTg5IDE2IDcuNTg5IDEyUzguNTg5IDQgMTIgNFoiIGZpbGw9IiNmZjZkMDAiLz4KPHBhdGggZD0iTTEyIDhWMTZNOCAxMkgxNiIgc3Ryb2tlPSIjZmY2ZDAwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K")
+      12 12,
+    crosshair;
+  background-color: rgba(0, 123, 255, 0.1);
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+/* Migliora la visibilità del tooltip nativo */
+.table td div[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  cursor: zoom-out;
+}
+
+.table td div[title]:hover::before {
+  content: "";
+  position: absolute;
+  bottom: 94%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #333;
+  z-index: 1000;
+  cursor: zoom-out;
+}
+
+/* Aggiunge un'animazione pulsante per rendere più evidente l'interattività */
+.table td div:hover {
+  animation: pulse-hover 0.6s ease-in-out;
+}
+
+@keyframes pulse-hover {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

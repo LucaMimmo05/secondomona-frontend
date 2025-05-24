@@ -2,6 +2,7 @@ import React from "react";
 import DataTable from "react-data-table-component";
 import "../styles/activevisit.css";
 import { useEffect, useState } from "react";
+import { apiCall } from "../utils/apiUtils";
 
 const ArchiveVisits = () => {
   const columns = [
@@ -9,36 +10,77 @@ const ArchiveVisits = () => {
       name: "Data Inizio",
       selector: (row) => new Date(row.dataInizio).toLocaleDateString("it-IT"),
       sortable: true,
+      cell: (row) => (
+        <div title={new Date(row.dataInizio).toLocaleDateString("it-IT")}>
+          {new Date(row.dataInizio).toLocaleDateString("it-IT")}
+        </div>
+      ),
     },
     {
       name: "Data Fine",
       selector: (row) => new Date(row.dataFine).toLocaleDateString("it-IT"),
       sortable: true,
+      cell: (row) => (
+        <div title={new Date(row.dataFine).toLocaleDateString("it-IT")}>
+          {new Date(row.dataFine).toLocaleDateString("it-IT")}
+        </div>
+      ),
     },
     {
       name: "Motivo",
-      selector: (row) => row.motivoVisita,
+      selector: (row) => row.motivoVisita || "N/A",
       sortable: true,
+      cell: (row) => (
+        <div title={row.motivoVisita || "N/A"}>{row.motivoVisita || "N/A"}</div>
+      ),
     },
     {
       name: "Richiedente",
-      selector: (row) => `${row.richiedente.name} ${row.richiedente.surname}`,
+      selector: (row) =>
+        row.richiedente
+          ? `${row.richiedente.nome} ${row.richiedente.cognome}`
+          : "N/A",
       sortable: true,
+      cell: (row) => {
+        const fullName = row.richiedente
+          ? `${row.richiedente.nome} ${row.richiedente.cognome}`
+          : "N/A";
+        return <div title={fullName}>{fullName}</div>;
+      },
     },
     {
       name: "Visitatore",
-      selector: (row) => `${row.visitatore.name} ${row.visitatore.surname}`,
+      selector: (row) =>
+        row.visitatore
+          ? `${row.visitatore.nome} ${row.visitatore.cognome}`
+          : "N/A",
       sortable: true,
+      cell: (row) => {
+        const fullName = row.visitatore
+          ? `${row.visitatore.nome} ${row.visitatore.cognome}`
+          : "N/A";
+        return <div title={fullName}>{fullName}</div>;
+      },
     },
     {
       name: "DPI",
       selector: (row) => (row.flagRichiestaDPI ? "Sì" : "No"),
       sortable: true,
+      cell: (row) => (
+        <div title={row.flagRichiestaDPI ? "Sì" : "No"}>
+          {row.flagRichiestaDPI ? "Sì" : "No"}
+        </div>
+      ),
     },
     {
       name: "Automezzo",
       selector: (row) => (row.flagAccessoAutomezzo ? "Sì" : "No"),
       sortable: true,
+      cell: (row) => (
+        <div title={row.flagAccessoAutomezzo ? "Sì" : "No"}>
+          {row.flagAccessoAutomezzo ? "Sì" : "No"}
+        </div>
+      ),
     },
   ];
 
@@ -46,20 +88,11 @@ const ArchiveVisits = () => {
   const [loading, setLoading] = useState(true);
   const [filteredData, setFilteredData] = useState([]);
   const [dateFilter, setDateFilter] = useState("");
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token =
-          localStorage.getItem("accessToken") ||
-          localStorage.getItem("refreshToken");
-
-        const response = await fetch("http://localhost:8080/api/visite", {
+        const response = await apiCall("http://localhost:8080/api/visite", {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
         });
 
         const result = await response.json();
@@ -73,6 +106,7 @@ const ArchiveVisits = () => {
         }
       } catch (error) {
         console.error("Errore durante il recupero dei dati:", error);
+        // L'apiCall gestisce automaticamente logout per token scaduti
       } finally {
         setLoading(false);
       }
@@ -146,7 +180,8 @@ const ArchiveVisits = () => {
                 />
               </svg>
               <p>Filtra per data</p>
-            </div>            <input
+            </div>{" "}
+            <input
               type="date"
               className="input-filter-date"
               value={dateFilter}

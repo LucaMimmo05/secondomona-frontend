@@ -1,72 +1,166 @@
 import React, { useState } from "react";
 import "../styles/activevisit.css";
 import DataTable from "react-data-table-component";
+import { useEffect } from "react";
+import { apiCall } from "../utils/apiUtils";
 
 const ActiveVisits = () => {
   const [dateFilter, setDateFilter] = useState("");
-
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const columns = [
-    { name: "Data", selector: (row) => row.data, sortable: true },
-    { name: "Ora Inizio", selector: (row) => row.oraInizio, sortable: true },
     {
-      name: "Ora Inizio Eff",
-      selector: (row) => row.oraInizioEff,
+      name: "Data Inizio",
+      selector: (row) => new Date(row.dataInizio).toLocaleDateString("it-IT"),
       sortable: true,
+      cell: (row) => (
+        <div title={new Date(row.dataInizio).toLocaleDateString("it-IT")}>
+          {new Date(row.dataInizio).toLocaleDateString("it-IT")}
+        </div>
+      ),
     },
-    { name: "Ora Fine", selector: (row) => row.oraFine, sortable: true },
-    { name: "Ora Fine Eff", selector: (row) => row.oraFineEff, sortable: true },
-    { name: "Stato", selector: (row) => row.stato, sortable: true },
-    { name: "Ospite", selector: (row) => row.ospite, sortable: true },
-    { name: "Dipendente", selector: (row) => row.dipendente, sortable: true },
-    { name: "Badge", selector: (row) => row.badge, sortable: true },
+    {
+      name: "Ora Inizio",
+      selector: (row) =>
+        new Date(row.dataInizio).toLocaleTimeString("it-IT", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      sortable: true,
+      cell: (row) => (
+        <div
+          title={new Date(row.dataInizio).toLocaleTimeString("it-IT", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        >
+          {new Date(row.dataInizio).toLocaleTimeString("it-IT", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </div>
+      ),
+    },
+    {
+      name: "Data Fine",
+      selector: (row) => new Date(row.dataFine).toLocaleDateString("it-IT"),
+      sortable: true,
+      cell: (row) => (
+        <div title={new Date(row.dataFine).toLocaleDateString("it-IT")}>
+          {new Date(row.dataFine).toLocaleDateString("it-IT")}
+        </div>
+      ),
+    },
+    {
+      name: "Ora Fine",
+      selector: (row) =>
+        new Date(row.dataFine).toLocaleTimeString("it-IT", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      sortable: true,
+      cell: (row) => (
+        <div
+          title={new Date(row.dataFine).toLocaleTimeString("it-IT", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        >
+          {new Date(row.dataFine).toLocaleTimeString("it-IT", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </div>
+      ),
+    },
+    {
+      name: "Motivo",
+      selector: (row) => row.motivoVisita || "N/A",
+      sortable: true,
+      cell: (row) => (
+        <div title={row.motivoVisita || "N/A"}>{row.motivoVisita || "N/A"}</div>
+      ),
+    },
+    {
+      name: "Visitatore",
+      selector: (row) =>
+        row.visitatore
+          ? `${row.visitatore.nome} ${row.visitatore.cognome}`
+          : "N/A",
+      sortable: true,
+      cell: (row) => {
+        const fullName = row.visitatore
+          ? `${row.visitatore.nome} ${row.visitatore.cognome}`
+          : "N/A";
+        return <div title={fullName}>{fullName}</div>;
+      },
+    },
+    {
+      name: "Richiedente",
+      selector: (row) =>
+        row.richiedente
+          ? `${row.richiedente.nome} ${row.richiedente.cognome}`
+          : "N/A",
+      sortable: true,
+      cell: (row) => {
+        const fullName = row.richiedente
+          ? `${row.richiedente.nome} ${row.richiedente.cognome}`
+          : "N/A";
+        return <div title={fullName}>{fullName}</div>;
+      },
+    },
+    {
+      name: "DPI",
+      selector: (row) => (row.flagRichiestaDPI ? "Sì" : "No"),
+      sortable: true,
+      cell: (row) => (
+        <div title={row.flagRichiestaDPI ? "Sì" : "No"}>
+          {row.flagRichiestaDPI ? "Sì" : "No"}
+        </div>
+      ),
+    },
+    {
+      name: "Automezzo",
+      selector: (row) => (row.flagAccessoAutomezzo ? "Sì" : "No"),
+      sortable: true,
+      cell: (row) => (
+        <div title={row.flagAccessoAutomezzo ? "Sì" : "No"}>
+          {row.flagAccessoAutomezzo ? "Sì" : "No"}
+        </div>
+      ),
+    },
   ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
 
-  const data = [
-    {
-      data: "01/01/2023",
-      oraInizio: "08:00",
-      oraInizioEff: "08:05",
-      oraFine: "17:00",
-      oraFineEff: "17:05",
-      stato: "In Corso",
-      ospite: "Mario Rossi",
-      dipendente: "Luca Bianchi",
-      badge: "123456",
-    },
-    {
-      data: "02/01/2023",
-      oraInizio: "09:00",
-      oraInizioEff: "09:02",
-      oraFine: "18:00",
-      oraFineEff: "18:01",
-      stato: "Completato",
-      ospite: "Anna Verdi",
-      dipendente: "Giovanni Neri",
-      badge: "654321",
-    },
-    {
-      data: "03/01/2023",
-      oraInizio: "07:30",
-      oraInizioEff: "07:35",
-      oraFine: "16:30",
-      oraFineEff: "16:45",
-      stato: "In Ritardo",
-      ospite: "Carla Bianchi",
-      dipendente: "Marco Rossi",
-      badge: "112233",
-    },
-  ];
+        const response = await apiCall(
+          "http://localhost:8080/api/visite/attive",
+          {
+            method: "GET",
+          }
+        );
 
-  // Funzione per convertire date italiane (dd/mm/yyyy) in formato Date
-  const parseItalianDate = (dateString) => {
-    const [day, month, year] = dateString.split("/");
-    return new Date(year, month - 1, day);
-  };
-
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const result = await response.json();
+        console.log("Dati visite attive:", result);
+        setData(result);
+      } catch (error) {
+        console.error("Errore durante il recupero dei dati:", error);
+        // L'apiCall gestisce automaticamente logout per token scaduti
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
   // Filtra i dati in base alla data selezionata
   const filteredData = dateFilter
     ? data.filter((row) => {
-        const rowDate = parseItalianDate(row.data);
+        const rowDate = new Date(row.dataInizio);
         const filterDate = new Date(dateFilter);
         return rowDate.toDateString() === filterDate.toDateString();
       })
@@ -154,16 +248,17 @@ const ActiveVisits = () => {
                 stroke-linejoin="round"
               />
             </svg>
-            <p>Risulati mostrati</p>
+            <p>Risultati mostrati: {filteredData.length}</p>
           </div>
         </div>
-      </div>
+      </div>{" "}
       <DataTable
         columns={columns}
         data={filteredData}
         pagination
         responsive
         highlightOnHover
+        progressPending={loading}
       />
     </div>
   );
