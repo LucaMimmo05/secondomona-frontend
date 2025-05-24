@@ -8,6 +8,7 @@ import Logout from "../assets/Logout";
 import AddVisit from "../assets/AddVisit";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { clearAuthData } from "../utils/apiUtils";
 
 const Sidebar = ({ activeSelector, setActiveSelector }) => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -27,10 +28,19 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
   const handleLogout = () => {
-    logout();
-    navigate("/");
+    try {
+      // Pulisci anche con la utility per essere sicuri
+      clearAuthData();
+      logout();
+      console.log("Logout ReceptionSidebar completato");
+      navigate("/");
+    } catch (error) {
+      console.error("Errore durante logout:", error);
+      // Forza la pulizia e redirect anche in caso di errore
+      clearAuthData();
+      navigate("/");
+    }
   };
 
   return (

@@ -3,9 +3,13 @@ import EmployeeSidebar from "../components/EmployeeSidebar";
 import ActiveVisits from "./ActiveVisits";
 import AddVisit from "./AddVisit";
 import "../styles/home.css";
+import { useTokenValidation } from "../hooks/useTokenValidation";
 
 const EmployeeDashboard = () => {
   const [activeSelector, setActiveSelector] = useState("Visite Attive");
+
+  // Controllo automatico validità token
+  useTokenValidation();
 
   const renderContent = () => {
     switch (activeSelector) {
@@ -19,15 +23,13 @@ const EmployeeDashboard = () => {
   };
 
   return (
-    <div className='home'>
-      <EmployeeSidebar 
-        activeSelector={activeSelector} 
-        setActiveSelector={setActiveSelector} 
+    <div className="home">
+      <EmployeeSidebar
+        activeSelector={activeSelector}
+        setActiveSelector={setActiveSelector}
       />
-      
-      <div className="home-content">
-       {renderContent()}
-      </div>
+
+      <div className="home-content">{renderContent()}</div>
     </div>
   );
 };

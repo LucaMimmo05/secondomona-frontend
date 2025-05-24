@@ -9,6 +9,7 @@ import AddVisit from "../assets/AddVisit";
 import AddEmployee from "../assets/AddEmployee";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { clearAuthData } from "../utils/apiUtils";
 
 const AdminSidebar = ({ activeSelector, setActiveSelector }) => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -28,10 +29,19 @@ const AdminSidebar = ({ activeSelector, setActiveSelector }) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
   const handleLogout = () => {
-    logout();
-    navigate("/");
+    try {
+      // Pulisci anche con la utility per essere sicuri
+      clearAuthData();
+      logout();
+      console.log("Logout AdminSidebar completato");
+      navigate("/");
+    } catch (error) {
+      console.error("Errore durante logout:", error);
+      // Forza la pulizia e redirect anche in caso di errore
+      clearAuthData();
+      navigate("/");
+    }
   };
 
   return (
@@ -164,8 +174,9 @@ const AdminSidebar = ({ activeSelector, setActiveSelector }) => {
           )}
           {/* Offcanvas Bootstrap mobile sidebar */}
           <div
-            className={`offcanvas offcanvas-start${showOffcanvas ? " show" : ""
-              }`}
+            className={`offcanvas offcanvas-start${
+              showOffcanvas ? " show" : ""
+            }`}
             tabIndex="-1"
             style={{
               visibility: showOffcanvas ? "visible" : "hidden",

@@ -6,6 +6,7 @@ import LogoutIcon from "../assets/Logout";
 import "../styles/employeesidebar.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { clearAuthData } from "../utils/apiUtils";
 
 const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -34,10 +35,19 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
       document.body.style.overflow = "";
     };
   }, [showOffcanvas]);
-
   const handleLogout = () => {
-    logout();
-    navigate("/");
+    try {
+      // Pulisci anche con la utility per essere sicuri
+      clearAuthData();
+      logout();
+      console.log("Logout EmployeeSidebar completato");
+      navigate("/");
+    } catch (error) {
+      console.error("Errore durante logout:", error);
+      // Forza la pulizia e redirect anche in caso di errore
+      clearAuthData();
+      navigate("/");
+    }
   };
 
   return (

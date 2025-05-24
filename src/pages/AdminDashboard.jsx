@@ -1,47 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import AdminSidebar from '../components/AdminSidebar';
-import ActiveVisits from './ActiveVisits';
-import ArchiveVisits from './ArchiveVisits';
-import AssignBadge from './AssignBadge';
-import Employee from './Employee';
-import AddVisit from './AddVisit';
+import React, { useEffect, useState } from "react";
+import AdminSidebar from "../components/AdminSidebar";
+import ActiveVisits from "./ActiveVisits";
+import ArchiveVisits from "./ArchiveVisits";
+import AssignBadge from "./AssignBadge";
+import Employee from "./Employee";
+import AddVisit from "./AddVisit";
 import "../styles/home.css";
-import AddEmployee from './AddEmployee';
-
+import AddEmployee from "./AddEmployee";
+import { useTokenValidation } from "../hooks/useTokenValidation";
 
 const AdminDashboard = () => {
-  const [activeSelector, setActiveSelector] = useState('Visite Attive');
+  const [activeSelector, setActiveSelector] = useState("Visite Attive");
+
+  // Controllo automatico validità token
+  useTokenValidation();
 
   const renderContent = () => {
     switch (activeSelector) {
-      case 'Visite Attive':
+      case "Visite Attive":
         return <ActiveVisits />;
-      case 'Archivio Visite':
+      case "Archivio Visite":
         return <ArchiveVisits />;
-      case 'Assegna Badge':
+      case "Assegna Badge":
         return <AssignBadge />;
-      case 'Aggiungi Visita':
+      case "Aggiungi Visita":
         return <AddVisit />;
-      case 'Aggiungi Dipendente':
+      case "Aggiungi Dipendente":
         return <AddEmployee />;
-      case 'Dipendenti':
+      case "Dipendenti":
         return <Employee />;
       default:
         return <div>Sezione non trovata</div>;
     }
-  }
+  };
 
   return (
-    <div className='home'>
+    <div className="home">
       <AdminSidebar
         activeSelector={activeSelector}
-        setActiveSelector={setActiveSelector} />
-      <div className="home-content">
-        {renderContent()}
-      </div>
-
+        setActiveSelector={setActiveSelector}
+      />
+      <div className="home-content">{renderContent()}</div>
     </div>
-
   );
 };
 
