@@ -419,9 +419,10 @@ const AddEmployee = () => {
                 className={errors.ruolo ? "error" : ""}
                 required
               >
+                {" "}
                 <option value="EMPLOYEE">Dipendente</option>
                 <option value="ADMIN">Amministratore</option>
-                <option value="RECEPTION">Reception</option>
+                <option value="PORTINERIA">Portineria</option>
               </select>
               {errors.ruolo && (
                 <span className="error-message">{errors.ruolo}</span>

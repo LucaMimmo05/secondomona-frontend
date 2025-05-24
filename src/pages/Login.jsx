@@ -47,9 +47,8 @@ export default function LoginPage() {
         console.log("Ruolo utente:", userRole);
 
         login(data.accessToken, userRole);
-
         if (userRole === "Admin") navigate("/admin");
-        else if (userRole === "Portineria") navigate("/reception");
+        else if (userRole === "Portineria") navigate("/portineria");
         else if (userRole === "Dipendente") navigate("/employee");
         else return navigate("/");
       } else {

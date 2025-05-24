@@ -19,7 +19,7 @@ const RequireNoAuth = ({ children }) => {
   const navigate = useNavigate();
   useEffect(() => {
     if (token && role) {
-      if (role === "Portineria") navigate("/reception", { replace: true });
+      if (role === "Portineria") navigate("/portineria", { replace: true });
       if (role === "Dipendente") navigate("/employee", { replace: true });
       if (role === "Admin") navigate("/admin", { replace: true });
     }
@@ -40,10 +40,10 @@ const App = () => (
               <Login />
             </RequireNoAuth>
           }
-        />
-        {/* Reception */}
+        />{" "}
+        {/* Portineria */}
         <Route element={<ProtectedRoute allowedRoles={["Portineria"]} />}>
-          <Route path="/reception" element={<ReceptionDashboard />} />
+          <Route path="/portineria" element={<ReceptionDashboard />} />
         </Route>
         {/* Employee */}
         <Route element={<ProtectedRoute allowedRoles={["Dipendente"]} />}>
