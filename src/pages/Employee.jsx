@@ -2,7 +2,10 @@ import React from "react";
 import "../styles/employee.css";
 import "../styles/datatable-common.css";
 import DataTable from "react-data-table-component";
+import { useEffect } from "react";
 const Employee = () => {
+
+  const [data, setData] = React.useState([]);
   const columns = [
     {
       name: "Nome",
@@ -36,43 +39,31 @@ const Employee = () => {
     },
   ];
 
-  const data = [
-    {
-      nome: "Luca",
-      cognome: "Mimmo",
-      matricola: "1",
-      azienda: "INCOM S.p.A.",
-      dataAssunzione: "15/03/2022",
-    },
-    {
-      nome: "Giulia",
-      cognome: "Rossi",
-      matricola: "2",
-      azienda: "NextGen Solutions",
-      dataAssunzione: "01/09/2021",
-    },
-    {
-      nome: "Marco",
-      cognome: "Bianchi",
-      matricola: "3",
-      azienda: "LogiTrans SRL",
-      dataAssunzione: "20/06/2020",
-    },
-    {
-      nome: "Sara",
-      cognome: "Verdi",
-      matricola: "4",
-      azienda: "INCOM S.p.A.",
-      dataAssunzione: "05/11/2019",
-    },
-    {
-      nome: "Andrea",
-      cognome: "Neri",
-      matricola: "5",
-      azienda: "NextGen Solutions",
-      dataAssunzione: "10/02/2023",
-    },
-  ];
+  useEffect(() => {
+  const fetchData = async () => {
+    const token = localStorage.getItem("accessToken") || localStorage.getItem("refreshToken");
+    try {
+      const response = await fetch("http://localhost:8080/person", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      console.log("Fetched data:", data);
+      setData(data);
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+
+  fetchData();
+}, []);
+
 
   return (
     <div className="employee">
