@@ -99,6 +99,12 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
               onClick={() => setActiveSelector("Aggiungi Visita")}
             />
             <Selector
+              icon={AddVisit}
+              text="Aggiungi Visitatore"
+              active={activeSelector === "Aggiungi Visitatore"}
+              onClick={() => setActiveSelector("Aggiungi Visitatore")}
+            />
+            <Selector
               icon={Employee}
               text="Dipendenti"
               active={activeSelector === "Dipendenti"}
@@ -290,6 +296,18 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
                   setActiveSelector("Assegna Badge");
                   setShowOffcanvas(false);
                 }}
+              />
+              <Selector
+                icon={AddVisit}
+                text="Aggiungi Visita"
+                active={activeSelector === "Aggiungi Visita"}
+                onClick={() => setActiveSelector("Aggiungi Visita")}
+              />
+              <Selector
+                icon={AddVisit}
+                text="Aggiungi Visitatore"
+                active={activeSelector === "Aggiungi Visitatori"}
+                onClick={() => setActiveSelector("Aggiungi Visitatori")}
               />
               <Selector
                 icon={Employee}

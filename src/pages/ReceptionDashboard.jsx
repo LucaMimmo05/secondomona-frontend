@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import Sidebar from "../components/ReceptionSidebar";
-import "../styles/home.css";
+import "../styles/addvisitor.css";
 import ActiveVisits from "./ActiveVisits";
 import ArchiveVisits from "./ArchiveVisits";
 import AssignBadge from "./AssignBadge";
 import Employee from "./Employee";
 import AddVisit from "./AddVisit";
+import AddVisitor from "./AddVisitor";
 import { useTokenValidation } from "../hooks/useTokenValidation";
 
 const ReceptionDashboard = () => {
@@ -24,6 +25,8 @@ const ReceptionDashboard = () => {
         return <AssignBadge />;
       case "Aggiungi Visita":
         return <AddVisit />;
+      case "Aggiungi Visitatore":
+        return <AddVisitor />;
       case "Dipendenti":
         return <Employee />;
       default:
