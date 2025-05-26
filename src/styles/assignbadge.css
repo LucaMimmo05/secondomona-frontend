@@ -1,228 +1,152 @@
-body {
-  font-family: "Inter", sans-serif;
-  background-color: #ffffff;
+/* datatable-common.css */
+/* Reset di base per le tabelle DataTable */
+.rdt_Table {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.rdt_Table:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+.rdt_TableHeader {
+  background: var(--input-bg);
+  font-weight: 600;
   color: var(--text-color);
+  animation: slideIn 0.5s ease-out;
+}
+.rdt_TableRow {
+  border-bottom: 1px solid var(--stroke);
+  position: relative;
+  overflow: hidden;
+}
+.rdt_TableRow:nth-child(odd) {
+  animation: stripeFade 1s infinite;
+}
+.rdt_TableRow:hover {
+  background: var(--dashboard-color);
+}
+.rdt_Pagination {
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: var(--subtext-color);
+  animation: fadeIn 1s;
 }
 
-/* Container */
-.badge-container, .add-visit-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #ffffff;
+/* assignbadge.css */
+
+.assign-badge-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: "Inter", sans-serif;
+  color: var(--text-color);
+  animation: fadeIn 0.8s ease-in;
 }
 
-.assign-badge-title,
-.add-visit-container h1 {
+.assign-badge-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-direction: column;
+}
+
+.assign-badge-title {
+  color: var(--text-color);
   text-align: center;
   font-size: 32px;
   font-weight: 400;
-  margin-bottom: 4rem;
+  animation: fadeIn 0.8s ease-in;
 }
 
-/* Progress Checkboxes */
-.progress-checkboxes {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px;
+.filter-results {
+  display: inline-flex;
+  align-items: center;
   background: var(--input-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  color: var(--subtext-color);
+  cursor: default;
+  user-select: none;
 }
 
-/* Hide native checkbox */
-input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
+.filter-results svg {
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  stroke: var(--subtext-color);
+  transition: transform 0.3s ease;
+}
+.filter-results:hover svg {
+  transform: rotate(20deg) scale(1.2);
 }
 
-/* Custom checkbox label */
-.checkbox-item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  background-color: rgba(255,255,255,0.8);
-  border: 1px solid transparent;
+.assign-badge-table-wrapper {
+  background: #fff;
   border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  padding: 0.5rem;
+  animation: slideUp 0.8s ease-out;
 }
 
-.checkbox-item:hover {
-  background-color: rgba(10,20,41,0.05);
-  border-color: rgba(10,20,41,0.2);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(10,20,41,0.1);
-}
-
-.checkbox-item .custom-checkbox {
-  position: relative;
-  padding-left: 32px;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text-color);
-  transition: color 0.2s ease;
-}
-
-/* Box */
-.checkbox-item .custom-checkbox::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 22px;
-  height: 22px;
-  border: 2px solid var(--border-color);
-  border-radius: 6px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: all 0.3s ease;
-}
-
-/* Checkmark */
-.checkbox-item .custom-checkbox::after {
-  content: "";
-  position: absolute;
-  left: 7px;
-  top: 50%;
-  transform: translateY(-50%) rotate(45deg) scale(0);
-  width: 6px;
-  height: 11px;
-  border-right: 2.5px solid transparent;
-  border-bottom: 2.5px solid transparent;
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-/* Hover */
-.checkbox-item:hover .custom-checkbox::before {
-  border-color: var(--primary-color);
-}
-
-.checkbox-item:hover .custom-checkbox {
-  color: var(--primary-color);
-}
-
-/* Checked */
-input[type="checkbox"]:checked + .checkbox-item .custom-checkbox::before {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  box-shadow: 0 4px 12px rgba(10,20,41,0.3);
-}
-
-input[type="checkbox"]:checked + .checkbox-item .custom-checkbox::after {
-  border-right-color: #fff;
-  border-bottom-color: #fff;
-  transform: translateY(-50%) rotate(45deg) scale(1);
-  opacity: 1;
-}
-
-input[type="checkbox"]:checked + .checkbox-item .custom-checkbox {
-  color: #fff;
-}
-
-/* Focus accessibility */
-input[type="checkbox"]:focus + .checkbox-item .custom-checkbox::before {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
-}
-
-/* Badge Table */
-.badge-table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-}
-
-.badge-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 2rem;
-}
-
-.badge-table th,
-.badge-table td {
-  padding: 12px 16px;
-  text-align: left;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.badge-table th {
-  background-color: var(--input-bg);
-  font-weight: 600;
-}
-
-.badge-table tr:hover {
-  background-color: rgba(10,20,41,0.05);
-}
-
-/* Flag Button */
+/* Badge button */
 .badge-flag-button {
-  background: rgba(255, 255, 255, 0.8);
-  border: solid var(--subtext-color);
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+  border-radius: 50%;
   cursor: pointer;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  animation: shake 2s infinite;
 }
 
 .badge-flag-button:hover {
-  background-color: rgba(10, 20, 41, 0.05);
-  border-color: rgba(10, 20, 41, 0.2);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(10, 20, 41, 0.1);
-}
-
-.badge-flag-button:active {
-  border: color var(--primary-color);
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: rgba(10, 20, 41, 0.1);
+  animation: none;
 }
 
 .badge-flag-icon {
-  width: 16px;
-  height: 16px;
-  stroke: var(--subtext-color);
-  fill: none;
-  transition: all 0.2s ease;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--primary-color);
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .badge-flag-button:hover .badge-flag-icon {
-  stroke: var(--primary-color);
+  color: var(--primary-hover);
+  transform: scale(1.3) rotate(10deg);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .assign-badge-title {
-    font-size: 24px;
-    margin-bottom: 2rem;
-  }
-  .badge-table th,
-  .badge-table td {
-    padding: 8px 12px;
-    font-size: 14px;
-  }
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@media (max-width: 480px) {
-  .assign-badge-title {
-    font-size: 20px;
-  }
-  .badge-table {
-    display: block;
-  }
-  .badge-table-wrapper {
-    padding: 0 8px;
-  }
+@keyframes slideIn {
+  from { transform: translateX(-50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  80% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@keyframes expandLine {
+  from { width: 0; }
+  to { width: 50px; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
 }

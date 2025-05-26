@@ -21,7 +21,7 @@ const AddVisitor = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Dati visitatore:", visitorData);
-    fetch("/api/visitatore", {
+    fetch("/api/persone/visitatore", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(visitorData),
