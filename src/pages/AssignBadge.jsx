@@ -48,7 +48,10 @@ const AssignBadge = () => {
       width: "100px",
       cell: (row) => (
         <button className="badge-flag-button">
-          <span className="badge-flag-icon" />
+          <svg className="badge-flag-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M4 22v-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </button>
       ),
     },

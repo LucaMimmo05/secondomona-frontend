@@ -1,257 +1,228 @@
-.badge-container {
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  box-sizing: border-box;
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #ffffff;
+  color: var(--text-color);
 }
 
-.assign-badge-title {
-  color: #1e1e1e;
+/* Container */
+.badge-container, .add-visit-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.assign-badge-title,
+.add-visit-container h1 {
   text-align: center;
   font-size: 32px;
-  font-style: normal;
   font-weight: 400;
-  line-height: normal;
   margin-bottom: 4rem;
 }
 
-.badge-header {
+/* Progress Checkboxes */
+.progress-checkboxes {
   display: flex;
-  width: 100%;
+  flex-wrap: wrap;
   justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
-.badge-title {
-  font-family: Inter, sans-serif;
-  font-size: 32px;
-  color: #1e1e1e;
+/* Hide native checkbox */
+input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
+/* Custom checkbox label */
+.checkbox-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: rgba(255,255,255,0.8);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.checkbox-item:hover {
+  background-color: rgba(10,20,41,0.05);
+  border-color: rgba(10,20,41,0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10,20,41,0.1);
+}
+
+.checkbox-item .custom-checkbox {
+  position: relative;
+  padding-left: 32px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-color);
+  transition: color 0.2s ease;
+}
+
+/* Box */
+.checkbox-item .custom-checkbox::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+/* Checkmark */
+.checkbox-item .custom-checkbox::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg) scale(0);
+  width: 6px;
+  height: 11px;
+  border-right: 2.5px solid transparent;
+  border-bottom: 2.5px solid transparent;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+/* Hover */
+.checkbox-item:hover .custom-checkbox::before {
+  border-color: var(--primary-color);
+}
+
+.checkbox-item:hover .custom-checkbox {
+  color: var(--primary-color);
+}
+
+/* Checked */
+input[type="checkbox"]:checked + .checkbox-item .custom-checkbox::before {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(10,20,41,0.3);
+}
+
+input[type="checkbox"]:checked + .checkbox-item .custom-checkbox::after {
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+  transform: translateY(-50%) rotate(45deg) scale(1);
+  opacity: 1;
+}
+
+input[type="checkbox"]:checked + .checkbox-item .custom-checkbox {
+  color: #fff;
+}
+
+/* Focus accessibility */
+input[type="checkbox"]:focus + .checkbox-item .custom-checkbox::before {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Badge Table */
 .badge-table-wrapper {
   width: 100%;
+  overflow-x: auto;
 }
 
 .badge-table {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
   width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
 }
 
-.badge-row {
-  display: flex;
-  align-items: center;
-  width: 100%;
+.badge-table th,
+.badge-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.header-row {
-  gap: 10px;
-  padding: 10px;
-}
-
-.columns-row {
-  gap: 25px;
-  width: 100%;
-  padding: 10px;
-  border-bottom: 1px solid #e2e2e2;
-}
-
-.data-row {
-  justify-content: space-between;
-  padding: 20px;
-  border: 1px solid #e2e2e2;
-  border-radius: 4px;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
-}
-
-.badge-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-}
-
-.date-cell,
-.time-cell,
-.duration-cell,
-.status-cell,
-.guest-cell,
-.employee-cell {
-  font-family: Inter, sans-serif;
-  font-size: 16px;
-  color: var(--text-color);
-}
-
-.icon-cell {
-  width: 20px;
-  height: 20px;
-  background-image: url("../assets/images/your-icon.svg"); /* aggiungi qui la tua icona */
-  background-size: cover;
-  background-position: center;
-}
-
-.badge-id-cell {
-  /* rimane vuota qui, contiene il button con flag */
-  width: 20px;
-}
-
-.badge-separator {
-  width: 1px;
-  height: 20px;
+.badge-table th {
   background-color: var(--input-bg);
+  font-weight: 600;
 }
 
-.badge-data-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 20px;
-  border: 1px solid var(--input-bg);
-  border-radius: 4px;
-  background-color: var(--input-bg);
+.badge-table tr:hover {
+  background-color: rgba(10,20,41,0.05);
 }
 
-.badge-data-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.badge-label {
-  font-family: Inter, sans-serif;
-  font-size: 14px;
-  color: var(--subtext-color);
-  flex: 0 0 150px;
-}
-
-.badge-value {
-  font-family: Inter, sans-serif;
-  font-size: 16px;
-  color: var(--text-color);
-  flex: 1;
-}
-
-/* Pulsante flag cliccabile */
+/* Flag Button */
 .badge-flag-button {
-  background: none;
-  border: none;
-  padding: 0;
+  background: rgba(255, 255, 255, 0.8);
+  border: solid var(--subtext-color);
   cursor: pointer;
-  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  transition: transform 0.1s ease, opacity 0.1s ease;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .badge-flag-button:hover {
-  opacity: 0.8;
-  transform: scale(1.1);
-  width: 24px;
-  height: 24px;
+  background-color: rgba(10, 20, 41, 0.05);
+  border-color: rgba(10, 20, 41, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10, 20, 41, 0.1);
+}
+
+.badge-flag-button:active {
+  border: color var(--primary-color);
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .badge-flag-icon {
-  width: 100%;
-  height: 100%;
-  display: block;
-  border: solid var(--subtext-color);
-  color: var(--text-color);
+  width: 16px;
+  height: 16px;
+  stroke: var(--subtext-color);
+  fill: none;
+  transition: all 0.2s ease;
 }
 
-/* Base: già definito sopra */
-
-/* Tablet e piccoli desktop */
-@media (max-width: 1024px) {
-  .badge-container {
-    padding: 0 16px;
-  }
-  .badge-title {
-    font-size: 28px;
-  }
-  .badge-table-wrapper {
-    overflow-x: auto;
-  }
+.badge-flag-button:hover .badge-flag-icon {
+  stroke: var(--primary-color);
 }
 
-/* Schermi medi (fino a 768px) */
+/* Responsive */
 @media (max-width: 768px) {
-  .badge-container .rdt_Table {
-    font-size: 12px;
-    border-radius: 0;
-  }
-  .badge-container .rdt_TableHeadRow,
-  .badge-container .rdt_TableRow {
-    font-size: 12px;
-  }
-  .badge-container .rdt_TableCell {
-    padding: 6px 4px;
-  }
-
-  .badge-table {
-    /* Trasformiamo la “tabella” in una lista flessibile */
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .columns-row {
-    display: none; /* Nascondi intestazioni “righe” */
-  }
-
-  .data-row {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 12px;
-  }
-
-  .badge-cell {
-    width: 100%;
-    justify-content: flex-start;
-    margin-bottom: 8px;
-  }
-
-  .badge-flag-button {
-    align-self: flex-end;
-  }
-
   .assign-badge-title {
-    margin-top: 4rem;
+    font-size: 24px;
+    margin-bottom: 2rem;
+  }
+  .badge-table th,
+  .badge-table td {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .assign-badge-title {
     font-size: 20px;
   }
-}
-
-/* Mobile stretto (fino a 480px) */
-@media (max-width: 480px) {
-  .badge-header {
+  .badge-table {
+    display: block;
+  }
+  .badge-table-wrapper {
     padding: 0 8px;
-  }
-
-  .badge-title {
-    font-size: 24px;
-  }
-
-  .data-row {
-    padding: 10px;
-  }
-
-  .badge-data-list {
-    padding: 12px;
-    gap: 8px;
-  }
-
-  .badge-label {
-    font-size: 12px;
-  }
-
-  .badge-value {
-    font-size: 14px;
   }
 }
