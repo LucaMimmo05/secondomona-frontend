@@ -4,66 +4,88 @@ import "../styles/datatable-common.css";
 import DataTable from "react-data-table-component";
 import { useEffect } from "react";
 const Employee = () => {
-
   const [data, setData] = React.useState([]);
   const columns = [
+    {
+      name: "ID",
+      selector: (row) => row.idPersona,
+      sortable: true,
+      grow: 1,
+      center: true,
+    },
     {
       name: "Nome",
       selector: (row) => row.nome,
       sortable: true,
-      width: "130px",
+      grow: 2,
+      center: true,
     },
     {
       name: "Cognome",
       selector: (row) => row.cognome,
       sortable: true,
-      width: "130px",
+      grow: 2,
+      center: true,
     },
     {
-      name: "Matricola",
-      selector: (row) => row.matricola,
+      name: "Diminutivo",
+      selector: (row) => row.diminutivo,
       sortable: true,
-      width: "100px",
+      grow: 1.5,
+      center: true,
     },
     {
-      name: "Azienda",
-      selector: (row) => row.azienda,
+      name: "ID Runa",
+      selector: (row) => row.idRuna,
       sortable: true,
-      width: "200px",
+      grow: 1,
+      center: true,
     },
     {
-      name: "Data Assunzione",
-      selector: (row) => row.dataAssunzione,
+      name: "Email",
+      selector: (row) => row.mail || "N/A",
       sortable: true,
-      width: "140px",
+      grow: 3,
+      center: true,
+    },
+    {
+      name: "Ruolo",
+      selector: (row) => row.ruolo || "N/A",
+      sortable: true,
+      grow: 2,
+      center: true,
     },
   ];
 
   useEffect(() => {
-  const fetchData = async () => {
-    const token = localStorage.getItem("accessToken") || localStorage.getItem("refreshToken");
-    try {
-      const response = await fetch("http://localhost:8080/person", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+    const fetchData = async () => {
+      const token =
+        localStorage.getItem("accessToken") ||
+        localStorage.getItem("refreshToken");
+      try {
+        const response = await fetch(
+          "http://localhost:8080/api/persone/dipendenti",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        console.log("Fetched data:", data);
+        setData(data);
+      } catch (error) {
+        console.error("Fetch error:", error);
       }
-      const data = await response.json();
-      console.log("Fetched data:", data);
-      setData(data);
-    } catch (error) {
-      console.error("Fetch error:", error);
-    }
-  };
+    };
 
-  fetchData();
-}, []);
-
+    fetchData();
+  }, []);
 
   return (
     <div className="employee">

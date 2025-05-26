@@ -44,9 +44,8 @@ export default function LoginPage() {
 
         const groups = decodedToken?.groups || [];
         const userRole = groups.find((g) => g !== "access-token") || null;
-        console.log("Ruolo utente:", userRole);
 
-        login(data.accessToken, userRole);
+        login(data.accessToken);
         if (userRole === "Admin") navigate("/admin");
         else if (userRole === "Portineria") navigate("/portineria");
         else if (userRole === "Dipendente") navigate("/employee");

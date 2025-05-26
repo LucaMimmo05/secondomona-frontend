@@ -8,14 +8,10 @@ export const AuthProvider = ({ children }) => {
     () => localStorage.getItem("accessToken") || localStorage.getItem("token")
   );
 
-  // Il ruolo viene sempre estratto dal token, non dal localStorage
   const role = token ? getRoleFromToken(token) : null;
-  const login = (jwt, userRole) => {
-    // Salva solo il token, il ruolo viene estratto dal token stesso
+  const login = (jwt) => {
     localStorage.setItem("accessToken", jwt);
     localStorage.setItem("token", jwt);
-    // NON salviamo più il role nel localStorage per sicurezza
-    // Il ruolo viene sempre estratto dal token JWT
     setToken(jwt);
     console.log(
       "Login completato - ruolo estratto dal token:",
@@ -24,7 +20,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    // Rimuovi TUTTI i dati dell'utente dal localStorage
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("token");
@@ -32,15 +27,15 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("name");
     localStorage.removeItem("surname");
 
-    // Reset dello stato
+  
     setToken(null);
-    // Il role viene automaticamente resettato perché dipende dal token
+  
 
     console.log("Logout completato - localStorage pulito");
   };
 
   useEffect(() => {
-    // Controlla solo il token, il ruolo viene estratto automaticamente
+    
     const storedToken =
       localStorage.getItem("accessToken") || localStorage.getItem("token");
 
