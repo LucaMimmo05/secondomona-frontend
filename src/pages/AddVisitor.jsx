@@ -21,7 +21,7 @@ const AddVisitor = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Dati visitatore:", visitorData);
-    fetch("/api/persone/visitatore", {
+    fetch("http://localhost:8080/api/visitatori", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(visitorData),
