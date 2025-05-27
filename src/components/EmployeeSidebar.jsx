@@ -3,6 +3,7 @@ import Selector from "./Selector";
 import VisiteIcon from "../assets/Visit";
 import AssignBadgeIcon from "../assets/AssignBadge";
 import ClockIcon from "../assets/Clock";
+import TicketIcon from "../assets/ticket";
 import LogoutIcon from "../assets/Logout";
 import "../styles/employeesidebar.css";
 import AddVisit from "../assets/AddVisit";
@@ -100,7 +101,7 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
                             onClick={() => setActiveSelector("Aggiungi Visita")}
                         />{" "}
                         <Selector
-                            icon={ClockIcon}
+                            icon={TicketIcon}
                             text="Timbrature"
                             active={activeSelector === "Timbrature"}
                             onClick={() => setActiveSelector("Timbrature")}
