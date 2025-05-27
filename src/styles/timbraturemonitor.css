@@ -140,22 +140,26 @@
 
 /* Status Badges */
 .status-badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 4px 12px;
-    border-radius: 12px;
+    border-radius: 6px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     text-transform: uppercase;
+    min-width: 100px;
 }
 
 .status-badge.entrata {
     background-color: #d4edda;
-    color: #155724;
+    color: #28a745;
     border: 1px solid #c3e6cb;
 }
 
 .status-badge.uscita {
     background-color: #f8d7da;
-    color: #721c24;
+    color: #e8051b;
     border: 1px solid #f5c6cb;
 }
 
