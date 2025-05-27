@@ -8,6 +8,7 @@ import Employee from "./Employee";
 import AddVisit from "./AddVisit";
 import AddVisitor from "./AddVisitor";
 import TimbratureMonitor from "./TimbratureMonitor";
+import TimeTracking from "./TimeTracking";
 import { useTokenValidation } from "../hooks/useTokenValidation";
 
 const ReceptionDashboard = () => {
@@ -29,7 +30,9 @@ const ReceptionDashboard = () => {
         return <AddVisitor />;
       case "Dipendenti":
         return <Employee />;
-      case "Monitoraggio Timbrature":
+      case "Timbrature":
+        return <TimeTracking />;
+      case "Monitora Timbrature":
         return <TimbratureMonitor />;
       default:
         return <div>Sezione non trovata</div>;

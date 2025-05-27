@@ -19,7 +19,8 @@ const AssignBadge = () => {
       return;
     }
 
-    fetch("http://localhost:8080/api/terminate", {
+    // Fetch delle visite non ancora avvenute
+    fetch("http://localhost:8080/api/visite", {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -47,17 +48,18 @@ const AssignBadge = () => {
       return;
     }
 
-    fetch(`http://localhost:8080/api/assegna/badge/${visit.id}`, {
+    fetch("http://localhost:8080/api/badge/assegna", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({ idVisita: visit.id }),
     })
       .then((res) => {
         if (res.ok) {
           alert("Badge assegnato con successo!");
-          // Aggiorna lista visite
+          // Aggiorna lista visite rimuovendo quella assegnata
           setVisits((prev) => prev.filter((v) => v.id !== visit.id));
         } else if (res.status === 401) {
           navigate("/login");
@@ -131,7 +133,7 @@ const AssignBadge = () => {
             strokeLinejoin="round"
           />
         </svg>
-        <p>Visite Attive</p>
+        <p>Visite in attesa</p>
       </div>
       <div className="assign-badge-table-wrapper">
         <DataTable
