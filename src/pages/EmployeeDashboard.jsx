@@ -5,6 +5,7 @@ import AddVisit from "./AddVisit";
 import TimeTracking from "./TimeTracking";
 import "../styles/home.css";
 import { useTokenValidation } from "../hooks/useTokenValidation";
+import TimbratureMonitor from "./TimbratureMonitor";
 
 const EmployeeDashboard = () => {
   const [activeSelector, setActiveSelector] = useState("Visite Attive");

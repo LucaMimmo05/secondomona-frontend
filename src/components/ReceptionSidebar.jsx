@@ -118,6 +118,18 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
                             active={activeSelector === "Dipendenti"}
                             onClick={() => setActiveSelector("Dipendenti")}
                         />
+                        <Selector
+                            icon={ClockIcon}
+                            text="Timbrature"
+                            active={activeSelector === "Timbrature"}
+                            onClick={() => setActiveSelector("Timbrature")}
+                        />
+                        <Selector
+                            icon={ClockIcon}
+                            text="Monitora Timbrature"
+                            active={activeSelector === "Monitora Timbrature"}
+                            onClick={() => setActiveSelector("Monitora Timbrature")}
+                        />
                     </div>
                     <div className="mt-auto">
                         <Selector
