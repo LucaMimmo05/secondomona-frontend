@@ -1,143 +1,160 @@
 /* datatable-common.css */
 /* Reset di base per le tabelle DataTable */
 .rdt_Table {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .rdt_Table:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 .rdt_TableHeader {
-  background: var(--input-bg);
-  font-weight: 600;
-  color: var(--text-color);
-  animation: slideIn 0.5s ease-out;
+    background: var(--input-bg);
+    font-weight: 600;
+    color: var(--text-color);
+    animation: slideIn 0.5s ease-out;
 }
 .rdt_TableRow {
-  border-bottom: 1px solid var(--stroke);
-  position: relative;
-  overflow: hidden;
+    border-bottom: 1px solid var(--stroke);
+    position: relative;
+    overflow: hidden;
 }
 .rdt_TableRow:nth-child(odd) {
-  animation: stripeFade 1s infinite;
+    animation: stripeFade 1s infinite;
 }
 .rdt_TableRow:hover {
-  background: var(--dashboard-color);
+    background: var(--dashboard-color);
 }
 .rdt_Pagination {
-  padding: 1rem;
-  font-size: 0.9rem;
-  color: var(--subtext-color);
-  animation: fadeIn 1s;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: var(--subtext-color);
+    animation: fadeIn 1s;
 }
 
 /* assignbadge.css */
 
 .assign-badge-container {
-  max-width: 1000px;
-  margin: 2rem auto;
-  padding: 1rem;
-  font-family: "Inter", sans-serif;
-  color: var(--text-color);
-  animation: fadeIn 0.8s ease-in;
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1rem;
+    font-family: "Inter", sans-serif;
+    color: var(--text-color);
+    animation: fadeIn 0.8s ease-in;
 }
 
 .assign-badge-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1.5rem;
-  flex-direction: column;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-direction: column;
 }
 
 .assign-badge-title {
-  color: var(--text-color);
-  text-align: center;
-  font-size: 32px;
-  font-weight: 400;
-  animation: fadeIn 0.8s ease-in;
-}
-
-.filter-results {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.95rem;
-  color: var(--subtext-color);
-  cursor: default;
-  user-select: none;
+    color: var(--text-color);
+    text-align: center;
+    font-size: 32px;
+    font-weight: 400;
+    animation: fadeIn 0.8s ease-in;
 }
 
 .filter-results svg {
-  margin-right: 0.5rem;
-  width: 1rem;
-  height: 1rem;
-  stroke: var(--subtext-color);
-  transition: transform 0.3s ease;
+    margin-right: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+    stroke: var(--subtext-color);
+    transition: transform 0.3s ease;
 }
 .filter-results:hover svg {
-  transform: rotate(20deg) scale(1.2);
+    transform: rotate(20deg) scale(1.1);
 }
 
 .assign-badge-table-wrapper {
-  background: #fff;
-  border-radius: 8px;
-  padding: 0.5rem;
-  animation: slideUp 0.8s ease-out;
+    background: #fff;
+    border-radius: 8px;
+    padding: 0.5rem;
+    animation: slideUp 0.8s ease-out;
 }
 
 /* Badge button */
 .badge-flag-button {
-  background: transparent;
-  border: none;
-  padding: 0.25rem;
-  border-radius: 50%;
-  cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 0.25rem;
+    border-radius: 50%;
+    cursor: pointer;
 }
 
 .badge-flag-button:hover {
-  background: rgba(10, 20, 41, 0.1);
-  animation: none;
+    background: rgba(10, 20, 41, 0.1);
+    animation: none;
 }
 
 .badge-flag-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--primary-color);
-  transition: color 0.2s ease, transform 0.2s ease;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--primary-color);
+    transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .badge-flag-button:hover .badge-flag-icon {
-  color: var(--primary-hover);
-  transform: scale(1.3) rotate(10deg);
+    color: var(--primary-hover);
+    transform: scale(1.3) rotate(10deg);
 }
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes slideIn {
-  from { transform: translateX(-50px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+    from {
+        transform: translateX(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 @keyframes slideUp {
-  from { transform: translateY(50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 @keyframes popIn {
-  0% { transform: scale(0.8); opacity: 0; }
-  80% { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); }
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    80% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 @keyframes expandLine {
-  from { width: 0; }
-  to { width: 50px; }
+    from {
+        width: 0;
+    }
+    to {
+        width: 50px;
+    }
 }

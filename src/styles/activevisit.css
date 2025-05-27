@@ -83,7 +83,7 @@
 .filter-results {
     display: flex;
     padding: 10px 0;
-    gap: 10px;
+    gap: 0;
     align-items: center;
     animation: fadeIn 1s 0.4s both;
 }
