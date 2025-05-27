@@ -10,6 +10,8 @@ import Login from "./pages/Login";
 import ReceptionDashboard from "./pages/ReceptionDashboard";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import TimeTracking from "./pages/TimeTracking";
+import TimbratureMonitor from "./pages/TimbratureMonitor";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -44,10 +46,15 @@ const App = () => (
         {/* Portineria */}
         <Route element={<ProtectedRoute allowedRoles={["Portineria"]} />}>
           <Route path="/portineria" element={<ReceptionDashboard />} />
+          <Route
+            path="/portineria/timbrature"
+            element={<TimbratureMonitor />}
+          />
         </Route>
         {/* Employee */}
         <Route element={<ProtectedRoute allowedRoles={["Dipendente"]} />}>
           <Route path="/employee" element={<EmployeeDashboard />} />
+          <Route path="/employee/timbrature" element={<TimeTracking />} />
         </Route>
         {/* Admin */}
         <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>

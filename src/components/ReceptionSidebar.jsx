@@ -4,6 +4,7 @@ import VisiteIcon from "../assets/Visit";
 import ArchivioIcon from "../assets/Archive";
 import AssignBadge from "../assets/AssignBadge";
 import Employee from "../assets/Employee";
+import ClockIcon from "../assets/Clock";
 import Logout from "../assets/Logout";
 import AddVisit from "../assets/AddVisit";
 import { useNavigate } from "react-router-dom";
@@ -103,12 +104,18 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
               text="Aggiungi Visitatore"
               active={activeSelector === "Aggiungi Visitatore"}
               onClick={() => setActiveSelector("Aggiungi Visitatore")}
-            />
+            />{" "}
             <Selector
               icon={Employee}
               text="Dipendenti"
               active={activeSelector === "Dipendenti"}
               onClick={() => setActiveSelector("Dipendenti")}
+            />
+            <Selector
+              icon={ClockIcon}
+              text="Monitoraggio Timbrature"
+              active={activeSelector === "Monitoraggio Timbrature"}
+              onClick={() => setActiveSelector("Monitoraggio Timbrature")}
             />
           </div>
           <div className="mt-auto">
@@ -308,13 +315,22 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
                 text="Aggiungi Visitatore"
                 active={activeSelector === "Aggiungi Visitatori"}
                 onClick={() => setActiveSelector("Aggiungi Visitatori")}
-              />
+              />{" "}
               <Selector
                 icon={Employee}
                 text="Dipendenti"
                 active={activeSelector === "Dipendenti"}
                 onClick={() => {
                   setActiveSelector("Dipendenti");
+                  setShowOffcanvas(false);
+                }}
+              />
+              <Selector
+                icon={ClockIcon}
+                text="Timbrature"
+                active={activeSelector === "Monitoraggio Timbrature"}
+                onClick={() => {
+                  setActiveSelector("Monitoraggio Timbrature");
                   setShowOffcanvas(false);
                 }}
               />

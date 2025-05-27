@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Selector from "./Selector";
 import VisiteIcon from "../assets/Visit";
 import AssignBadgeIcon from "../assets/AssignBadge";
+import ClockIcon from "../assets/Clock";
 import LogoutIcon from "../assets/Logout";
 import "../styles/employeesidebar.css";
 import { useNavigate } from "react-router-dom";
@@ -79,7 +80,7 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
               <small className="text-muted">Dipendente</small>
             </div>
           </div>
-          <hr />
+          <hr />{" "}
           <div className="flex-grow-1 d-flex flex-column gap-2">
             <Selector
               icon={VisiteIcon}
@@ -92,6 +93,12 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
               text="Aggiungi Visita"
               active={activeSelector === "Aggiungi Visita"}
               onClick={() => setActiveSelector("Aggiungi Visita")}
+            />
+            <Selector
+              icon={AssignBadgeIcon}
+              text="Timbrature"
+              active={activeSelector === "Timbrature"}
+              onClick={() => setActiveSelector("Timbrature")}
             />
           </div>
           <div className="mt-auto">
@@ -258,13 +265,22 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
                   setActiveSelector("Visite Attive");
                   setShowOffcanvas(false);
                 }}
-              />
+              />{" "}
               <Selector
                 icon={AssignBadgeIcon}
                 text="Aggiungi Visita"
                 active={activeSelector === "Aggiungi Visita" ? true : undefined}
                 onClick={() => {
                   setActiveSelector("Aggiungi Visita");
+                  setShowOffcanvas(false);
+                }}
+              />
+              <Selector
+                icon={ClockIcon}
+                text="Timbrature"
+                active={activeSelector === "Timbrature" ? true : undefined}
+                onClick={() => {
+                  setActiveSelector("Timbrature");
                   setShowOffcanvas(false);
                 }}
               />

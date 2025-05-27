@@ -7,6 +7,7 @@ import AssignBadge from "./AssignBadge";
 import Employee from "./Employee";
 import AddVisit from "./AddVisit";
 import AddVisitor from "./AddVisitor";
+import TimbratureMonitor from "./TimbratureMonitor";
 import { useTokenValidation } from "../hooks/useTokenValidation";
 
 const ReceptionDashboard = () => {
@@ -14,7 +15,6 @@ const ReceptionDashboard = () => {
 
   // Controllo automatico validità token
   useTokenValidation();
-
   const renderContent = () => {
     switch (activeSelector) {
       case "Visite Attive":
@@ -29,6 +29,8 @@ const ReceptionDashboard = () => {
         return <AddVisitor />;
       case "Dipendenti":
         return <Employee />;
+      case "Monitoraggio Timbrature":
+        return <TimbratureMonitor />;
       default:
         return <div>Sezione non trovata</div>;
     }
