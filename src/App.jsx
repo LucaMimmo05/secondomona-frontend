@@ -1,31 +1,69 @@
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
+  useNavigate,
 } from "react-router-dom";
-import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import React from 'react';
+import ReceptionDashboard from "./pages/ReceptionDashboard";
+import EmployeeDashboard from "./pages/EmployeeDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import TimeTracking from "./pages/TimeTracking";
+import TimbratureMonitor from "./pages/TimbratureMonitor";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-const Layout = () => {
-  return (
-    <Routes>
-      <Route path="/login" element={<Login />} />       
-      <Route path="/" element={<Home />} />      
-      <Route path="/dashboard" element={<Dashboard />} /> 
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  );
+// Component to prevent access to login if already authenticated
+const RequireNoAuth = ({ children }) => {
+  const { token, role } = useAuth() || {};
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (token && role) {
+      if (role === "Portineria") navigate("/portineria", { replace: true });
+      if (role === "Dipendente") navigate("/employee", { replace: true });
+      if (role === "Admin") navigate("/admin", { replace: true });
+    }
+  }, [token, role, navigate]);
+
+  // Se non loggato, mostra la login
+  return !(token && role) ? children : null;
 };
 
-const App = () => {
-  return (
+const App = () => (
+  <AuthProvider>
     <Router>
-      <Layout />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <RequireNoAuth>
+              <Login />
+            </RequireNoAuth>
+          }
+        />{" "}
+        {/* Portineria */}
+        <Route element={<ProtectedRoute allowedRoles={["Portineria"]} />}>
+          <Route path="/portineria" element={<ReceptionDashboard />} />
+          <Route
+            path="/portineria/timbrature"
+            element={<TimbratureMonitor />}
+          />
+        </Route>
+        {/* Employee */}
+        <Route element={<ProtectedRoute allowedRoles={["Dipendente"]} />}>
+          <Route path="/employee" element={<EmployeeDashboard />} />
+          <Route path="/employee/timbrature" element={<TimeTracking />} />
+        </Route>
+        {/* Admin */}
+        <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </Router>
-  );
-};
+  </AuthProvider>
+);
 
 export default App;

@@ -1,32 +1,75 @@
-'use client';
-
-import { useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import '../styles/login.css';
+import { useAuth } from "../context/AuthContext"; // adjust path as needed
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import "../styles/login.css";
+import { toast, ToastContainer } from "react-toastify";
+import { parseJwt } from "../utils/parseJwt";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (!username.trim() || !password.trim()) {
-      toast.error('Per favore compila tutti i campi.');
+    if (!email || !password) {
+      toast.error("Compila tutti i campi");
       return;
     }
-    setLoading(true);
+
     try {
-      await new Promise((res) => setTimeout(res, 1500));
-      if (username === 'admin' && password === 'password') {
-        toast.success('Login avvenuto con successo!');
-        // Redirigi o salva token
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      console.log("Risposta login:", data);
+      if (response.ok && data) {
+        toast.success("Accesso effettuato con successo");
+        const decodedToken = parseJwt(data.accessToken);
+        console.log("Token decodificato:", decodedToken);
+
+        // Salva i dati utente
+        localStorage.setItem("name", decodedToken?.name);
+        localStorage.setItem("surname", decodedToken?.surname);
+
+        // Salva l'ID della persona per le timbrature
+        if (decodedToken?.idPersona) {
+          localStorage.setItem("idPersona", decodedToken.idPersona.toString());
+        } else if (decodedToken?.userId) {
+          localStorage.setItem("idPersona", decodedToken.userId.toString());
+        } else if (decodedToken?.sub) {
+          // Spesso l'ID utente è nel campo 'sub' (subject)
+          localStorage.setItem("idPersona", decodedToken.sub.toString());
+        }
+
+        // Se presente, salva anche l'ID tessera specifico
+        if (decodedToken?.idTessera) {
+          localStorage.setItem("idTessera", decodedToken.idTessera.toString());
+        }
+
+        // Salva sia accessToken che refreshToken
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+
+        const groups = decodedToken?.groups || [];
+        const userRole = groups.find((g) => g !== "access-token") || null;
+
+        login(data.accessToken);
+        if (userRole === "Admin") navigate("/admin");
+        else if (userRole === "Portineria") navigate("/portineria");
+        else if (userRole === "Dipendente") navigate("/employee");
+        else return navigate("/");
       } else {
-        toast.error('Credenziali non valide.');
+        toast.error("Credenziali errate o token mancante");
       }
     } catch (error) {
-      toast.error('Si è verificato un errore. Riprova più tardi.');
+      console.error("Errore durante il login:", error);
+      toast.error("Errore di connessione al server");
     } finally {
       setLoading(false);
     }
@@ -34,27 +77,38 @@ export default function LoginPage() {
 
   return (
     <div className="mainContainer">
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
-      <div className="formContainer">
-      <img
-        src="src\assets\logo-blu.jpg"
-        alt="Logo"
-        width="180"
-        height="127"
-        className="logo"
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar
+        closeOnClick
+        draggable
+        className="toastContainer"
+        toastClassName="customToast"
+        bodyClassName="toastBody"
+        closeButton={false}
       />
 
-        <form onSubmit={handleSubmit} className="loginForm">
+      <div className="formContainer">
+        <img
+          src="src\assets\logo-blu.jpg"
+          alt="Logo"
+          width="180"
+          height="127"
+          className="logo"
+        />
+
+        <form onSubmit={handleLogin} className="loginForm">
           <div className="inputGroup">
             <label htmlFor="username" className="inputLabel">
               Email
             </label>
             <input
-              id="username"
-              type="text"
+              id="email"
+              type="email"
               className="inputField"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
             />
           </div>
@@ -73,12 +127,8 @@ export default function LoginPage() {
             />
           </div>
 
-          <button
-            type="submit"
-            className="loginButton"
-            disabled={loading}
-          >
-            {loading ? 'Caricamento...' : 'Accedi'}
+          <button type="submit" className="loginButton" disabled={loading}>
+            {loading ? "Caricamento..." : "Accedi"}
           </button>
         </form>
       </div>

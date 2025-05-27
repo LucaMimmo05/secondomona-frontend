@@ -1,3 +1,5 @@
-#root, body {
-    height: 100vh;
+#root,
+body {
+  height: 100vh;
+  overflow: hidden;
 }

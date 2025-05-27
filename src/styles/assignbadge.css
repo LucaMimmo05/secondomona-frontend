@@ -1,0 +1,155 @@
+/* datatable-common.css */
+/* Reset di base per le tabelle DataTable */
+.rdt_Table {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.rdt_Table:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+.rdt_TableHeader {
+    background: var(--input-bg);
+    font-weight: 600;
+    color: var(--text-color);
+    animation: slideIn 0.5s ease-out;
+}
+.rdt_TableRow {
+    border-bottom: 1px solid var(--stroke);
+    position: relative;
+    overflow: hidden;
+}
+.rdt_TableRow:nth-child(odd) {
+    animation: stripeFade 1s infinite;
+}
+.rdt_TableRow:hover {
+    background: var(--dashboard-color);
+}
+.rdt_Pagination {
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: var(--subtext-color);
+    animation: fadeIn 1s;
+}
+
+/* assignbadge.css */
+
+.assign-badge-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1rem;
+    font-family: "Inter", sans-serif;
+    color: var(--text-color);
+    animation: fadeIn 0.8s ease-in;
+}
+
+.assign-badge-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-direction: column;
+}
+
+.assign-badge-title {
+    color: var(--text-color);
+    text-align: center;
+    font-size: 32px;
+    font-weight: 400;
+    animation: fadeIn 0.8s ease-in;
+}
+
+.filter-results svg {
+    margin-right: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+    stroke: var(--subtext-color);
+    transition: transform 0.3s ease;
+}
+.filter-results:hover svg {
+    transform: rotate(20deg) scale(1.1);
+}
+
+.assign-badge-table-wrapper {
+    background: #fff;
+    border-radius: 8px;
+    padding: 0.5rem;
+    animation: slideUp 0.8s ease-out;
+}
+
+/* Badge button */
+.badge-flag-button {
+    background: transparent;
+    border: none;
+    padding: 0.25rem;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.badge-flag-icon {
+    width: 1rem;
+    height: 1rem;
+    color: var(--primary-color);
+    transition: 0.2s all;
+}
+
+.badge-flag-button:hover .badge-flag-icon {
+    color: var(--primary-hover);
+    transform: scale(1.4);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    80% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes expandLine {
+    from {
+        width: 0;
+    }
+    to {
+        width: 50px;
+    }
+}

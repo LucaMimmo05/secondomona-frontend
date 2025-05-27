@@ -2,43 +2,37 @@ import React, { useState } from "react";
 import EmployeeSidebar from "../components/EmployeeSidebar";
 import ActiveVisits from "./ActiveVisits";
 import AddVisit from "./AddVisit";
+import TimeTracking from "./TimeTracking";
 import "../styles/home.css";
+import { useTokenValidation } from "../hooks/useTokenValidation";
+import TimbratureMonitor from "./TimbratureMonitor";
 
 const EmployeeDashboard = () => {
   const [activeSelector, setActiveSelector] = useState("Visite Attive");
 
+  // Controllo automatico validità token
+  useTokenValidation();
   const renderContent = () => {
     switch (activeSelector) {
       case "Visite Attive":
         return <ActiveVisits />;
       case "Aggiungi Visita":
         return <AddVisit />;
+      case "Timbrature":
+        return <TimeTracking />;
       default:
         return <div>Sezione non trovata</div>;
     }
   };
 
   return (
-    <div className="employee-dashboard d-flex" style={{ height: "100vh" }}>
+    <div className="home">
       <EmployeeSidebar
         activeSelector={activeSelector}
         setActiveSelector={setActiveSelector}
       />
-        <main
-        className="dashboard-content"
-        style={{
-            flex: "1 1 0",
-            minWidth: 0,
-            minHeight: 0,
-            width: "100%",
-            padding: "60px 69px 0 69px",
-            boxSizing: "border-box",
-            overflow: "auto",
-        }}
-        >
-        {renderContent()}
-        </main>
 
+      <div className="home-content">{renderContent()}</div>
     </div>
   );
 };

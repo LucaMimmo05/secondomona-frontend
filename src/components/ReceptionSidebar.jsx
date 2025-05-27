@@ -1,49 +1,42 @@
 import React, { useState, useEffect } from "react";
 import Selector from "./Selector";
 import VisiteIcon from "../assets/Visit";
-import AssignBadgeIcon from "../assets/AssignBadge";
+import ArchivioIcon from "../assets/Archive";
+import AssignBadge from "../assets/AssignBadge";
+import Employee from "../assets/Employee";
 import ClockIcon from "../assets/Clock";
 import TicketIcon from "../assets/ticket";
-import LogoutIcon from "../assets/Logout";
-import "../styles/employeesidebar.css";
+import Logout from "../assets/Logout";
 import AddVisit from "../assets/AddVisit";
+import AddVisitor from "../assets/AddVisitor";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { clearAuthData } from "../utils/apiUtils";
 
-const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
+const Sidebar = ({ activeSelector, setActiveSelector }) => {
     const [showOffcanvas, setShowOffcanvas] = useState(false);
-    const [isDesktop, setIsDesktop] = useState(
-        typeof window !== "undefined" && window.innerWidth >= 992
-    );
-    const { logout } = useAuth();
-    const navigate = useNavigate();
+    const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
     const [name, setName] = useState("");
     const [surname, setSurname] = useState("");
+    const { logout } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         setName(localStorage.getItem("name"));
         setSurname(localStorage.getItem("surname"));
         const handleResize = () => {
-            setIsDesktop(window.innerWidth >= 992);
-            if (window.innerWidth >= 992) setShowOffcanvas(false);
+            setIsDesktop(window.innerWidth >= 768);
+            if (window.innerWidth >= 768) setShowOffcanvas(false);
         };
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
-
-    useEffect(() => {
-        document.body.style.overflow = showOffcanvas ? "hidden" : "";
-        return () => {
-            document.body.style.overflow = "";
-        };
-    }, [showOffcanvas]);
     const handleLogout = () => {
         try {
             // Pulisci anche con la utility per essere sicuri
             clearAuthData();
             logout();
-            console.log("Logout EmployeeSidebar completato");
+            console.log("Logout ReceptionSidebar completato");
             navigate("/");
         } catch (error) {
             console.error("Errore durante logout:", error);
@@ -58,7 +51,7 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
             {/* Sidebar desktop */}
             {isDesktop && (
                 <aside
-                    className="d-none d-lg-flex flex-column bg-light p-4 vh-100"
+                    className="d-none d-md-flex flex-column bg-light p-4 vh-100"
                     style={{ width: "300px" }}
                 >
                     <div className="d-flex justify-content-center mb-4">
@@ -83,10 +76,10 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
                             <h5 className="mb-0">
                                 {name} {surname}
                             </h5>
-                            <small className="text-muted">Dipendente</small>
+                            <small className="text-muted">Portineria</small>
                         </div>
                     </div>
-                    <hr />{" "}
+                    <hr />
                     <div className="flex-grow-1 d-flex flex-column gap-2">
                         <Selector
                             icon={VisiteIcon}
@@ -95,10 +88,36 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
                             onClick={() => setActiveSelector("Visite Attive")}
                         />
                         <Selector
+                            icon={ArchivioIcon}
+                            text="Archivio Visite"
+                            active={activeSelector === "Archivio Visite"}
+                            onClick={() => setActiveSelector("Archivio Visite")}
+                        />
+                        <Selector
+                            icon={AssignBadge}
+                            text="Assegna Badge"
+                            active={activeSelector === "Assegna Badge"}
+                            onClick={() => setActiveSelector("Assegna Badge")}
+                        />
+                        <Selector
                             icon={AddVisit}
                             text="Aggiungi Visita"
                             active={activeSelector === "Aggiungi Visita"}
                             onClick={() => setActiveSelector("Aggiungi Visita")}
+                        />{" "}
+                        <Selector
+                            icon={AddVisitor}
+                            text="Aggiungi Visitatore"
+                            active={activeSelector === "Aggiungi Visitatore"}
+                            onClick={() =>
+                                setActiveSelector("Aggiungi Visitatore")
+                            }
+                        />
+                        <Selector
+                            icon={Employee}
+                            text="Dipendenti"
+                            active={activeSelector === "Dipendenti"}
+                            onClick={() => setActiveSelector("Dipendenti")}
                         />{" "}
                         <Selector
                             icon={TicketIcon}
@@ -106,10 +125,18 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
                             active={activeSelector === "Timbrature"}
                             onClick={() => setActiveSelector("Timbrature")}
                         />
+                        <Selector
+                            icon={ClockIcon}
+                            text="Monitora Timbrature"
+                            active={activeSelector === "Monitora Timbrature"}
+                            onClick={() =>
+                                setActiveSelector("Monitora Timbrature")
+                            }
+                        />
                     </div>
                     <div className="mt-auto">
                         <Selector
-                            icon={LogoutIcon}
+                            icon={Logout}
                             text="Logout"
                             active={activeSelector === "Logout"}
                             onClick={handleLogout}
@@ -193,7 +220,7 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
                                     width: "145px",
                                     height: "auto",
                                     objectFit: "contain",
-                                    margin: "36px auto 0 auto",
+                                    margin: "70px auto 0 auto",
                                     display: "block",
                                     maxHeight: 110,
                                 }}
@@ -256,7 +283,7 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
                                         fontSize: "clamp(12px, 2.5vw, 1.05rem)",
                                     }}
                                 >
-                                    Dipendente
+                                    Portineria
                                 </small>
                             </div>
                         </div>
@@ -266,59 +293,93 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
                         />
                         <div
                             className="offcanvas-body d-flex flex-column gap-2"
-                            style={{ height: "100%", paddingBottom: 10 }}
+                            style={{
+                                height: "100%",
+                                paddingBottom: 10,
+                            }}
                         >
                             <Selector
                                 icon={VisiteIcon}
-                                text="Visite Attive"
-                                active={
-                                    activeSelector === "Visite Attive"
-                                        ? true
-                                        : undefined
-                                }
+                                text="Visite"
+                                active={activeSelector === "Visite Attive"}
                                 onClick={() => {
                                     setActiveSelector("Visite Attive");
                                     setShowOffcanvas(false);
                                 }}
-                            />{" "}
+                            />
                             <Selector
-                                icon={AssignBadgeIcon}
-                                text="Aggiungi Visita"
-                                active={
-                                    activeSelector === "Aggiungi Visita"
-                                        ? true
-                                        : undefined
-                                }
+                                icon={ArchivioIcon}
+                                text="Archivio"
+                                active={activeSelector === "Archivio Visite"}
                                 onClick={() => {
-                                    setActiveSelector("Aggiungi Visita");
+                                    setActiveSelector("Archivio Visite");
                                     setShowOffcanvas(false);
                                 }}
                             />
                             <Selector
-                                icon={ClockIcon}
-                                text="Timbrature"
+                                icon={AssignBadge}
+                                text="Badge"
+                                active={activeSelector === "Assegna Badge"}
+                                onClick={() => {
+                                    setActiveSelector("Assegna Badge");
+                                    setShowOffcanvas(false);
+                                }}
+                            />
+                            <Selector
+                                icon={AddVisit}
+                                text="Aggiungi Visita"
+                                active={activeSelector === "Aggiungi Visita"}
+                                onClick={() => {
+                                    setActiveSelector("Aggiungi Visita");
+                                    setShowOffcanvas(false);
+                                }}
+                            />{" "}
+                            <Selector
+                                icon={AddVisitor}
+                                text="Aggiungi Visitatore"
                                 active={
-                                    activeSelector === "Timbrature"
-                                        ? true
-                                        : undefined
+                                    activeSelector === "Aggiungi Visitatori"
                                 }
+                                onClick={() => {
+                                    setActiveSelector("Aggiungi Visitatori");
+                                    setShowOffcanvas(false);
+                                }}
+                            />
+                            <Selector
+                                icon={Employee}
+                                text="Dipendenti"
+                                active={activeSelector === "Dipendenti"}
+                                onClick={() => {
+                                    setActiveSelector("Dipendenti");
+                                    setShowOffcanvas(false);
+                                }}
+                            />{" "}
+                            <Selector
+                                icon={TicketIcon}
+                                text="Timbrature"
+                                active={activeSelector === "Timbrature"}
                                 onClick={() => {
                                     setActiveSelector("Timbrature");
                                     setShowOffcanvas(false);
                                 }}
                             />
+                            <Selector
+                                icon={ClockIcon}
+                                text="Monitora Timbrature"
+                                active={
+                                    activeSelector === "Monitora Timbrature"
+                                }
+                                onClick={() => {
+                                    setActiveSelector("Monitora Timbrature");
+                                    setShowOffcanvas(false);
+                                }}
+                            />
                             <div style={{ flex: 1 }} />
                             <Selector
-                                icon={LogoutIcon}
+                                icon={Logout}
                                 text="Logout"
-                                active={
-                                    activeSelector === "Logout"
-                                        ? true
-                                        : undefined
-                                }
                                 onClick={handleLogout}
-                                isLogout
-                                className="employee-logout-button"
+                                isLogout={true}
                             />
                         </div>
                     </div>
@@ -336,4 +397,4 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
     );
 };
 
-export default EmployeeSidebar;
+export default Sidebar;
