@@ -8,7 +8,6 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .rdt_Table:hover {
-  transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 .rdt_TableHeader {
@@ -64,7 +63,6 @@
 .filter-results {
   display: inline-flex;
   align-items: center;
-  background: var(--input-bg);
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.95rem;
@@ -98,7 +96,6 @@
   padding: 0.25rem;
   border-radius: 50%;
   cursor: pointer;
-  animation: shake 2s infinite;
 }
 
 .badge-flag-button:hover {
@@ -143,10 +140,4 @@
 @keyframes expandLine {
   from { width: 0; }
   to { width: 50px; }
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70% { transform: translateX(-2px); }
-  20%, 40%, 60%, 80% { transform: translateX(2px); }
 }

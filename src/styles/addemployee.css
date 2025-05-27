@@ -11,21 +11,6 @@
   from { transform: translateY(50px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-@keyframes popIn {
-  0% { transform: scale(0.8); opacity: 0; }
-  80% { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); }
-}
-@keyframes shake {
-  0%,100% { transform: translateX(0); }
-  10%,30%,50%,70% { transform: translateX(-2px); }
-  20%,40%,60%,80% { transform: translateX(2px); }
-}
-
-@keyframes expandLine {
-  from { width: 0; }
-  to { width: 60px; }
-}
 
 /* === Base Body & Container === */
 body {
@@ -49,7 +34,6 @@ body {
   font-weight: 600;
   margin-bottom: 2rem;
   position: relative;
-  animation: popIn 0.6s ease-out;
 }
 
 /* === Form & Sections === */
@@ -74,7 +58,6 @@ body {
   margin: 0 0 20px;
   padding-bottom: 10px;
   border-bottom: 2px solid #e2e8f0;
-  animation: popIn 0.6s ease-out 0.3s both;
 }
 
 .form-row {
@@ -147,7 +130,6 @@ body {
   min-height: 45px;
   background-color: rgba(255, 255, 255, 0.7);
   border: 1px solid transparent;
-  animation: stripeFade 2s infinite;
 }
 .checkbox-item:hover {
   background-color: rgba(10, 20, 41, 0.05);
@@ -232,7 +214,6 @@ input[type="checkbox"]:focus + .custom-checkbox::before {
   margin-top: 20px;
   align-self: center;
   min-width: 200px;
-  animation: shake 3s infinite ease-in-out 1s;
 }
 .submit-button:hover {
   background-color: var(--primary-hover);
