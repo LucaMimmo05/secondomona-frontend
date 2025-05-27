@@ -20,7 +20,8 @@ const AssignBadge = () => {
     }
 
     // Fetch delle visite non ancora avvenute
-    fetch("http://localhost:8080/api/visite", {
+    fetch("http://localhost:8080/api/visite/in-attesa", {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
