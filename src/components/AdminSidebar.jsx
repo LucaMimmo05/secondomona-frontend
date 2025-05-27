@@ -46,6 +46,7 @@ const AdminSidebar = ({ activeSelector, setActiveSelector }) => {
     { icon: ArchivioIcon, text: "Archivio Visite" },
     { icon: AssignBadgeIcon, text: "Assegna Badge" },
     { icon: AddVisitIcon, text: "Aggiungi Visita" },
+    { icon: AddVisitIcon, text: "Aggiungi Visitatore" },
     { icon: AddEmployeeIcon, text: "Aggiungi Dipendente" },
     { icon: EmployeeIcon, text: "Dipendenti" },
     { icon: ClockIcon,    text: "Timbrature" },
