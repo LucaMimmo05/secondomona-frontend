@@ -314,9 +314,10 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
                                 icon={AddVisit}
                                 text="Aggiungi Visita"
                                 active={activeSelector === "Aggiungi Visita"}
-                                onClick={() =>
-                                    setActiveSelector("Aggiungi Visita")
-                                }
+                                onClick={() => {
+                                    setActiveSelector("Aggiungi Visita");
+                                    setShowOffcanvas(false);
+                                }}
                             />{" "}
                             <Selector
                                 icon={AddVisitor}
@@ -324,9 +325,10 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
                                 active={
                                     activeSelector === "Aggiungi Visitatori"
                                 }
-                                onClick={() =>
-                                    setActiveSelector("Aggiungi Visitatori")
-                                }
+                                onClick={() => {
+                                    setActiveSelector("Aggiungi Visitatori");
+                                    setShowOffcanvas(false);
+                                }}
                             />
                             <Selector
                                 icon={Employee}
