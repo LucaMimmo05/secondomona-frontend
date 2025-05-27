@@ -83,7 +83,7 @@
 .filter-results {
     display: flex;
     padding: 10px 0;
-    gap: 10px;
+    gap: 0;
     align-items: center;
     animation: fadeIn 1s 0.4s both;
 }
@@ -175,22 +175,23 @@
     animation: fadeIn 1s 0.5s both;
 }
 .clear-filter-button {
-    background: #ff4444;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
+    color: #ff0000;
+    background-color: var(--input-bg);
+    border: 1px solid var(--stroke);
+    border-radius: 4px;
     width: 24px;
     height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s ease;
 }
 .clear-filter-button:hover {
-    background: #ff0000;
+    transform: scale(1.2);
+    border: 1px solid #ff0000;
 }
 
 @media (max-width: 768px) {
