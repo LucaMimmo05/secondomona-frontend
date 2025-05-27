@@ -5,6 +5,7 @@ import ArchivioIcon from "../assets/Archive";
 import AssignBadge from "../assets/AssignBadge";
 import Employee from "../assets/Employee";
 import ClockIcon from "../assets/Clock";
+import TicketIcon from "../assets/ticket";
 import Logout from "../assets/Logout";
 import AddVisit from "../assets/AddVisit";
 import AddVisitor from "../assets/AddVisitor";
@@ -117,9 +118,9 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
                             text="Dipendenti"
                             active={activeSelector === "Dipendenti"}
                             onClick={() => setActiveSelector("Dipendenti")}
-                        />
+                        />{" "}
                         <Selector
-                            icon={ClockIcon}
+                            icon={TicketIcon}
                             text="Timbrature"
                             active={activeSelector === "Timbrature"}
                             onClick={() => setActiveSelector("Timbrature")}
@@ -128,7 +129,9 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
                             icon={ClockIcon}
                             text="Monitora Timbrature"
                             active={activeSelector === "Monitora Timbrature"}
-                            onClick={() => setActiveSelector("Monitora Timbrature")}
+                            onClick={() =>
+                                setActiveSelector("Monitora Timbrature")
+                            }
                         />
                     </div>
                     <div className="mt-auto">
@@ -350,9 +353,9 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
                                     setActiveSelector("Dipendenti");
                                     setShowOffcanvas(false);
                                 }}
-                            />
+                            />{" "}
                             <Selector
-                                icon={ClockIcon}
+                                icon={TicketIcon}
                                 text="Timbrature"
                                 active={activeSelector === "Timbrature"}
                                 onClick={() => {
@@ -363,7 +366,9 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
                             <Selector
                                 icon={ClockIcon}
                                 text="Monitora Timbrature"
-                                active={activeSelector === "Monitora Timbrature"}
+                                active={
+                                    activeSelector === "Monitora Timbrature"
+                                }
                                 onClick={() => {
                                     setActiveSelector("Monitora Timbrature");
                                     setShowOffcanvas(false);
