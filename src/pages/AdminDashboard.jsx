@@ -5,6 +5,8 @@ import ArchiveVisits from "./ArchiveVisits";
 import AssignBadge from "./AssignBadge";
 import Employee from "./Employee";
 import AddVisit from "./AddVisit";
+import TimeTracking     from "./TimeTracking";
+import TimbratureMonitor from "./TimbratureMonitor";
 import "../styles/home.css";
 import AddEmployee from "./AddEmployee";
 import { useTokenValidation } from "../hooks/useTokenValidation";
@@ -29,6 +31,10 @@ const AdminDashboard = () => {
         return <AddEmployee />;
       case "Dipendenti":
         return <Employee />;
+      case "Timbrature":
+        return <TimeTracking />;
+      case "Monitora Timbrature":
+        return <TimbratureMonitor />;
       default:
         return <div>Sezione non trovata</div>;
     }

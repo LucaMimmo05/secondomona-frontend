@@ -349,6 +349,24 @@ const Sidebar = ({ activeSelector, setActiveSelector }) => {
                                     setShowOffcanvas(false);
                                 }}
                             />
+                            <Selector
+                                icon={ClockIcon}
+                                text="Timbrature"
+                                active={activeSelector === "Timbrature"}
+                                onClick={() => {
+                                    setActiveSelector("Timbrature");
+                                    setShowOffcanvas(false);
+                                }}
+                            />
+                            <Selector
+                                icon={ClockIcon}
+                                text="Monitora Timbrature"
+                                active={activeSelector === "Monitora Timbrature"}
+                                onClick={() => {
+                                    setActiveSelector("Monitora Timbrature");
+                                    setShowOffcanvas(false);
+                                }}
+                            />
                             <div style={{ flex: 1 }} />
                             <Selector
                                 icon={Logout}
