@@ -5,6 +5,7 @@ import AssignBadgeIcon from "../assets/AssignBadge";
 import ClockIcon from "../assets/Clock";
 import LogoutIcon from "../assets/Logout";
 import "../styles/employeesidebar.css";
+import AddVisit from "../assets/AddVisit";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { clearAuthData } from "../utils/apiUtils";
@@ -93,7 +94,7 @@ const EmployeeSidebar = ({ activeSelector, setActiveSelector }) => {
                             onClick={() => setActiveSelector("Visite Attive")}
                         />
                         <Selector
-                            icon={AssignBadgeIcon}
+                            icon={AddVisit}
                             text="Aggiungi Visita"
                             active={activeSelector === "Aggiungi Visita"}
                             onClick={() => setActiveSelector("Aggiungi Visita")}
