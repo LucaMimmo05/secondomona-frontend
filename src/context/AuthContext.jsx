@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
       getRoleFromToken(jwt)
     );
   };
-
   const logout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
@@ -26,16 +25,15 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("role");
     localStorage.removeItem("name");
     localStorage.removeItem("surname");
+    localStorage.removeItem("idPersona");
+    localStorage.removeItem("idTessera");
 
-  
     setToken(null);
-  
 
     console.log("Logout completato - localStorage pulito");
   };
 
   useEffect(() => {
-    
     const storedToken =
       localStorage.getItem("accessToken") || localStorage.getItem("token");
 

@@ -28,15 +28,29 @@ export default function LoginPage() {
 
       const data = await response.json();
       console.log("Risposta login:", data);
-
       if (response.ok && data) {
         toast.success("Accesso effettuato con successo");
         const decodedToken = parseJwt(data.accessToken);
-        console.log(decodedToken);
+        console.log("Token decodificato:", decodedToken);
 
         // Salva i dati utente
         localStorage.setItem("name", decodedToken?.name);
         localStorage.setItem("surname", decodedToken?.surname);
+
+        // Salva l'ID della persona per le timbrature
+        if (decodedToken?.idPersona) {
+          localStorage.setItem("idPersona", decodedToken.idPersona.toString());
+        } else if (decodedToken?.userId) {
+          localStorage.setItem("idPersona", decodedToken.userId.toString());
+        } else if (decodedToken?.sub) {
+          // Spesso l'ID utente è nel campo 'sub' (subject)
+          localStorage.setItem("idPersona", decodedToken.sub.toString());
+        }
+
+        // Se presente, salva anche l'ID tessera specifico
+        if (decodedToken?.idTessera) {
+          localStorage.setItem("idTessera", decodedToken.idTessera.toString());
+        }
 
         // Salva sia accessToken che refreshToken
         localStorage.setItem("accessToken", data.accessToken);

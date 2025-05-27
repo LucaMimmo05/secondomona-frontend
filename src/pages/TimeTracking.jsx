@@ -21,15 +21,20 @@ const TimeTracking = () => {
   useEffect(() => {
     fetchTodayPunches();
   }, []);
-
   const fetchTodayPunches = async () => {
     const token =
       localStorage.getItem("accessToken") ||
       localStorage.getItem("refreshToken");
 
+    // Ottieni l'ID dell'utente dal localStorage
+    const idPersona =
+      localStorage.getItem("idTessera") ||
+      localStorage.getItem("idPersona") ||
+      "1"; // Fallback per test
+
     try {
       const response = await fetch(
-        "http://localhost:8080/api/timbrature/today",
+        `http://localhost:8080/api/timbrature/oggi/${idPersona}`,
         {
           method: "GET",
           headers: {
@@ -38,40 +43,64 @@ const TimeTracking = () => {
           },
         }
       );
-
       if (response.ok) {
         const data = await response.json();
-        setTodayPunches(data);
+        // Ordina le timbrature per timestamp
+        const sortedData = data.sort(
+          (a, b) =>
+            new Date(a.timestamp || a.dataOraTimbratura) -
+            new Date(b.timestamp || b.dataOraTimbratura)
+        );
+
+        setTodayPunches(sortedData);
 
         // Determina se il dipendente è attualmente al lavoro
-        if (data.length > 0) {
-          const lastPunch = data[data.length - 1];
-          setLastPunch(lastPunch);
-          setIsWorking(lastPunch.tipo === "ENTRATA");
+        if (sortedData.length > 0) {
+          const lastPunch = sortedData[sortedData.length - 1];
+          setLastPunch({
+            tipo: lastPunch.tipo || lastPunch.tipoTimbratura,
+            timestamp: lastPunch.timestamp || lastPunch.dataOraTimbratura,
+            note: lastPunch.note,
+          });
+          setIsWorking(
+            (lastPunch.tipo || lastPunch.tipoTimbratura) === "ENTRATA"
+          );
         }
       }
     } catch (error) {
       console.error("Errore nel caricamento delle timbrature:", error);
     }
   };
-
   const handlePunch = async (tipo) => {
     setLoading(true);
     const token =
       localStorage.getItem("accessToken") ||
-      localStorage.getItem("refreshToken");
+      localStorage.getItem("refreshToken"); // Ottieni l'ID tessera o ID persona dal localStorage
+    const idTessera =
+      localStorage.getItem("idTessera") ||
+      localStorage.getItem("idPersona") ||
+      "1"; // Fallback minimo per test
 
     try {
+      const now = new Date();
+      const punchData = {
+        idTessera: parseInt(idTessera),
+        tipoTimbratura: tipo,
+        dataOraTimbratura: now.toISOString().slice(0, 19), // Formato ISO senza millisecondi
+        note: `Timbratura di ${
+          tipo === "ENTRATA" ? "entrata" : "uscita"
+        } - ${now.toLocaleTimeString("it-IT")}`,
+      };
+
+      console.log("Dati timbratura:", punchData);
+
       const response = await fetch("http://localhost:8080/api/timbrature", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          tipo: tipo,
-          timestamp: new Date().toISOString(),
-        }),
+        body: JSON.stringify(punchData),
       });
 
       if (response.ok) {
@@ -80,14 +109,24 @@ const TimeTracking = () => {
 
         // Aggiorna lo stato
         setIsWorking(tipo === "ENTRATA");
-        setLastPunch(result);
+        setLastPunch({
+          tipo: tipo,
+          timestamp: now.toISOString(),
+          note: punchData.note,
+        });
 
         // Ricarica le timbrature del giorno
         await fetchTodayPunches();
 
-        alert(`Timbratura di ${tipo.toLowerCase()} registrata con successo!`);
+        alert(
+          `Timbratura di ${
+            tipo === "ENTRATA" ? "entrata" : "uscita"
+          } registrata con successo!`
+        );
       } else {
-        const errorData = await response.json();
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: "Errore sconosciuto" }));
         alert(
           `Errore nella timbratura: ${
             errorData.message || "Errore sconosciuto"
@@ -126,19 +165,29 @@ const TimeTracking = () => {
       minute: "2-digit",
     });
   };
-
   const calculateWorkHours = () => {
     if (todayPunches.length < 2) return "0:00";
 
     let totalMinutes = 0;
-    for (let i = 0; i < todayPunches.length - 1; i += 2) {
-      const entrata = new Date(todayPunches[i].timestamp);
-      const uscita = todayPunches[i + 1]
-        ? new Date(todayPunches[i + 1].timestamp)
-        : null;
+    let currentEntry = null;
 
-      if (uscita) {
-        totalMinutes += (uscita - entrata) / (1000 * 60);
+    // Ordina le timbrature per timestamp
+    const sortedPunches = [...todayPunches].sort(
+      (a, b) =>
+        new Date(a.timestamp || a.dataOraTimbratura) -
+        new Date(b.timestamp || b.dataOraTimbratura)
+    );
+
+    for (const punch of sortedPunches) {
+      const tipoTimbratura = punch.tipo || punch.tipoTimbratura;
+      const timestamp = punch.timestamp || punch.dataOraTimbratura;
+
+      if (tipoTimbratura === "ENTRATA" && !currentEntry) {
+        currentEntry = new Date(timestamp);
+      } else if (tipoTimbratura === "USCITA" && currentEntry) {
+        const uscita = new Date(timestamp);
+        totalMinutes += (uscita - currentEntry) / (1000 * 60);
+        currentEntry = null;
       }
     }
 
@@ -156,7 +205,6 @@ const TimeTracking = () => {
           <div className="date-display">{formatDate(currentTime)}</div>
         </div>
       </div>
-
       <div className="status-card">
         <div className="status-indicator">
           <div
@@ -176,7 +224,6 @@ const TimeTracking = () => {
           </div>
         )}
       </div>
-
       <div className="punch-buttons">
         <button
           className={`punch-btn entry-btn ${isWorking ? "disabled" : ""}`}
@@ -194,7 +241,6 @@ const TimeTracking = () => {
           {loading ? "Registrando..." : "Timbra Uscita"}
         </button>
       </div>
-
       <div className="today-summary">
         <h3>Riepilogo Giornaliero</h3>
         <div className="summary-grid">
@@ -207,8 +253,7 @@ const TimeTracking = () => {
             <span className="summary-value">{todayPunches.length}</span>
           </div>
         </div>
-      </div>
-
+      </div>{" "}
       <div className="punches-list">
         <h3>Timbrature di Oggi</h3>
         {todayPunches.length === 0 ? (
@@ -218,12 +263,25 @@ const TimeTracking = () => {
             {todayPunches.map((punch, index) => (
               <div
                 key={index}
-                className={`punch-item ${punch.tipo.toLowerCase()}`}
+                className={`punch-item ${(
+                  punch.tipo || punch.tipoTimbratura
+                ).toLowerCase()}`}
               >
-                <div className="punch-type">{punch.tipo}</div>
-                <div className="punch-time">
-                  {formatPunchTime(punch.timestamp)}
+                <div className="punch-header">
+                  <div className="punch-type">
+                    {punch.tipo || punch.tipoTimbratura}
+                  </div>
+                  <div className="punch-time">
+                    {formatPunchTime(
+                      punch.timestamp || punch.dataOraTimbratura
+                    )}
+                  </div>
                 </div>
+                {punch.note && (
+                  <div className="punch-note">
+                    <small>{punch.note}</small>
+                  </div>
+                )}
               </div>
             ))}
           </div>
