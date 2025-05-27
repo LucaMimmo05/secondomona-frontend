@@ -64,7 +64,7 @@ const Employee = () => {
         localStorage.getItem("refreshToken");
       try {
         const response = await fetch(
-          "http://localhost:8080/api/persone/dipendenti",
+          "http://localhost:8080/api/dipendenti",
           {
             method: "GET",
             headers: {
