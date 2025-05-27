@@ -597,18 +597,7 @@ const AddEmployee = () => {
             </div>
           </div>{" "}
           <div className="checkbox-group">
-            <div className="checkbox-item">
-              <input
-                type="checkbox"
-                name="visitatore"
-                id="visitatore"
-                checked={formData.visitatore}
-                onChange={handleInputChange}
-              />
-              <label htmlFor="visitatore" className="custom-checkbox">
-                Visitatore
-              </label>
-            </div>
+            
             <div className="checkbox-item">
               <input
                 type="checkbox"

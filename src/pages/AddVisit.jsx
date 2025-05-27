@@ -184,32 +184,6 @@ const AddVisit = () => {
               </div>
             </div>
           </div>
-          {/* Sezione Selezione Richiedente */}
-          <div className="form-section">
-            <h3>Seleziona Richiedente</h3>
-            <div className="form-row">
-              <div className="input-group">
-                <label>Richiedente (Dipendente)*</label>
-                <select
-                  name="richiedenteId"
-                  value={formData.richiedenteId}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">-- Seleziona un richiedente --</option>
-                  {richiedenti.map((richiedente) => (
-                    <option
-                      key={richiedente.idPersona}
-                      value={richiedente.idPersona}
-                    >
-                      {richiedente.nome} {richiedente.cognome} -{" "}
-                      {richiedente.mail || "Email non disponibile"}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>{" "}
           {/* Sezione Dettagli Visita */}
           <div className="form-section">
             <h3>Dettagli Visita</h3>
