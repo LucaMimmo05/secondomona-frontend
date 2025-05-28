@@ -25,10 +25,13 @@ const AssignBadge = () => {
         "http://localhost:8080/api/badge/assegna",
         {
           method: "POST",
-          body: JSON.stringify({ idVisita: row.idRichiesta }),
+          body: JSON.stringify(row.visitatore),
         }
       );
 
+      console.log("Payload inviato:", row.visitatore);
+      console.log(response);
+      
       if (!response.ok) throw new Error("Errore assegnazione badge");
 
       setSuccessMsg(`Badge assegnato a ${row.visitatore?.nome} ${row.visitatore?.cognome}`);
