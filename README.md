@@ -47,41 +47,6 @@ Un'applicazione web moderna per la gestione delle visite aziendali e delle timbr
 - **ESLint** - Linting del codice
 - **Vite** - Hot Module Replacement (HMR)
 
-## 📁 Struttura del Progetto
-
-```
-secondomona-frontend/
-├── src/
-│   ├── assets/          # Icone SVG e risorse statiche
-│   ├── components/      # Componenti riutilizzabili
-│   │   ├── AdminSidebar.jsx
-│   │   ├── EmployeeSidebar.jsx
-│   │   ├── ReceptionSidebar.jsx
-│   │   ├── ProtectedRoute.jsx
-│   │   └── Selector.jsx
-│   ├── context/         # Context API per stato globale
-│   │   └── AuthContext.jsx
-│   ├── hooks/           # Custom hooks
-│   │   └── useTokenValidation.js
-│   ├── pages/           # Pagine dell'applicazione
-│   │   ├── Login.jsx
-│   │   ├── AdminDashboard.jsx
-│   │   ├── EmployeeDashboard.jsx
-│   │   ├── ReceptionDashboard.jsx
-│   │   ├── AddVisitor.jsx
-│   │   ├── AddVisit.jsx
-│   │   ├── TimeTracking.jsx
-│   │   └── TimbratureMonitor.jsx
-│   ├── styles/          # File CSS
-│   ├── utils/           # Utility functions
-│   │   ├── apiUtils.js
-│   │   └── parseJwt.js
-│   ├── App.jsx          # Componente principale
-│   └── main.jsx         # Entry point
-├── public/              # File pubblici
-├── package.json         # Dipendenze e script
-└── README.md           # Documentazione
-```
 
 ## 🚀 Installazione
 
