@@ -1,151 +1,181 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import "../styles/assignbadge.css";
 import "../styles/datatable-common.css";
+import { apiCall } from "../utils/apiUtils";
 
 const AssignBadge = () => {
-  const [visits, setVisits] = useState([]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loadingId, setLoadingId] = useState(null);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+
   const navigate = useNavigate();
 
-  // Recupera il token JWT da localStorage
-  const token = localStorage.getItem("accessToken");
+  const handleAssign = async (row) => {
+    try {
+      setLoadingId(row.idRichiesta);
+      setErrorMsg("");
+      setSuccessMsg("");
 
-  useEffect(() => {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    // Fetch delle visite non ancora avvenute
-    fetch("http://localhost:8080/api/visite/in-attesa", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Errore ${res.status}`);
-        return res.json();
-      })
-      .then((payload) => {
-        setVisits(payload);
-        setError(null);
-      })
-      .catch((err) => {
-        console.error("Errore nel recupero visite attive:", err);
-        setError("Impossibile caricare le visite");
-      })
-      .finally(() => setLoading(false));
-  }, [token, navigate]);
-
-  // Gestisce il click su un badge (assegna badge alla visita)
-  const handleAssignBadge = (visit) => {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    fetch("http://localhost:8080/api/badge/assegna", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ idVisita: visit.id }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          alert("Badge assegnato con successo!");
-          // Aggiorna lista visite rimuovendo quella assegnata
-          setVisits((prev) => prev.filter((v) => v.id !== visit.id));
-        } else if (res.status === 401) {
-          navigate("/login");
-        } else {
-          alert("Errore nell'assegnazione del badge");
+      // Chiamata API con apiCall che gestisce automaticamente il token
+      const response = await apiCall(
+        "http://localhost:8080/api/badge/assegna",
+        {
+          method: "POST",
+          body: JSON.stringify(row.visitatore),
         }
-      })
-      .catch((err) => {
-        console.error("Errore durante il POST badge:", err);
-        alert("Errore di connessione al server");
-      });
+      );
+
+      console.log("Payload inviato:", row.visitatore);
+      console.log(response);
+      
+      if (!response.ok) throw new Error("Errore assegnazione badge");
+
+      setSuccessMsg(`Badge assegnato a ${row.visitatore?.nome} ${row.visitatore?.cognome}`);
+      setData((prev) => prev.filter((item) => item.idRichiesta !== row.idRichiesta));
+    } catch (error) {
+      console.error(error);
+      setErrorMsg("Errore durante l'assegnazione del badge.");
+    } finally {
+      setLoadingId(null);
+    }
   };
 
+  const fetchVisits = async () => {
+    setLoading(true);
+    try {
+      // Chiamata API con apiCall, include Bearer token
+      const response = await apiCall(
+        "http://localhost:8080/api/visite/in-attesa"
+      );
+
+      if (!response.ok) throw new Error("Errore nel recupero visite");
+
+      const visitsData = await response.json();
+      setData(visitsData);
+    } catch (error) {
+      console.error("Errore nel fetch delle visite:", error);
+      setErrorMsg("Impossibile caricare le visite.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVisits();
+  }, []);
+
   const columns = [
-    { name: "Data", selector: (row) => row.data, sortable: true, width: "120px" },
-    { name: "Ora Inizio", selector: (row) => row.oraInizio, sortable: true, width: "100px" },
-    { name: "Ora Fine", selector: (row) => row.oraFine, sortable: true, width: "100px" },
-    { name: "Stato", selector: (row) => row.stato, sortable: true, width: "100px" },
-    { name: "Ospite", selector: (row) => row.ospite, sortable: true, width: "150px" },
-    { name: "Dipendente", selector: (row) => row.dipendente, sortable: true, width: "150px" },
+    {
+      name: "Data",
+      selector: (row) => new Date(row.dataInizio).toLocaleDateString("it-IT"),
+      sortable: true,
+      width: "120px",
+    },
+    {
+      name: "Ora Inizio",
+      selector: (row) =>
+        new Date(row.dataInizio).toLocaleTimeString("it-IT", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      sortable: true,
+      width: "100px",
+    },
+    {
+      name: "Ora Fine",
+      selector: (row) =>
+        new Date(row.dataFine).toLocaleTimeString("it-IT", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      sortable: true,
+      width: "100px",
+    },
+    {
+      name: "Stato",
+      selector: (row) => row.stato || "IN_ATTESA",
+      sortable: true,
+      width: "120px",
+    },
+    {
+      name: "Ospite",
+      selector: (row) =>
+        row.visitatore ? `${row.visitatore.nome} ${row.visitatore.cognome}` : "N/A",
+      sortable: true,
+      grow: 1,
+    },
+    {
+      name: "Dipendente",
+      selector: (row) =>
+        row.richiedente ? `${row.richiedente.nome} ${row.richiedente.cognome}` : "N/A",
+      sortable: true,
+      grow: 1,
+    },
     {
       name: "Assegna Badge",
       cell: (row) => (
         <button
           className="badge-flag-button"
-          onClick={() => handleAssignBadge(row)}
+          onClick={() => handleAssign(row)}
+          disabled={loadingId === row.idRichiesta}
           title="Assegna badge"
         >
-          <svg
-            className="badge-flag-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M4 22v-7"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          {loadingId === row.idRichiesta ? (
+            <span className="loader-small" />
+          ) : (
+            <svg
+              className="badge-flag-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M4 22v-7"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
         </button>
       ),
-      width: "100px",
+      width: "140px",
     },
   ];
-
-  if (loading) return <div className="assign-badge-loading">Caricamento...</div>;
-  if (error) return <div className="assign-badge-error">{error}</div>;
 
   return (
     <div className="assign-badge-container">
       <div className="assign-badge-header">
-        <h1 className="assign-badge-title">Assegna Badge</h1>
+        <h1>Assegna Badge</h1>
+        <div className="filter-results">
+          <p>Risultati mostrati: {data.length}</p>
+        </div>
       </div>
-      <div className="filter-results">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M11.3334 11.3334L14 14" stroke="#7F7F7F" strokeLinecap="round" strokeLinejoin="round"/>
-          <path
-            d="M12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333Z"
-            stroke="#7F7F7F"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        <p>Visite in attesa</p>
-      </div>
-      <div className="assign-badge-table-wrapper">
-        <DataTable
-          columns={columns}
-          data={visits}
-          pagination
-          responsive
-          highlightOnHover
-          noDataComponent="Nessun record da mostrare"
-        />
-      </div>
+
+      {successMsg && <div className="success-msg">{successMsg}</div>}
+      {errorMsg && <div className="error-msg">{errorMsg}</div>}
+
+      <DataTable
+        columns={columns}
+        data={data}
+        pagination
+        responsive
+        highlightOnHover
+        progressPending={loading}
+        noDataComponent="Nessun record da mostrare"
+      />
     </div>
   );
 };

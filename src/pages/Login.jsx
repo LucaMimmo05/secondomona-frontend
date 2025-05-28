@@ -5,6 +5,15 @@ import "../styles/login.css";
 import { toast, ToastContainer } from "react-toastify";
 import { parseJwt } from "../utils/parseJwt";
 
+// Spinner Component
+function Spinner() {
+  return (
+    <div className="spinnerOverlay">
+      <div className="spinner" />
+    </div>
+  );
+}
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +27,8 @@ export default function LoginPage() {
       toast.error("Compila tutti i campi");
       return;
     }
+
+    setLoading(true); // << Aggiunto per attivare lo spinner
 
     try {
       const response = await fetch("http://localhost:8080/api/auth/login", {
@@ -33,26 +44,21 @@ export default function LoginPage() {
         const decodedToken = parseJwt(data.accessToken);
         console.log("Token decodificato:", decodedToken);
 
-        // Salva i dati utente
         localStorage.setItem("name", decodedToken?.name);
         localStorage.setItem("surname", decodedToken?.surname);
 
-        // Salva l'ID della persona per le timbrature
         if (decodedToken?.idPersona) {
           localStorage.setItem("idPersona", decodedToken.idPersona.toString());
         } else if (decodedToken?.userId) {
           localStorage.setItem("idPersona", decodedToken.userId.toString());
         } else if (decodedToken?.sub) {
-          // Spesso l'ID utente è nel campo 'sub' (subject)
           localStorage.setItem("idPersona", decodedToken.sub.toString());
         }
 
-        // Se presente, salva anche l'ID tessera specifico
         if (decodedToken?.idTessera) {
           localStorage.setItem("idTessera", decodedToken.idTessera.toString());
         }
 
-        // Salva sia accessToken che refreshToken
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
 
@@ -76,62 +82,66 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="mainContainer">
-      <ToastContainer
-        position="top-center"
-        autoClose={2000}
-        hideProgressBar
-        closeOnClick
-        draggable
-        className="toastContainer"
-        toastClassName="customToast"
-        bodyClassName="toastBody"
-        closeButton={false}
-      />
+    <>
+      {loading && <Spinner />}
 
-      <div className="formContainer">
-        <img
-          src="src\assets\logo-blu.jpg"
-          alt="Logo"
-          width="180"
-          height="127"
-          className="logo"
+      <div className="mainContainer">
+        <ToastContainer
+          position="top-center"
+          autoClose={2000}
+          hideProgressBar
+          closeOnClick
+          draggable
+          className="toastContainer"
+          toastClassName="customToast"
+          bodyClassName="toastBody"
+          closeButton={false}
         />
 
-        <form onSubmit={handleLogin} className="loginForm">
-          <div className="inputGroup">
-            <label htmlFor="username" className="inputLabel">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              className="inputField"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={loading}
-            />
-          </div>
+        <div className="formContainer">
+          <img
+            src="src/assets/logo-blu.jpg"
+            alt="Logo"
+            width="180"
+            height="127"
+            className="logo"
+          />
 
-          <div className="inputGroup">
-            <label htmlFor="password" className="inputLabel">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              className="inputField"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={loading}
-            />
-          </div>
+          <form onSubmit={handleLogin} className="loginForm">
+            <div className="inputGroup">
+              <label htmlFor="username" className="inputLabel">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                className="inputField"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+              />
+            </div>
 
-          <button type="submit" className="loginButton" disabled={loading}>
-            {loading ? "Caricamento..." : "Accedi"}
-          </button>
-        </form>
+            <div className="inputGroup">
+              <label htmlFor="password" className="inputLabel">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                className="inputField"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+
+            <button type="submit" className="loginButton" disabled={loading}>
+              {loading ? "Caricamento..." : "Accedi"}
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
