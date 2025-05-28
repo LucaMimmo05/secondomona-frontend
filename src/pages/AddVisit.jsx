@@ -23,7 +23,7 @@ const AddVisit = () => {
   });
   // Stati per le liste
   const [visitatori, setVisitatori] = useState([]);
-  const [richiedenti, setRichiedenti] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -37,7 +37,7 @@ const AddVisit = () => {
       try {
         // Fetch visitatori
         const visitatoriResponse = await fetch(
-          "http://localhost:8080/api/persone/visitatori",
+          "http://localhost:8080/api/visitatori",
           {
             method: "GET",
             headers: {
@@ -47,25 +47,14 @@ const AddVisit = () => {
           }
         );
 
-        // Fetch richiedenti (dipendenti)
-        const richiedentiResponse = await fetch(
-          "http://localhost:8080/api/persone/dipendenti",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
 
-        if (visitatoriResponse.ok && richiedentiResponse.ok) {
+        if (visitatoriResponse.ok) {
           const visitatoriData = await visitatoriResponse.json();
-          const richiedentiData = await richiedentiResponse.json();
+         
           console.log("Visitatori:", visitatoriData);
-          console.log("Richiedenti:", richiedentiData);
+        
           setVisitatori(visitatoriData);
-          setRichiedenti(richiedentiData);
+         
         } else {
           console.error("Errore nel caricamento dei dati");
         }
