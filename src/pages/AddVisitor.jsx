@@ -19,11 +19,15 @@ const AddVisitor = () => {
   };
 
   const handleSubmit = (e) => {
+    const token = localStorage.getItem("accessToken") || localStorage.getItem("refreshToken");
     e.preventDefault();
     console.log("Dati visitatore:", visitorData);
-    fetch("/api/persone/visitatore", {
+    fetch("http://localhost:8080/api/visitatori", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
       body: JSON.stringify(visitorData),
     })
       .then((res) => {
