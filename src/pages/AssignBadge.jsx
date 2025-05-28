@@ -18,24 +18,21 @@ const AssignBadge = () => {
     try {
       setLoadingId(row.idRichiesta);
       setErrorMsg("");
-      setSuccessMsg("");
-
-      // Chiamata API con apiCall che gestisce automaticamente il token
-      const response = await apiCall(
-        "http://localhost:8080/api/badge/assegna",
-        {
-          method: "POST",
-          body: JSON.stringify(row.visitatore),
-        }
-      );
+      setSuccessMsg(""); // Chiamata API con apiCall che gestisce automaticamente il token
+      const result = await apiCall("/api/badge/assegna", {
+        method: "POST",
+        body: JSON.stringify(row.visitatore),
+      });
 
       console.log("Payload inviato:", row.visitatore);
-      console.log(response);
-      
-      if (!response.ok) throw new Error("Errore assegnazione badge");
+      console.log(result);
 
-      setSuccessMsg(`Badge assegnato a ${row.visitatore?.nome} ${row.visitatore?.cognome}`);
-      setData((prev) => prev.filter((item) => item.idRichiesta !== row.idRichiesta));
+      setSuccessMsg(
+        `Badge assegnato a ${row.visitatore?.nome} ${row.visitatore?.cognome}`
+      );
+      setData((prev) =>
+        prev.filter((item) => item.idRichiesta !== row.idRichiesta)
+      );
     } catch (error) {
       console.error(error);
       setErrorMsg("Errore durante l'assegnazione del badge.");
@@ -48,13 +45,7 @@ const AssignBadge = () => {
     setLoading(true);
     try {
       // Chiamata API con apiCall, include Bearer token
-      const response = await apiCall(
-        "http://localhost:8080/api/visite/in-attesa"
-      );
-
-      if (!response.ok) throw new Error("Errore nel recupero visite");
-
-      const visitsData = await response.json();
+      const visitsData = await apiCall("/api/visite/in-attesa");
       setData(visitsData);
     } catch (error) {
       console.error("Errore nel fetch delle visite:", error);
@@ -104,14 +95,18 @@ const AssignBadge = () => {
     {
       name: "Ospite",
       selector: (row) =>
-        row.visitatore ? `${row.visitatore.nome} ${row.visitatore.cognome}` : "N/A",
+        row.visitatore
+          ? `${row.visitatore.nome} ${row.visitatore.cognome}`
+          : "N/A",
       sortable: true,
       grow: 1,
     },
     {
       name: "Dipendente",
       selector: (row) =>
-        row.richiedente ? `${row.richiedente.nome} ${row.richiedente.cognome}` : "N/A",
+        row.richiedente
+          ? `${row.richiedente.nome} ${row.richiedente.cognome}`
+          : "N/A",
       sortable: true,
       grow: 1,
     },

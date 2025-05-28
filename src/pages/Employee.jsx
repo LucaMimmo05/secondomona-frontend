@@ -3,7 +3,12 @@ import "../styles/employee.css";
 import "../styles/datatable-common.css";
 import DataTable from "react-data-table-component";
 import { useEffect } from "react";
+import { apiCall } from "../utils/apiUtils";
+import { useTokenRefresh } from "../hooks/useTokenRefresh";
 const Employee = () => {
+  // Initialize token refresh hook
+  useTokenRefresh();
+
   const [data, setData] = React.useState([]);
   const columns = [
     {
@@ -56,27 +61,10 @@ const Employee = () => {
       center: true,
     },
   ];
-
   useEffect(() => {
     const fetchData = async () => {
-      const token =
-        localStorage.getItem("accessToken") ||
-        localStorage.getItem("refreshToken");
       try {
-        const response = await fetch(
-          "http://localhost:8080/api/dipendenti",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
+        const data = await apiCall("/api/dipendenti");
         console.log("Fetched data:", data);
         setData(data);
       } catch (error) {

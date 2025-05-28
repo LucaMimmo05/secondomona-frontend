@@ -5,6 +5,7 @@ import AddVisit from "./AddVisit";
 import TimeTracking from "./TimeTracking";
 import "../styles/home.css";
 import { useTokenValidation } from "../hooks/useTokenValidation";
+import { useTokenRefresh } from "../hooks/useTokenRefresh";
 import TimbratureMonitor from "./TimbratureMonitor";
 
 const EmployeeDashboard = () => {
@@ -12,6 +13,9 @@ const EmployeeDashboard = () => {
 
   // Controllo automatico validità token
   useTokenValidation();
+
+  // Refresh automatico del token
+  useTokenRefresh();
   const renderContent = () => {
     switch (activeSelector) {
       case "Visite Attive":

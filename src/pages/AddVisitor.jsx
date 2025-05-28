@@ -183,7 +183,7 @@ const AddVisitor = () => {
         JSON.stringify(dataToSend, null, 2)
       );
 
-      const response = await apiCall("http://localhost:8080/api/visitatori", {
+      const response = await apiCall("/api/visitatori", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

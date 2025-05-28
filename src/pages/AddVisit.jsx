@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "../styles/addvisit.css";
+import { apiCall } from "../utils/apiUtils";
+import { useTokenRefresh } from "../hooks/useTokenRefresh";
 
 const AddVisit = () => {
+  // Initialize token refresh hook
+  useTokenRefresh();
+
   const [formData, setFormData] = useState({
     // IDs selezionati
     visitatoreId: "",
@@ -26,40 +31,16 @@ const AddVisit = () => {
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-
   // Fetch dei dati all'avvio del componente
   useEffect(() => {
     const fetchData = async () => {
-      const token =
-        localStorage.getItem("accessToken") ||
-        localStorage.getItem("refreshToken");
-
       try {
         // Fetch visitatori
-        const visitatoriResponse = await fetch(
-          "http://localhost:8080/api/visitatori",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-
-        if (visitatoriResponse.ok) {
-          const visitatoriData = await visitatoriResponse.json();
-         
-          console.log("Visitatori:", visitatoriData);
-        
-          setVisitatori(visitatoriData);
-         
-        } else {
-          console.error("Errore nel caricamento dei dati");
-        }
+        const visitatoriData = await apiCall("/api/visitatori");
+        console.log("Visitatori:", visitatoriData);
+        setVisitatori(visitatoriData);
       } catch (error) {
-        console.error("Errore nella fetch:", error);
+        console.error("Errore nel caricamento dei visitatori:", error);
       } finally {
         setLoading(false);
       }
@@ -79,10 +60,6 @@ const AddVisit = () => {
     e.preventDefault();
     setSubmitting(true);
 
-    const token =
-      localStorage.getItem("accessToken") ||
-      localStorage.getItem("refreshToken");
-
     // Preparo i dati da inviare al backend
     const visitData = {
       visitatoreId: parseInt(formData.visitatoreId),
@@ -100,45 +77,32 @@ const AddVisit = () => {
     console.log("Dati da inviare:", visitData);
 
     try {
-      const response = await fetch("http://localhost:8080/api/visite", {
+      const result = await apiCall("/api/visite", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(visitData),
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Visita creata con successo:", result);
-        alert("Visita prenotata con successo!");
+      console.log("Visita creata con successo:", result);
+      alert("Visita prenotata con successo!");
 
-        // Reset del form dopo il successo
-        setFormData({
-          visitatoreId: "",
-          richiedenteId: "",
-          dataInizio: "",
-          orarioInizio: "",
-          dataFine: "",
-          orarioFine: "",
-          motivoVisita: "",
-          flagAccessoAutomezzo: false,
-          flagRichiestaDpi: false,
-          materialeInformatico: "",
-        });
-      } else {
-        const errorData = await response.json();
-        console.error("Errore nella creazione della visita:", errorData);
-        alert(
-          `Errore nella prenotazione: ${
-            errorData.message || "Errore sconosciuto"
-          }`
-        );
-      }
+      // Reset del form dopo il successo
+      setFormData({
+        visitatoreId: "",
+        richiedenteId: "",
+        dataInizio: "",
+        orarioInizio: "",
+        dataFine: "",
+        orarioFine: "",
+        motivoVisita: "",
+        flagAccessoAutomezzo: false,
+        flagRichiestaDpi: false,
+        materialeInformatico: "",
+      });
     } catch (error) {
-      console.error("Errore nella richiesta:", error);
-      alert("Errore di connessione. Riprova più tardi.");
+      console.error("Errore nella creazione della visita:", error);
+      alert(
+        `Errore nella prenotazione: ${error.message || "Errore sconosciuto"}`
+      );
     } finally {
       setSubmitting(false);
     }

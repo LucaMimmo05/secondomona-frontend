@@ -5,6 +5,8 @@ import "../styles/login.css";
 import { toast, ToastContainer } from "react-toastify";
 import { parseJwt } from "../utils/parseJwt";
 
+const BASE_URL = "http://localhost:8080";
+
 // Spinner Component
 function Spinner() {
   return (
@@ -31,7 +33,7 @@ export default function LoginPage() {
     setLoading(true); // << Aggiunto per attivare lo spinner
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/login", {
+      const response = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -43,7 +45,6 @@ export default function LoginPage() {
         toast.success("Accesso effettuato con successo");
         const decodedToken = parseJwt(data.accessToken);
         console.log("Token decodificato:", decodedToken);
-
         localStorage.setItem("name", decodedToken?.name);
         localStorage.setItem("surname", decodedToken?.surname);
 
@@ -60,12 +61,15 @@ export default function LoginPage() {
         }
 
         localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
+        if (data.refreshToken) {
+          localStorage.setItem("refreshToken", data.refreshToken);
+        }
 
         const groups = decodedToken?.groups || [];
         const userRole = groups.find((g) => g !== "access-token") || null;
 
-        login(data.accessToken);
+        // Passa anche il refresh token al context
+        login(data.accessToken, data.refreshToken);
         if (userRole === "Admin") navigate("/admin");
         else if (userRole === "Portineria") navigate("/portineria");
         else if (userRole === "Dipendente") navigate("/employee");

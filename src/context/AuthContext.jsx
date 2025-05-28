@@ -1,5 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { getRoleFromToken } from "../utils/apiUtils";
+import {
+  getRoleFromToken,
+  refreshAccessToken,
+  apiCall,
+} from "../utils/apiUtils";
 
 const AuthContext = createContext();
 
@@ -17,9 +21,20 @@ export const AuthProvider = ({ children }) => {
   });
 
   const role = token ? getRoleFromToken(token) : null;
-  const login = (jwt) => {
+
+  // Funzione per aggiornare il token
+  const updateToken = (newToken) => {
+    localStorage.setItem("accessToken", newToken);
+    localStorage.setItem("token", newToken);
+    setToken(newToken);
+  };
+
+  const login = (jwt, refreshJwt = null) => {
     localStorage.setItem("accessToken", jwt);
     localStorage.setItem("token", jwt);
+    if (refreshJwt) {
+      localStorage.setItem("refreshToken", refreshJwt);
+    }
     setToken(jwt);
     console.log(
       "Login completato - ruolo estratto dal token:",
@@ -58,27 +73,16 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("lastPunch");
     }
   };
-
   // Funzione per controllare lo stato attuale dalle timbrature del server
   const checkWorkingStatus = async () => {
     const idPersona = localStorage.getItem("idPersona");
-    const authToken =
-      localStorage.getItem("accessToken") ||
-      localStorage.getItem("refreshToken");
 
-    if (!idPersona || !authToken) return;
+    if (!idPersona) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/timbrature/oggi/${idPersona}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
+      const response = await apiCall(`/api/timbrature/oggi/${idPersona}`, {
+        method: "GET",
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -133,6 +137,7 @@ export const AuthProvider = ({ children }) => {
         role,
         login,
         logout,
+        updateToken,
         isWorking,
         lastPunch,
         updateWorkingStatus,
