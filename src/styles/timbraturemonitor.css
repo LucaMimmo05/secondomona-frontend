@@ -142,7 +142,6 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    animation: fadeIn 0.6s ease-out;
 }
 
 .filter-group:nth-child(1) {
@@ -188,8 +187,8 @@
 .status-select:focus,
 .search-input:focus {
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    border-color: var(--text-color);
+    box-shadow: 0 0 0 2px rgba(10, 12, 14, 0.25);
     transform: translateY(-1px);
 }
 
@@ -213,18 +212,13 @@
     height: fit-content;
     transition: all 0.2s ease;
     min-height: 40px;
-    animation: slideIn 0.6s ease-out 1s both;
 }
 
 .refresh-btn:hover {
     background-color: #218838;
     transform: translateY(-1px);
-    animation: bounce 0.6s ease;
 }
 
-.refresh-btn:active {
-    animation: pulse 0.3s ease;
-}
 
 .download-pdf-btn {
   background-color: #dc3545;
@@ -332,7 +326,6 @@
 .timbrature-monitor .rdt_TableHeadRow {
     background-color: #f8f9fa;
     font-weight: 600;
-    border-bottom: 2px solid #007bff;
     animation: slideIn 0.6s ease-out;
 }
 

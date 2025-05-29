@@ -103,8 +103,8 @@
 
 .filter-input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: var(--text-color);
+  box-shadow: 0 0 0 2px rgba(10, 12, 14, 0.25);
 }
 
 .filter-input::placeholder {
