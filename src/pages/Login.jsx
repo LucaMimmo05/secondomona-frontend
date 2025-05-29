@@ -79,7 +79,7 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error("Errore durante il login:", error);
-      toast.error("Errore di connessione al server");
+      toast.error("Email o password errati");
     } finally {
       setLoading(false);
     }
