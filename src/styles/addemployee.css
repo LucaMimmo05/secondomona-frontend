@@ -253,6 +253,7 @@ input[type="checkbox"]:focus + .custom-checkbox::before {
 .form-actions{
     display: flex;
     justify-content: center;
+    gap: 20px;
 }
 
 /* === Responsive Design === */
