@@ -40,6 +40,22 @@ export const getRoleFromToken = (token) => {
   }
 };
 
+// Funzione per estrarre l'ID dell'utente dal token JWT
+export const getUserIdFromToken = (token) => {
+  if (!token) return null;
+
+  try {
+    const decoded = parseJwt(token);
+    if (!decoded) return null;
+
+    // L'ID dell'utente potrebbe essere in 'sub', 'userId', 'id', o 'idPersona'
+    return decoded.sub || decoded.userId || decoded.id || decoded.idPersona || null;
+  } catch (error) {
+    console.error("Errore nell'estrazione dell'ID utente dal token:", error);
+    return null;
+  }
+};
+
 // Funzione per validare se il token ha un ruolo autorizzato
 export const validateTokenRole = (token, allowedRoles) => {
   if (!token || !allowedRoles || allowedRoles.length === 0) return false;

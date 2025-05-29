@@ -253,10 +253,10 @@ const ActiveVisits = () => {
       <ToastContainer
         position="top-center"
         autoClose={3000}
-        hideProgressBar
+        hideProgressBar={false}
         closeOnClick
+        pauseOnHover
         draggable
-        closeButton={false}
       />
     </div>
   );

@@ -121,8 +121,8 @@
 }
 
 .stat-label {
-    font-size: 14px;
-    opacity: 0.9;
+  font-size: 14px;
+  opacity: 0.9;
 }
 
 .filters-section {
@@ -158,9 +158,9 @@
 }
 
 .filter-group label {
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
 }
 
 .date-input,
@@ -177,11 +177,11 @@
 }
 
 .status-select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0ibTcgMTAgNSA1IDUtNSIgc3Ryb2tlPSIjMzc0MTUxIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4=");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 16px;
+  appearance: none;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0ibTcgMTAgNSA1IDUtNSIgc3Ryb2tlPSIjMzc0MTUxIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4=");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
 }
 
 .date-input:focus,
@@ -194,12 +194,12 @@
 }
 
 .search-group {
-    flex: 1;
-    max-width: 350px;
+  flex: 1;
+  max-width: 350px;
 }
 
 .search-input {
-    width: 100%;
+  width: 100%;
 }
 
 .refresh-btn {
@@ -224,6 +224,31 @@
 
 .refresh-btn:active {
     animation: pulse 0.3s ease;
+}
+
+.download-pdf-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  height: fit-content;
+  transition: all 0.2s ease;
+  min-height: 40px;
+  margin-left: 10px;
+}
+
+.download-pdf-btn:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+.download-pdf-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .table-container {
@@ -267,15 +292,15 @@
 }
 
 .status-badge.entrata {
-    background-color: #d4edda;
-    color: #28a745;
-    border: 1px solid #c3e6cb;
+  background-color: #d4edda;
+  color: #28a745;
+  border: 1px solid #c3e6cb;
 }
 
 .status-badge.uscita {
-    background-color: #f8d7da;
-    color: #e8051b;
-    border: 1px solid #f5c6cb;
+  background-color: #f8d7da;
+  color: #e8051b;
+  border: 1px solid #f5c6cb;
 }
 
 /* Current Status */
@@ -299,8 +324,8 @@
 }
 
 .current-status.non_al_lavoro {
-    background-color: #f8d7da;
-    color: #721c24;
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
 /* DataTable Custom Styles */
@@ -312,9 +337,9 @@
 }
 
 .timbrature-monitor .rdt_TableHead .rdt_TableCell {
-    font-weight: 600;
-    color: #333;
-    padding: 12px 8px;
+  font-weight: 600;
+  color: #333;
+  padding: 12px 8px;
 }
 
 .timbrature-monitor .rdt_TableRow {
@@ -337,8 +362,8 @@
 }
 
 .timbrature-monitor .rdt_TableCell {
-    padding: 10px 8px;
-    vertical-align: middle;
+  padding: 10px 8px;
+  vertical-align: middle;
 }
 
 /* Animazioni per nuove righe */
@@ -352,13 +377,13 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .timbrature-monitor {
-        padding: 15px;
-    }
+  .timbrature-monitor {
+    padding: 15px;
+  }
 
-    .monitor-header h1 {
-        font-size: 24px;
-    }
+  .monitor-header h1 {
+    font-size: 24px;
+  }
 
     .stats-cards {
         flex-direction: column;
@@ -366,38 +391,43 @@
         animation: slideUp 0.8s ease-out 0.4s both;
     }
 
-    .stat-card {
-        width: 100%;
-        max-width: 250px;
-    }
+  .stat-card {
+    width: 100%;
+    max-width: 250px;
+  }
 
-    .filters-section {
-        flex-direction: column;
-        align-items: stretch;
-    }
+  .filters-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-    .filter-group {
-        width: 100%;
-    }
+  .filter-group {
+    width: 100%;
+  }
 
-    .date-input,
-    .status-select {
-        width: 100%;
-        min-width: auto;
-    }
+  .date-input,
+  .status-select {
+    width: 100%;
+    min-width: auto;
+  }
 
-    .refresh-btn {
-        width: 100%;
-        margin-top: 10px;
-    }
+  .refresh-btn {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .download-pdf-btn {
+    width: 100%;
+    margin-top: 10px;
+  }
 }
 
 @media (max-width: 480px) {
-    .stat-value {
-        font-size: 28px;
-    }
+  .stat-value {
+    font-size: 28px;
+  }
 
-    .filters-section {
-        padding: 15px;
-    }
+  .filters-section {
+    padding: 15px;
+  }
 }
