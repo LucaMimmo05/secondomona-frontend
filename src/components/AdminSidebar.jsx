@@ -4,6 +4,7 @@ import VisiteIcon from "../assets/Visit";
 import ArchivioIcon from "../assets/Archive";
 import AssignBadgeIcon from "../assets/AssignBadge";
 import AddVisitIcon from "../assets/AddVisit";
+import AddVisitorIcon from "../assets/AddVisitor";
 import AddEmployeeIcon from "../assets/AddEmployee";
 import EmployeeIcon from "../assets/Employee";
 import ClockIcon from "../assets/Clock";
@@ -40,14 +41,12 @@ const AdminSidebar = ({ activeSelector, setActiveSelector }) => {
         clearAuthData();
         logout();
         navigate("/");
-    };
-
-    const items = [
+    };    const items = [
         { icon: VisiteIcon, text: "Visite Attive" },
         { icon: ArchivioIcon, text: "Archivio Visite" },
         { icon: AssignBadgeIcon, text: "Assegna Badge" },
         { icon: AddVisitIcon, text: "Aggiungi Visita" },
-        { icon: AddVisitIcon, text: "Aggiungi Visitatore" },
+        { icon: AddVisitorIcon, text: "Aggiungi Visitatore" },
         { icon: AddEmployeeIcon, text: "Aggiungi Dipendente" },
         { icon: EmployeeIcon, text: "Dipendenti" },
         { icon: TicketIcon, text: "Timbrature" },

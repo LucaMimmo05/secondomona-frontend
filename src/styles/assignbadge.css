@@ -87,6 +87,25 @@
     cursor: pointer;
 }
 
+/* Status Badges */
+.status-badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    min-width: 100px;
+}
+
+.status-badge.in-attesa {
+    background-color: #ffecac;
+    color: #b58800;
+    border: 1px solid #ffdf74;
+}
+
 .badge-flag-icon {
     width: 1rem;
     height: 1rem;
