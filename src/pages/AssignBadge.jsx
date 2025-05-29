@@ -13,49 +13,45 @@ const AssignBadge = () => {
   const [successMsg, setSuccessMsg] = useState("");
 
   const navigate = useNavigate();
-
   const handleAssign = async (row) => {
     try {
       setLoadingId(row.idRichiesta);
       setErrorMsg("");
       setSuccessMsg("");
 
-      // Chiamata API con apiCall che gestisce automaticamente il token
-      const response = await apiCall(
-        "http://localhost:8080/api/badge/assegna",
-        {
-          method: "POST",
-          body: JSON.stringify(row.visitatore),
-        }
-      );
-
       console.log("Payload inviato:", row.visitatore);
-      console.log(response);
-      
-      if (!response.ok) throw new Error("Errore assegnazione badge");
 
-      setSuccessMsg(`Badge assegnato a ${row.visitatore?.nome} ${row.visitatore?.cognome}`);
-      setData((prev) => prev.filter((item) => item.idRichiesta !== row.idRichiesta));
+      // Chiamata API con apiCall che gestisce automaticamente il token
+      const response = await apiCall("/api/badge/assegna", {
+        method: "POST",
+        body: JSON.stringify(row.visitatore),
+      });
+
+      console.log("Risposta ricevuta:", response);
+
+      setSuccessMsg(
+        `Badge assegnato a ${row.visitatore?.nome} ${row.visitatore?.cognome}`
+      );
+      setData((prev) =>
+        prev.filter((item) => item.idRichiesta !== row.idRichiesta)
+      );
     } catch (error) {
-      console.error(error);
+      console.error("Errore nell'assegnazione badge:", error);
       setErrorMsg("Errore durante l'assegnazione del badge.");
     } finally {
       setLoadingId(null);
     }
   };
-
   const fetchVisits = async () => {
     setLoading(true);
     try {
-      // Chiamata API con apiCall, include Bearer token
-      const response = await apiCall(
-        "http://localhost:8080/api/visite/in-attesa"
-      );
+      console.log("Caricamento visite in attesa...");
 
-      if (!response.ok) throw new Error("Errore nel recupero visite");
+      // Chiamata API con apiCall, include Bearer token automaticamente
+      const visitsData = await apiCall("/api/visite/in-attesa");
 
-      const visitsData = await response.json();
-      setData(visitsData);
+      console.log("Visite ricevute:", visitsData);
+      setData(visitsData || []);
     } catch (error) {
       console.error("Errore nel fetch delle visite:", error);
       setErrorMsg("Impossibile caricare le visite.");
@@ -104,14 +100,18 @@ const AssignBadge = () => {
     {
       name: "Ospite",
       selector: (row) =>
-        row.visitatore ? `${row.visitatore.nome} ${row.visitatore.cognome}` : "N/A",
+        row.visitatore
+          ? `${row.visitatore.nome} ${row.visitatore.cognome}`
+          : "N/A",
       sortable: true,
       grow: 1,
     },
     {
       name: "Dipendente",
       selector: (row) =>
-        row.richiedente ? `${row.richiedente.nome} ${row.richiedente.cognome}` : "N/A",
+        row.richiedente
+          ? `${row.richiedente.nome} ${row.richiedente.cognome}`
+          : "N/A",
       sortable: true,
       grow: 1,
     },

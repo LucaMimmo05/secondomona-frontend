@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "../styles/timetracking.css";
+import { apiCall } from "../utils/apiUtils";
+import { useAuth } from "../context/AuthContext";
 
 const TimeTracking = () => {
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [lastPunch, setLastPunch] = useState(null);
-  const [isWorking, setIsWorking] = useState(false);
+  const { isWorking, lastPunch, updateWorkingStatus, checkWorkingStatus } =
+    useAuth();  const [currentTime, setCurrentTime] = useState(new Date());
   const [todayPunches, setTodayPunches] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -16,35 +17,40 @@ const TimeTracking = () => {
 
     return () => clearInterval(timer);
   }, []);
-
   // Carica le timbrature del giorno
   useEffect(() => {
+    console.log(
+      "🔍 TimeTracking: Componente montato, caricamento timbrature..."
+    );
     fetchTodayPunches();
+    // Sincronizza anche con il context per assicurarsi che abbia i dati più recenti
+    checkWorkingStatus();
   }, []);
   const fetchTodayPunches = async () => {
-    const token =
-      localStorage.getItem("accessToken") ||
-      localStorage.getItem("refreshToken");
-
-    // Ottieni l'ID dell'utente dal localStorage
+    console.log("🔍 fetchTodayPunches: Inizio caricamento timbrature");    // Ottieni l'ID dell'utente dal localStorage
     const idPersona =
       localStorage.getItem("idTessera") ||
       localStorage.getItem("idPersona") ||
       "1"; // Fallback per test
 
+    console.log("🔍 fetchTodayPunches: ID Persona:", idPersona);
+
+    // Verifica token
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+    console.log("🔍 fetchTodayPunches: Access Token presente:", !!accessToken);
+    console.log(
+      "🔍 fetchTodayPunches: Refresh Token presente:",
+      !!refreshToken
+    );
+
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/timbrature/oggi/${idPersona}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
+      console.log("🔍 fetchTodayPunches: Chiamata API in corso...");
+      const data = await apiCall(`/api/timbrature/oggi/${idPersona}`, {
+        method: "GET",
+      });      console.log("🔍 fetchTodayPunches: Risposta ricevuta:", data);
+
+      if (data) {
         // Ordina le timbrature per timestamp
         const sortedData = data.sort(
           (a, b) =>
@@ -52,34 +58,43 @@ const TimeTracking = () => {
             new Date(b.timestamp || b.dataOraTimbratura)
         );
 
+        console.log("🔍 fetchTodayPunches: Timbrature ordinate:", sortedData);
         setTodayPunches(sortedData);
 
         // Determina se il dipendente è attualmente al lavoro
         if (sortedData.length > 0) {
           const lastPunch = sortedData[sortedData.length - 1];
-          setLastPunch({
+          console.log("🔍 fetchTodayPunches: Ultima timbratura:", lastPunch);
+
+          const working =
+            (lastPunch.tipo || lastPunch.tipoTimbratura) === "ENTRATA";
+          console.log("🔍 fetchTodayPunches: Stato lavoro:", working);
+          updateWorkingStatus(working, {
             tipo: lastPunch.tipo || lastPunch.tipoTimbratura,
             timestamp: lastPunch.timestamp || lastPunch.dataOraTimbratura,
-            note: lastPunch.note,
-          });
-          setIsWorking(
-            (lastPunch.tipo || lastPunch.tipoTimbratura) === "ENTRATA"
-          );
+            note: lastPunch.note,          });
         }
-      }
-    } catch (error) {
-      console.error("Errore nel caricamento delle timbrature:", error);
+      } else {
+        console.log("🔍 fetchTodayPunches: Nessun dato ricevuto");
+      }    } catch (error) {
+      console.error(
+        "❌ fetchTodayPunches: Errore nel caricamento delle timbrature:",
+        error
+      );
+      // Non mostriamo alert per errori di caricamento, solo log
     }
   };
   const handlePunch = async (tipo) => {
+    console.log("🔍 handlePunch: Inizio timbratura tipo:", tipo);
     setLoading(true);
-    const token =
-      localStorage.getItem("accessToken") ||
-      localStorage.getItem("refreshToken"); // Ottieni l'ID tessera o ID persona dal localStorage
+
+    // Ottieni l'ID tessera o ID persona dal localStorage
     const idTessera =
       localStorage.getItem("idTessera") ||
       localStorage.getItem("idPersona") ||
       "1"; // Fallback minimo per test
+
+    console.log("🔍 handlePunch: ID Tessera:", idTessera);
 
     try {
       const now = new Date();
@@ -92,30 +107,24 @@ const TimeTracking = () => {
         } - ${now.toLocaleTimeString("it-IT")}`,
       };
 
-      console.log("Dati timbratura:", punchData);
+      console.log("🔍 handlePunch: Dati timbratura:", punchData);
 
-      const response = await fetch("http://localhost:8080/api/timbrature", {
+      const result = await apiCall("/api/timbrature", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(punchData),
       });
+      console.log("🔍 handlePunch: Risultato API:", result);
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Timbratura registrata:", result);
+      if (result) {
+        console.log("✅ handlePunch: Timbratura registrata:", result);
 
-        // Aggiorna lo stato
-        setIsWorking(tipo === "ENTRATA");
-        setLastPunch({
+        // Aggiorna lo stato tramite context
+        updateWorkingStatus(tipo === "ENTRATA", {
           tipo: tipo,
           timestamp: now.toISOString(),
           note: punchData.note,
-        });
-
-        // Ricarica le timbrature del giorno
+        });        // Ricarica le timbrature del giorno
+        console.log("🔍 handlePunch: Ricaricamento timbrature...");
         await fetchTodayPunches();
 
         alert(
@@ -123,19 +132,9 @@ const TimeTracking = () => {
             tipo === "ENTRATA" ? "entrata" : "uscita"
           } registrata con successo!`
         );
-      } else {
-        const errorData = await response
-          .json()
-          .catch(() => ({ message: "Errore sconosciuto" }));
-        alert(
-          `Errore nella timbratura: ${
-            errorData.message || "Errore sconosciuto"
-          }`
-        );
-      }
-    } catch (error) {
-      console.error("Errore nella timbratura:", error);
-      alert("Errore di connessione. Riprova più tardi.");
+      }    } catch (error) {
+      console.error("❌ handlePunch: Errore nella timbratura:", error);
+      alert(error.message || "Errore di connessione. Riprova più tardi.");
     } finally {
       setLoading(false);
     }
@@ -281,11 +280,10 @@ const TimeTracking = () => {
                   <div className="punch-note">
                     <small>{punch.note}</small>
                   </div>
-                )}
+                )}{" "}
               </div>
             ))}
-          </div>
-        )}
+          </div>        )}
       </div>
     </div>
   );
