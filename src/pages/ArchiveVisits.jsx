@@ -18,6 +18,29 @@ const ArchiveVisits = () => {
       ),
     },
     {
+      name: "Ora Inizio",
+      selector: (row) =>
+        new Date(row.dataInizio).toLocaleTimeString("it-IT", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      sortable: true,
+      width: "100px",
+      cell: (row) => (
+        <div
+          title={new Date(row.dataInizio).toLocaleTimeString("it-IT", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        >
+          {new Date(row.dataInizio).toLocaleTimeString("it-IT", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </div>
+      ),
+    },
+    {
       name: "Data Fine",
       selector: (row) => new Date(row.dataFine).toLocaleDateString("it-IT"),
       sortable: true,
@@ -25,6 +48,29 @@ const ArchiveVisits = () => {
       cell: (row) => (
         <div title={new Date(row.dataFine).toLocaleDateString("it-IT")}>
           {new Date(row.dataFine).toLocaleDateString("it-IT")}
+        </div>
+      ),
+    },
+    {
+      name: "Ora Fine",
+      selector: (row) =>
+        new Date(row.dataFine).toLocaleTimeString("it-IT", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      sortable: true,
+      width: "100px",
+      cell: (row) => (
+        <div
+          title={new Date(row.dataFine).toLocaleTimeString("it-IT", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        >
+          {new Date(row.dataFine).toLocaleTimeString("it-IT", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
         </div>
       ),
     },
@@ -89,11 +135,11 @@ const ArchiveVisits = () => {
       ),
     },
   ];
-
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filteredData, setFilteredData] = useState([]);
   const [dateFilter, setDateFilter] = useState("");
+  const [showLastVisitOnly, setShowLastVisitOnly] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -114,25 +160,55 @@ const ArchiveVisits = () => {
 
     fetchData();
   }, []);
+  // Funzione per ottenere l'ultima visita per ogni visitatore
+  const getLastVisitPerVisitor = (visits) => {
+    const visitsByVisitor = {};
 
-  // Filtro per data
+    visits.forEach((visit) => {
+      const visitorKey = visit.visitatore
+        ? `${visit.visitatore.nome}_${visit.visitatore.cognome}`
+        : "unknown";
+
+      if (
+        !visitsByVisitor[visitorKey] ||
+        new Date(visit.dataFine) >
+          new Date(visitsByVisitor[visitorKey].dataFine)
+      ) {
+        visitsByVisitor[visitorKey] = visit;
+      }
+    });
+
+    return Object.values(visitsByVisitor);
+  };
+
+  // Filtro combinato per data e ultima visita
   useEffect(() => {
-    if (!dateFilter) {
-      setFilteredData(data);
-    } else {
-      const filtered = data.filter((item) => {
-        const itemDate = new Date(item.dataInizio).toLocaleDateString("en-CA"); // YYYY-MM-DD format
+    let filtered = data;
+
+    // Applica filtro per data se presente
+    if (dateFilter) {
+      filtered = filtered.filter((item) => {
+        const itemDate = new Date(item.dataInizio).toLocaleDateString("en-CA");
         return itemDate === dateFilter;
       });
-      setFilteredData(filtered);
     }
-  }, [dateFilter, data]);
+
+    // Applica filtro per ultima visita se attivo
+    if (showLastVisitOnly) {
+      filtered = getLastVisitPerVisitor(filtered);
+    }
+
+    setFilteredData(filtered);
+  }, [dateFilter, data, showLastVisitOnly]);
   const handleDateChange = (e) => {
     setDateFilter(e.target.value);
   };
-
   const clearDateFilter = () => {
     setDateFilter("");
+  };
+
+  const toggleLastVisitFilter = () => {
+    setShowLastVisitOnly(!showLastVisitOnly);
   };
 
   return (
@@ -199,7 +275,21 @@ const ArchiveVisits = () => {
                 >
                   ✕
                 </button>
-              )}
+              )}{" "}
+            </div>
+          </div>
+          <div className="filters-last-visit">
+            <div className="filter-last-visit-container">
+              <label className="filter-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={showLastVisitOnly}
+                  onChange={toggleLastVisitFilter}
+                  className="filter-checkbox"
+                />
+                <span className="checkmark"></span>
+                Solo ultima visita per visitatore
+              </label>
             </div>
           </div>
           <div className="filter-results">

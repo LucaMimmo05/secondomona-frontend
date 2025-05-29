@@ -28,7 +28,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("token", newToken);
     setToken(newToken);
   };
-
   const login = (jwt, refreshJwt = null) => {
     localStorage.setItem("accessToken", jwt);
     localStorage.setItem("token", jwt);
@@ -40,8 +39,18 @@ export const AuthProvider = ({ children }) => {
       "Login completato - ruolo estratto dal token:",
       getRoleFromToken(jwt)
     );
+
+    // Dopo il login, verifica lo stato delle timbrature dal server
+    // per sincronizzare con eventuali stati salvati localmente
+    setTimeout(() => {
+      checkWorkingStatus();
+    }, 100);
   };
   const logout = () => {
+    // Salva lo stato delle timbrature prima di pulire tutto
+    const currentIsWorking = localStorage.getItem("isWorking");
+    const currentLastPunch = localStorage.getItem("lastPunch");
+
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("token");
@@ -50,14 +59,20 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("surname");
     localStorage.removeItem("idPersona");
     localStorage.removeItem("idTessera");
-    localStorage.removeItem("isWorking");
-    localStorage.removeItem("lastPunch");
+
+    // Ripristina lo stato delle timbrature
+    if (currentIsWorking) {
+      localStorage.setItem("isWorking", currentIsWorking);
+    }
+    if (currentLastPunch) {
+      localStorage.setItem("lastPunch", currentLastPunch);
+    }
 
     setToken(null);
-    setIsWorking(false);
-    setLastPunch(null);
+    // Non resettiamo isWorking e lastPunch se l'utente è ancora al lavoro
+    // Lo stato verrà mantenuto per il prossimo login
 
-    console.log("Logout completato - localStorage pulito");
+    console.log("Logout completato - stato timbrature preservato");
   };
 
   // Funzione per aggiornare lo stato delle timbrature
@@ -119,7 +134,6 @@ export const AuthProvider = ({ children }) => {
       console.error("Errore nel controllo stato timbrature:", error);
     }
   };
-
   useEffect(() => {
     const storedToken =
       localStorage.getItem("accessToken") || localStorage.getItem("token");
@@ -128,6 +142,21 @@ export const AuthProvider = ({ children }) => {
       setToken(storedToken);
       // Controlla lo stato delle timbrature al caricamento
       checkWorkingStatus();
+    } else {
+      // Anche senza token, ripristina lo stato delle timbrature se presente
+      const storedIsWorking = localStorage.getItem("isWorking");
+      const storedLastPunch = localStorage.getItem("lastPunch");
+
+      if (storedIsWorking === "true") {
+        setIsWorking(true);
+      }
+      if (storedLastPunch) {
+        try {
+          setLastPunch(JSON.parse(storedLastPunch));
+        } catch (e) {
+          console.error("Errore nel parsing di lastPunch:", e);
+        }
+      }
     }
   }, []);
   return (
