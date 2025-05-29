@@ -90,7 +90,9 @@ export const AuthProvider = ({ children }) => {
     } else {
       localStorage.removeItem("lastPunch");
     }
-  }; // Funzione per controllare lo stato attuale dalle timbrature del server
+  };
+
+  // Funzione per controllare lo stato attuale dalle timbrature del server
   const checkWorkingStatus = async () => {
     const idPersona = localStorage.getItem("idPersona");
     const idTessera = localStorage.getItem("idTessera");
@@ -106,108 +108,60 @@ export const AuthProvider = ({ children }) => {
     });
 
     try {
-      // Prova diversi endpoint per ottenere le timbrature di oggi
-      const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-      const endpoints = [
-        `/api/timbrature/persona/${idPersona}`,
-        `/api/timbrature/oggi/${idPersona}`,
-        `/api/timbrature?data=${today}`,
-        `/api/timbrature/dipendente/${idPersona}`,
-        `/api/timbrature`,
-      ];
-
+      // Usa l'endpoint corretto per le timbrature di oggi
+      const id = idPersona || idTessera;
+      const endpoint = `/api/timbrature/oggi/${id}`;
+      console.log("🔍 Chiamata all'endpoint:", endpoint);
+      
       let data = null;
-
-      for (const endpoint of endpoints) {
-        try {
-          console.log("🔍 Tentativo endpoint:", endpoint);
-          const response = await apiCall(endpoint, { method: "GET" });
-
-          // apiCall restituisce già i dati parsati
-          if (Array.isArray(response)) {
-            data = response;
-            console.log(
-              "✅ Endpoint funzionante:",
-              endpoint,
-              "Dati:",
-              data.length
-            );
-            break;
-          }
-        } catch (error) {
-          console.log("❌ Endpoint fallito:", endpoint, error.message);
-          continue;
-        }
-      }
-
-      if (!data) {
-        console.log(
-          "❌ Nessun endpoint ha funzionato per recuperare le timbrature"
-        );
+      try {
+        data = await apiCall(endpoint, { method: "GET" });
+        console.log("✅ Dati ricevuti:", data?.length || 0, "timbrature");
+      } catch (error) {
+        console.log("❌ Errore nel recupero timbrature:", error.message);
         return;
       }
 
-      // Filtra per la data di oggi e per l'utente corrente
-      const todayPunches = data.filter((punch) => {
-        // Filtra per data di oggi
-        const punchDate = new Date(punch.dataOraTimbratura || punch.timestamp)
-          .toISOString()
-          .split("T")[0];
-
-        if (punchDate !== today) return false;
-
-        // Filtra per utente corrente
-        const punchPersonId = (
-          punch.idPersona ||
-          punch.idTessera ||
-          punch.id
-        )?.toString();
-        return (
-          punchPersonId === idPersona?.toString() ||
-          punchPersonId === idTessera?.toString()
-        );
-      });
-
-      console.log("📊 Timbrature di oggi filtrate:", todayPunches);
-
-      if (todayPunches.length > 0) {
-        // Ordina per timestamp (più recente in alto)
-        const sortedData = todayPunches.sort(
-          (a, b) =>
-            new Date(b.timestamp || b.dataOraTimbratura) -
-            new Date(a.timestamp || a.dataOraTimbratura)
-        );
-
-        const lastPunch = sortedData[0]; // La più recente
-        const isCurrentlyWorking =
-          (lastPunch.tipo || lastPunch.tipoTimbratura) === "ENTRATA";
-
-        const punchData = {
-          tipo: lastPunch.tipo || lastPunch.tipoTimbratura,
-          timestamp: lastPunch.timestamp || lastPunch.dataOraTimbratura,
-          note: lastPunch.note,
-        };
-
-        console.log(
-          "🎯 Ultima timbratura:",
-          punchData,
-          "Al lavoro:",
-          isCurrentlyWorking
-        );
-
-        setIsWorking(isCurrentlyWorking);
-        setLastPunch(punchData);
-
-        // Persisti lo stato nel localStorage
-        localStorage.setItem("isWorking", isCurrentlyWorking.toString());
-        localStorage.setItem("lastPunch", JSON.stringify(punchData));
-      } else {
+      if (!data || !Array.isArray(data) || data.length === 0) {
         console.log("📭 Nessuna timbratura oggi - stato: non al lavoro");
         setIsWorking(false);
         setLastPunch(null);
         localStorage.setItem("isWorking", "false");
         localStorage.removeItem("lastPunch");
+        return;
       }
+
+      // Ordina per timestamp (più recente per ultimo)
+      const sortedData = [...data].sort(
+        (a, b) =>
+          new Date(a.timestamp || a.dataOraTimbratura) -
+          new Date(b.timestamp || b.dataOraTimbratura)
+      );
+
+      // Prendi l'ultima timbratura
+      const lastPunch = sortedData[sortedData.length - 1];
+      const isCurrentlyWorking =
+        (lastPunch.tipo || lastPunch.tipoTimbratura) === "ENTRATA";
+
+      const punchData = {
+        tipo: lastPunch.tipo || lastPunch.tipoTimbratura,
+        timestamp: lastPunch.timestamp || lastPunch.dataOraTimbratura,
+        note: lastPunch.note,
+      };
+
+      console.log(
+        "🎯 Ultima timbratura:",
+        punchData,
+        "Al lavoro:",
+        isCurrentlyWorking
+      );
+
+      setIsWorking(isCurrentlyWorking);
+      setLastPunch(punchData);
+
+      // Persisti lo stato nel localStorage
+      localStorage.setItem("isWorking", isCurrentlyWorking.toString());
+      localStorage.setItem("lastPunch", JSON.stringify(punchData));
     } catch (error) {
       console.error("❌ Errore nel controllo stato timbrature:", error);
     }
