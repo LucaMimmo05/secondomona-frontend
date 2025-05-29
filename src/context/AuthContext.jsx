@@ -237,7 +237,8 @@ export const AuthProvider = ({ children }) => {
       }
     }
   }, []);
-  return (    <AuthContext.Provider
+  return (
+    <AuthContext.Provider
       value={{
         token,
         role,

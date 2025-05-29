@@ -83,15 +83,19 @@ export default function LoginPage() {
 
   return (
     <>
-      {loading && <Spinner />}{" "}
+      {loading && <Spinner />}
+
       <div className="mainContainer">
         <ToastContainer
           position="top-center"
-          autoClose={3000}
-          hideProgressBar={false}
+          autoClose={2000}
+          hideProgressBar
           closeOnClick
-          pauseOnHover
           draggable
+          className="toastContainer"
+          toastClassName="customToast"
+          bodyClassName="toastBody"
+          closeButton={false}
         />
 
         <div className="formContainer">

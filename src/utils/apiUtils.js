@@ -49,7 +49,9 @@ export const getUserIdFromToken = (token) => {
     if (!decoded) return null;
 
     // L'ID dell'utente potrebbe essere in 'sub', 'userId', 'id', o 'idPersona'
-    return decoded.sub || decoded.userId || decoded.id || decoded.idPersona || null;
+    return (
+      decoded.sub || decoded.userId || decoded.id || decoded.idPersona || null
+    );
   } catch (error) {
     console.error("Errore nell'estrazione dell'ID utente dal token:", error);
     return null;

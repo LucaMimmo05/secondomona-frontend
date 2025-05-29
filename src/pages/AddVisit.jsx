@@ -10,16 +10,16 @@ import { useAuth } from "../context/AuthContext";
 const AddVisit = () => {
   // Initialize token refresh hook
   useTokenRefresh();
-    // Get the logged user ID from auth context
+  // Get the logged user ID from auth context
   const { userId } = useAuth();
-  
+
   // Fallback per userId se il context non funziona
   const actualUserId = userId || localStorage.getItem("idPersona");
-  
+
   console.log("🔍 User ID debug:", {
     contextUserId: userId,
     localStorageId: localStorage.getItem("idPersona"),
-    actualUserId: actualUserId
+    actualUserId: actualUserId,
   });
   const [formData, setFormData] = useState({
     // IDs selezionati
@@ -39,12 +39,12 @@ const AddVisit = () => {
 
     // Materiale Informatico
     materialeInformatico: "",
-  });  // Stati per le liste
+  }); // Stati per le liste
   const [visitatori, setVisitatori] = useState([]);
   // Non serve più dipendenti perché il richiedente è automatico
 
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);  // Fetch dei dati all'avvio del componente
+  const [submitting, setSubmitting] = useState(false); // Fetch dei dati all'avvio del componente
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -52,7 +52,6 @@ const AddVisit = () => {
         const visitatoriData = await apiCall("/api/visitatori");
         console.log("Visitatori:", visitatoriData);
         setVisitatori(visitatoriData);
-
       } catch (error) {
         console.error("Errore nel caricamento dei visitatori:", error);
       } finally {
@@ -67,8 +66,8 @@ const AddVisit = () => {
   const getTodayDate = () => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
 
@@ -78,20 +77,22 @@ const AddVisit = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-  };  const handleSubmit = async (e) => {
-    e.preventDefault();    console.log("🚀 Submit triggered");
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("🚀 Submit triggered");
     console.log("Form data:", formData);
     console.log("User ID:", actualUserId);
     console.log("Form element:", e.target);
     console.log("Form validity:", e.target.checkValidity());
-    
+
     // Controllo esplicito della validità del form HTML5
     if (!e.target.checkValidity()) {
       console.log("❌ Form HTML5 validation failed");
       e.target.reportValidity();
       return;
     }
-    
+
     setSubmitting(true);
 
     // Debug dettagliato dei dati del form
@@ -101,8 +102,8 @@ const AddVisit = () => {
       orarioInizio: formData.orarioInizio,
       dataFine: formData.dataFine,
       orarioFine: formData.orarioFine,
-      userId: actualUserId
-    });    // Validazione base
+      userId: actualUserId,
+    }); // Validazione base
     if (!formData.visitatoreId) {
       console.log("❌ Errore: visitatore non selezionato");
       showError("Seleziona un visitatore");
@@ -117,7 +118,8 @@ const AddVisit = () => {
       showError("ID visitatore non valido");
       setSubmitting(false);
       return;
-    }if (!actualUserId) {
+    }
+    if (!actualUserId) {
       console.log("❌ Errore: utente non autenticato");
       console.log("AuthContext userId:", userId);
       console.log("LocalStorage idPersona:", localStorage.getItem("idPersona"));
@@ -127,7 +129,12 @@ const AddVisit = () => {
     }
 
     // Validazione campi obbligatori del form
-    if (!formData.dataInizio || !formData.orarioInizio || !formData.dataFine || !formData.orarioFine) {
+    if (
+      !formData.dataInizio ||
+      !formData.orarioInizio ||
+      !formData.dataFine ||
+      !formData.orarioFine
+    ) {
       console.log("❌ Errore: campi obbligatori mancanti");
       showError("Compila tutti i campi obbligatori (date e orari)");
       setSubmitting(false);
@@ -135,7 +142,9 @@ const AddVisit = () => {
     }
 
     // Validazione date e orari
-    const dataInizio = new Date(`${formData.dataInizio}T${formData.orarioInizio}`);
+    const dataInizio = new Date(
+      `${formData.dataInizio}T${formData.orarioInizio}`
+    );
     const dataFine = new Date(`${formData.dataFine}T${formData.orarioFine}`);
     const now = new Date();
 
@@ -144,8 +153,9 @@ const AddVisit = () => {
       dataFine,
       now,
       isDataInizioFutura: dataInizio > now,
-      isDataFineSuccessiva: dataFine > dataInizio
-    });    if (dataInizio <= now) {
+      isDataFineSuccessiva: dataFine > dataInizio,
+    });
+    if (dataInizio <= now) {
       console.log("❌ Errore: data inizio non futura");
       showError("La data di inizio deve essere futura");
       setSubmitting(false);
@@ -156,28 +166,34 @@ const AddVisit = () => {
     if (formData.dataInizio === formData.dataFine) {
       if (formData.orarioFine <= formData.orarioInizio) {
         console.log("❌ Errore: orario fine non successivo (stesso giorno)");
-        showError("L'orario di fine deve essere successivo all'orario di inizio");
+        showError(
+          "L'orario di fine deve essere successivo all'orario di inizio"
+        );
         setSubmitting(false);
         return;
       }
     } else if (dataFine < dataInizio) {
       // Se le date sono diverse, la data di fine deve essere successiva
       console.log("❌ Errore: data fine precedente alla data inizio");
-      showError("La data di fine deve essere uguale o successiva alla data di inizio");
+      showError(
+        "La data di fine deve essere uguale o successiva alla data di inizio"
+      );
       setSubmitting(false);
       return;
-    }// Combina data e orario in formato OffsetDateTime per il backend (ISO format with timezone Europe/Rome)
+    } // Combina data e orario in formato OffsetDateTime per il backend (ISO format with timezone Europe/Rome)
     const dataInizioOffsetDateTime = `${formData.dataInizio}T${formData.orarioInizio}:00+02:00`;
     const dataFineOffsetDateTime = `${formData.dataFine}T${formData.orarioFine}:00+02:00`;
 
     // Trova il visitatore selezionato per ottenere i dati completi
-    const visitatoreSelezionato = visitatori.find(v => v.idPersona === visitatoreIdNum);
+    const visitatoreSelezionato = visitatori.find(
+      (v) => v.idPersona === visitatoreIdNum
+    );
     if (!visitatoreSelezionato) {
       console.log("❌ Errore: visitatore non trovato nella lista");
       showError("Visitatore selezionato non trovato");
       setSubmitting(false);
       return;
-    }    // Per il richiedente, recuperiamo i dati completi dell'utente loggato
+    } // Per il richiedente, recuperiamo i dati completi dell'utente loggato
     let richiedenteData;
     try {
       console.log("🔄 Recupero dati richiedente...");
@@ -189,20 +205,20 @@ const AddVisit = () => {
       setSubmitting(false);
       return;
     }
-    
+
     // Preparo i dati da inviare al backend secondo la struttura corretta
     const visitData = {
-      visitatore: { 
+      visitatore: {
         id: visitatoreSelezionato.idPersona,
         nome: visitatoreSelezionato.nome,
         cognome: visitatoreSelezionato.cognome,
-        mail: visitatoreSelezionato.mail
+        mail: visitatoreSelezionato.mail,
       },
-      richiedente: { 
+      richiedente: {
         id: parseInt(actualUserId),
         nome: richiedenteData.nome,
-        cognome: richiedenteData.cognome, 
-        mail: richiedenteData.mail
+        cognome: richiedenteData.cognome,
+        mail: richiedenteData.mail,
       },
       dataInizio: dataInizioOffsetDateTime,
       dataFine: dataFineOffsetDateTime,
@@ -210,13 +226,18 @@ const AddVisit = () => {
       flagRichiestaDPI: formData.flagRichiestaDpi,
       flagAccessoAutomezzo: formData.flagAccessoAutomezzo,
       // Materiale informatico con struttura corretta
-      materialeInformatico: formData.materialeInformatico ? {
-        idMateriale: 1, // TODO: Dovrebbe essere selezionabile o gestito dal backend
-        descrizione: formData.materialeInformatico
-      } : null,
+      materialeInformatico: formData.materialeInformatico
+        ? {
+            idMateriale: 1, // TODO: Dovrebbe essere selezionabile o gestito dal backend
+            descrizione: formData.materialeInformatico,
+          }
+        : null,
     };
 
-    console.log("📤 Dati da inviare al backend:", JSON.stringify(visitData, null, 2));
+    console.log(
+      "📤 Dati da inviare al backend:",
+      JSON.stringify(visitData, null, 2)
+    );
 
     try {
       console.log("🔄 Invio richiesta API...");
@@ -239,21 +260,22 @@ const AddVisit = () => {
         flagAccessoAutomezzo: false,
         flagRichiestaDpi: false,
         materialeInformatico: "",
-      });    } catch (error) {
+      });
+    } catch (error) {
       console.error("❌ Errore nella creazione della visita:", error);
       console.error("Dettagli errore:", {
         message: error.message,
         stack: error.stack,
         response: error.response,
         errorData: error.data,
-        status: error.status
+        status: error.status,
       });
-      
+
       // Log dell'errore completo per debug
       if (error.data) {
         console.error("🔍 Backend error details:", error.data);
       }
-      
+
       showError(
         `Errore nella prenotazione: ${error.message || "Errore sconosciuto"}`
       );
@@ -268,8 +290,12 @@ const AddVisit = () => {
       {loading ? (
         <div className="loading">Caricamento...</div>
       ) : (
-        <form className="visit-form" onSubmit={handleSubmit}>          {/* Sezione Selezione Visitatore */}
-          <div className="form-section">            <h3>Seleziona Visitatore</h3>
+        <form className="visit-form" onSubmit={handleSubmit}>
+          {" "}
+          {/* Sezione Selezione Visitatore */}
+          <div className="form-section">
+            {" "}
+            <h3>Seleziona Visitatore</h3>
             <div className="form-row">
               <div className="input-group">
                 <label>Visitatore*</label>
@@ -278,24 +304,35 @@ const AddVisit = () => {
                   value={formData.visitatoreId}
                   onChange={handleInputChange}
                   required
-                >                  <option value="">-- Seleziona un visitatore --</option>
+                >
+                  {" "}
+                  <option value="">-- Seleziona un visitatore --</option>
                   {visitatori.map((visitatore) => (
-                    <option key={visitatore.idPersona} value={visitatore.idPersona}>
-                      {visitatore.nome} {visitatore.cognome} -{" "}
-                      {visitatore.mail}
+                    <option
+                      key={visitatore.idPersona}
+                      value={visitatore.idPersona}
+                    >
+                      {visitatore.nome} {visitatore.cognome} - {visitatore.mail}
                     </option>
                   ))}
                 </select>
               </div>
             </div>
             <div className="info-text">
-              <p><small>ℹ️ La visita sarà registrata automaticamente a tuo nome come richiedente</small></p>
+              <p>
+                <small>
+                  ℹ️ La visita sarà registrata automaticamente a tuo nome come
+                  richiedente
+                </small>
+              </p>
             </div>
           </div>
           {/* Sezione Dettagli Visita */}
           <div className="form-section">
             <h3>Dettagli Visita</h3>
-            <div className="form-row">              <div className="input-group">
+            <div className="form-row">
+              {" "}
+              <div className="input-group">
                 <label>Data Inizio*</label>
                 <input
                   type="date"
@@ -396,14 +433,16 @@ const AddVisit = () => {
                   Richiesta DPI
                 </label>
               </div>
-            </div>          </div>{" "}          <button
+            </div>{" "}
+          </div>{" "}
+          <button
             type="submit"
             className="prenota-button"
             disabled={submitting}
             onClick={(e) => {
               console.log("🖱️ Button clicked!", e);
               // Se per qualche motivo il form submit non funziona, proviamo il submit manuale
-              if (e.type === 'click') {
+              if (e.type === "click") {
                 console.log("Attempting manual form submission");
               }
             }}
@@ -412,7 +451,7 @@ const AddVisit = () => {
           </button>
         </form>
       )}
-      
+
       <ToastContainer
         position="top-center"
         autoClose={5000}

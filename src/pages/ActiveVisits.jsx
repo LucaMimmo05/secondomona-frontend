@@ -3,58 +3,10 @@ import "../styles/activevisit.css";
 import DataTable from "react-data-table-component";
 import { useEffect } from "react";
 import { apiCall } from "../utils/apiUtils";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const ActiveVisits = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Funzione per concludere una visita
-  const handleConcludiVisita = async (idVisita, visitatorName) => {
-    if (
-      !window.confirm(
-        `Sei sicuro di voler concludere la visita di ${visitatorName}?`
-      )
-    ) {
-      return;
-    }
-
-    try {
-      await apiCall(`/api/visite/${idVisita}/conclusione`, {
-        method: "PUT",
-      });
-
-      toast.success(`Visita di ${visitatorName} conclusa con successo!`);
-
-      // Ricarica i dati dopo la conclusione
-      fetchData();
-    } catch (error) {
-      console.error("Errore durante la conclusione della visita:", error);
-      toast.error(
-        `Errore nella conclusione della visita: ${
-          error.message || "Errore sconosciuto"
-        }`
-      );
-    }
-  };
-
-  // Funzione separata per caricare i dati
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const result = await apiCall("/api/visite/attive", {
-        method: "GET",
-      });
-      console.log("Dati visite attive:", result);
-      setData(result);
-    } catch (error) {
-      console.error("Errore durante il recupero dei dati:", error);
-      toast.error("Errore durante il caricamento delle visite attive");
-    } finally {
-      setLoading(false);
-    }
-  };
   const columns = [
     {
       name: "Data Inizio",
@@ -188,28 +140,32 @@ const ActiveVisits = () => {
         </div>
       ),
     },
-    {
-      name: "Azioni",
-      width: "80px",
-      center: true,
-      cell: (row) => {
-        const visitatorName = row.visitatore
-          ? `${row.visitatore.nome} ${row.visitatore.cognome}`
-          : "Visitatore";
-
-        return (
-          <button
-            className="conclude-visit-btn"
-            onClick={() => handleConcludiVisita(row.idRichiesta, visitatorName)}
-            title={`Concludi visita di ${visitatorName}`}
-          >
-            ✕
-          </button>
-        );
-      },
-    },
   ];
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        const response = await apiCall(
+          "http://localhost:8080/api/visite/attive",
+          {
+            method: "GET",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const result = await response.json();
+        console.log("Dati visite attive:", result);
+        setData(result);
+      } catch (error) {
+        console.error("Errore durante il recupero dei dati:", error);
+        // L'apiCall gestisce automaticamente logout per token scaduti
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchData();
   }, []);
 
@@ -249,14 +205,6 @@ const ActiveVisits = () => {
         responsive
         highlightOnHover
         progressPending={loading}
-      />
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        closeOnClick
-        pauseOnHover
-        draggable
       />
     </div>
   );
