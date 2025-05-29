@@ -5,7 +5,8 @@ import { useAuth } from "../context/AuthContext";
 
 const TimeTracking = () => {
   const { isWorking, lastPunch, updateWorkingStatus, checkWorkingStatus } =
-    useAuth();  const [currentTime, setCurrentTime] = useState(new Date());
+    useAuth();
+  const [currentTime, setCurrentTime] = useState(new Date());
   const [todayPunches, setTodayPunches] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +28,7 @@ const TimeTracking = () => {
     checkWorkingStatus();
   }, []);
   const fetchTodayPunches = async () => {
-    console.log("🔍 fetchTodayPunches: Inizio caricamento timbrature");    // Ottieni l'ID dell'utente dal localStorage
+    console.log("🔍 fetchTodayPunches: Inizio caricamento timbrature"); // Ottieni l'ID dell'utente dal localStorage
     const idPersona =
       localStorage.getItem("idTessera") ||
       localStorage.getItem("idPersona") ||
@@ -48,7 +49,8 @@ const TimeTracking = () => {
       console.log("🔍 fetchTodayPunches: Chiamata API in corso...");
       const data = await apiCall(`/api/timbrature/oggi/${idPersona}`, {
         method: "GET",
-      });      console.log("🔍 fetchTodayPunches: Risposta ricevuta:", data);
+      });
+      console.log("🔍 fetchTodayPunches: Risposta ricevuta:", data);
 
       if (data) {
         // Ordina le timbrature per timestamp
@@ -72,11 +74,13 @@ const TimeTracking = () => {
           updateWorkingStatus(working, {
             tipo: lastPunch.tipo || lastPunch.tipoTimbratura,
             timestamp: lastPunch.timestamp || lastPunch.dataOraTimbratura,
-            note: lastPunch.note,          });
+            note: lastPunch.note,
+          });
         }
       } else {
         console.log("🔍 fetchTodayPunches: Nessun dato ricevuto");
-      }    } catch (error) {
+      }
+    } catch (error) {
       console.error(
         "❌ fetchTodayPunches: Errore nel caricamento delle timbrature:",
         error
@@ -123,7 +127,7 @@ const TimeTracking = () => {
           tipo: tipo,
           timestamp: now.toISOString(),
           note: punchData.note,
-        });        // Ricarica le timbrature del giorno
+        }); // Ricarica le timbrature del giorno
         console.log("🔍 handlePunch: Ricaricamento timbrature...");
         await fetchTodayPunches();
 
@@ -132,7 +136,8 @@ const TimeTracking = () => {
             tipo === "ENTRATA" ? "entrata" : "uscita"
           } registrata con successo!`
         );
-      }    } catch (error) {
+      }
+    } catch (error) {
       console.error("❌ handlePunch: Errore nella timbratura:", error);
       alert(error.message || "Errore di connessione. Riprova più tardi.");
     } finally {
@@ -283,7 +288,8 @@ const TimeTracking = () => {
                 )}{" "}
               </div>
             ))}
-          </div>        )}
+          </div>
+        )}
       </div>
     </div>
   );

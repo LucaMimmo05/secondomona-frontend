@@ -112,7 +112,7 @@ export const AuthProvider = ({ children }) => {
       const id = idPersona || idTessera;
       const endpoint = `/api/timbrature/oggi/${id}`;
       console.log("🔍 Chiamata all'endpoint:", endpoint);
-      
+
       let data = null;
       try {
         data = await apiCall(endpoint, { method: "GET" });

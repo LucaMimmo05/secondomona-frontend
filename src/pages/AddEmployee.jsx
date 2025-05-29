@@ -4,13 +4,12 @@ import { apiCall } from "../utils/apiUtils";
 
 const AddEmployee = () => {
   const [formData, setFormData] = useState({
-    // Campi obbligatori secondo il database
-    nome: "",
+    // Campi obbligatori secondo il database    nome: "",
     cognome: "",
     cf: "",
     mail: "",
-    passwordHash: "",
-    ruolo: "EMPLOYEE",
+    passwordHash: "", // Sarà mappato a 'password' nel JSON inviato all'API
+    ruolo: "Dipendente",
     numeroDocumento: "",
     dataScadenzaDocumento: "",
 
@@ -45,9 +44,8 @@ const AddEmployee = () => {
     duvri: false,
     flagPrivacy: false,
     dataConsegnaPrivacy: "",
-    idCentroCosto: "",
     idRuna: "",
-    foto: ""
+    foto: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -58,13 +56,13 @@ const AddEmployee = () => {
   // Campi obbligatori secondo il database (Non Null)
   const requiredFields = [
     "nome",
-    "cognome", 
+    "cognome",
     "cf",
     "mail",
     "passwordHash",
     "ruolo",
     "numeroDocumento",
-    "dataScadenzaDocumento"
+    "dataScadenzaDocumento",
   ];
 
   const validateField = (name, value) => {
@@ -93,10 +91,17 @@ const AddEmployee = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    let newValue = type === "checkbox" ? checked : value;
-
-    // Conversione dei campi numerici
-    if (["idFiliale", "idMansione", "idDeposito", "idRiferimento", "accessNumber", "accessCount", "idCentroCosto"].includes(name)) {
+    let newValue = type === "checkbox" ? checked : value; // Conversione dei campi numerici
+    if (
+      [
+        "idFiliale",
+        "idMansione",
+        "idDeposito",
+        "idRiferimento",
+        "accessNumber",
+        "accessCount",
+      ].includes(name)
+    ) {
       newValue = value === "" ? "" : parseInt(value) || "";
     }
 
@@ -128,26 +133,78 @@ const AddEmployee = () => {
       [name]: error,
     }));
   };
-
   const prepareDataForSubmission = (data) => {
-    const cleanedData = { ...data };
-    
-    // Rimuovi campi vuoti per evitare problemi con il backend
-    Object.keys(cleanedData).forEach(key => {
-      if (cleanedData[key] === "" || cleanedData[key] === null) {
-        delete cleanedData[key];
+    // Crea l'oggetto base con i campi obbligatori
+    const formattedData = {
+      // Campi obbligatori secondo la classe Persona
+      nome: data.nome,
+      cognome: data.cognome,
+      cf: data.cf,
+      mail: data.mail,
+      password: data.passwordHash, // Usa passwordHash, non password
+      ruolo: data.ruolo,
+      numeroDocumento: data.numeroDocumento,
+      dataScadenzaDocumento: data.dataScadenzaDocumento,
+
+      // Campi con valori di default obbligatori
+      visitatore: false, // I dipendenti non sono visitatori
+      accessNumber: 0,
+      accessCount: 0,
+      preposto: data.preposto || false,
+      antincendio: data.antincendio || false,
+      primoSoccorso: data.primoSoccorso || false,
+      duvri: data.duvri || false,
+      flagPrivacy: data.flagPrivacy || false,
+
+      // Centro costo obbligatorio
+      centroCosto: {
+        idCentroCosto: 1,
+      },
+    };
+
+    // Aggiungi campi opzionali solo se hanno un valore non vuoto
+    const optionalFields = [
+      "idRuna",
+      "diminutivo",
+      "azienda",
+      "indirizzo",
+      "citta",
+      "provincia",
+      "nazione",
+      "telefono",
+      "cellulare",
+      "fax",
+      "pIva",
+      "foto",
+      "dataAssunzione",
+      "matricola",
+      "idFiliale",
+      "idMansione",
+      "idDeposito",
+      "idRiferimento",
+      "luogoNascita",
+      "dataNascita",
+      "dataScadCertificato",
+      "tipoDocumento",
+      "dataConsegnaPrivacy",
+    ];
+
+    optionalFields.forEach((field) => {
+      if (data[field] && data[field] !== "") {
+        // Converti i campi numerici se necessario
+        if (
+          ["idFiliale", "idMansione", "idDeposito", "idRiferimento"].includes(
+            field
+          )
+        ) {
+          formattedData[field] = parseInt(data[field]) || null;
+        } else {
+          formattedData[field] = data[field];
+        }
       }
     });
 
-    // Assicurati che i campi booleani siano corretti
-    const booleanFields = ["visitatore", "preposto", "antincendio", "primoSoccorso", "duvri", "flagPrivacy"];
-    booleanFields.forEach(field => {
-      if (cleanedData[field] !== undefined) {
-        cleanedData[field] = Boolean(cleanedData[field]);
-      }
-    });
-
-    return cleanedData;
+    return formattedData;
   };
 
   const handleSubmit = async (e) => {
@@ -179,26 +236,27 @@ const AddEmployee = () => {
       setIsSubmitting(false);
       return;
     }
-
     try {
       const dataToSend = prepareDataForSubmission(formData);
-      
-      const response = await apiCall("http://localhost:8080/api/visitatori", {
+
+      console.log("Dati da inviare:", JSON.stringify(dataToSend, null, 2));
+
+      // Utilizziamo apiCall che gestisce automaticamente l'autorizzazione
+      const result = await apiCall("http://localhost:8080/api/dipendenti", {
         method: "POST",
-        body: dataToSend,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
       });
+      console.log("Risposta dal server:", result);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Errore durante il salvataggio");
-      }
-
-      const result = await response.json();
       setSubmitMessage({
         type: "success",
-        text: `Dipendente ${result.nome} ${result.cognome} aggiunto con successo! ID: ${result.idPersona}`,
+        text: `Dipendente ${result.nome} ${
+          result.cognome
+        } aggiunto con successo! ID: ${result.id || result.idPersona}`,
       });
-      
       // Reset del form
       setFormData({
         nome: "",
@@ -206,7 +264,7 @@ const AddEmployee = () => {
         cf: "",
         mail: "",
         passwordHash: "",
-        ruolo: "EMPLOYEE",
+        ruolo: "Dipendente",
         numeroDocumento: "",
         dataScadenzaDocumento: "",
         diminutivo: "",
@@ -239,9 +297,8 @@ const AddEmployee = () => {
         duvri: false,
         flagPrivacy: false,
         dataConsegnaPrivacy: "",
-        idCentroCosto: "",
         idRuna: "",
-        foto: ""
+        foto: "",
       });
       setTouched({});
     } catch (error) {
@@ -258,7 +315,7 @@ const AddEmployee = () => {
   return (
     <div className="add-employee-container">
       <h1>Aggiungi Dipendente</h1>
-      
+
       {submitMessage.text && (
         <div className={`submit-message ${submitMessage.type}`}>
           {submitMessage.text}
@@ -386,7 +443,7 @@ const AddEmployee = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Sezione Informazioni di Contatto */}
         <div className="form-section">
           <h3>Informazioni di Contatto</h3>
@@ -490,7 +547,7 @@ const AddEmployee = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Sezione Informazioni Aziendali */}
         <div className="form-section">
           <h3>Informazioni Aziendali</h3>
@@ -522,7 +579,6 @@ const AddEmployee = () => {
               />
             </div>
           </div>
-
           <div className="form-row">
             <div className="input-group">
               <label>Data Assunzione</label>
@@ -535,7 +591,7 @@ const AddEmployee = () => {
               />
             </div>
             <div className="input-group">
-              <label>Ruolo*</label>
+              <label>Ruolo*</label>{" "}
               <select
                 name="ruolo"
                 value={formData.ruolo}
@@ -543,16 +599,15 @@ const AddEmployee = () => {
                 onBlur={handleBlur}
                 className={errors.ruolo ? "error" : ""}
               >
-                <option value="EMPLOYEE">Dipendente</option>
-                <option value="ADMIN">Amministratore</option>
-                <option value="PORTINERIA">Portineria</option>
+                <option value="Dipendente">Dipendente</option>
+                <option value="Admin">Amministratore</option>
+                <option value="Portineria">Portineria</option>
               </select>
               {errors.ruolo && (
                 <span className="error-message">{errors.ruolo}</span>
               )}
             </div>
           </div>
-
           <div className="form-row">
             <div className="input-group">
               <label>ID Filiale</label>
@@ -575,7 +630,6 @@ const AddEmployee = () => {
               />
             </div>
           </div>
-
           <div className="form-row">
             <div className="input-group">
               <label>ID Deposito</label>
@@ -597,19 +651,8 @@ const AddEmployee = () => {
                 onBlur={handleBlur}
               />
             </div>
-          </div>
-
+          </div>{" "}
           <div className="form-row">
-            <div className="input-group">
-              <label>ID Centro Costo</label>
-              <input
-                type="number"
-                name="idCentroCosto"
-                value={formData.idCentroCosto}
-                onChange={handleInputChange}
-                onBlur={handleBlur}
-              />
-            </div>
             <div className="input-group">
               <label>Visitatore</label>
               <input
@@ -621,7 +664,7 @@ const AddEmployee = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Sezione Accessi */}
         <div className="form-section">
           <h3>Informazioni Accessi</h3>
@@ -660,13 +703,13 @@ const AddEmployee = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Sezione Documento di Identità */}
         <div className="form-section">
           <h3>Documento di Identità</h3>
           <div className="form-row">
             <div className="input-group">
-              <label>Tipo Documento</label>
+              <label>Tipo Documento</label>{" "}
               <select
                 name="tipoDocumento"
                 value={formData.tipoDocumento}
@@ -674,9 +717,9 @@ const AddEmployee = () => {
                 onBlur={handleBlur}
               >
                 <option value="">Seleziona tipo documento</option>
-                <option value="CARTA_IDENTITA">Carta d'Identità</option>
-                <option value="PATENTE">Patente</option>
-                <option value="PASSAPORTO">Passaporto</option>
+                <option value="Carta d'identità">Carta d'Identità</option>
+                <option value="Patente">Patente</option>
+                <option value="Passaporto">Passaporto</option>
               </select>
             </div>
             <div className="input-group">
@@ -725,7 +768,7 @@ const AddEmployee = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Sezione Certificazioni e Sicurezza */}
         <div className="form-section">
           <h3>Certificazioni e Sicurezza</h3>
@@ -796,7 +839,7 @@ const AddEmployee = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Sezione Privacy */}
         <div className="form-section">
           <h3>Privacy</h3>
@@ -813,7 +856,7 @@ const AddEmployee = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Sezione Altri Dati */}
         <div className="form-section">
           <h3>Altri Dati</h3>
@@ -842,12 +885,8 @@ const AddEmployee = () => {
             </div>
           </div>
         </div>
-        
-        <button 
-          type="submit" 
-          className="submit-button"
-          disabled={isSubmitting}
-        >
+
+        <button type="submit" className="submit-button" disabled={isSubmitting}>
           {isSubmitting ? "Invio in corso..." : "Aggiungi Dipendente"}
         </button>
       </form>
