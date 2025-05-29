@@ -4,6 +4,8 @@ import UpdateIcon from "../assets/update";
 import "../styles/timbraturemonitor.css";
 import { apiCall } from "../utils/apiUtils";
 import { useTokenRefresh } from "../hooks/useTokenRefresh";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const TimbratureMonitor = () => {
   // Initialize token refresh hook
@@ -192,6 +194,66 @@ const TimbratureMonitor = () => {
 
     setFilteredTimbrature(filtered);
   };
+  // Funzione per scaricare il PDF delle presenze
+  const downloadPresenzePdf = async () => {
+    try {
+      toast.info("Generazione PDF in corso...");
+
+      const response = await fetch(
+        "http://localhost:8080/api/sicurezza/presenze/pdf",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            Accept: "application/pdf",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Errore HTTP: ${response.status}`);
+      }
+
+      // Converti la risposta in blob
+      const blob = await response.blob();
+
+      // Crea un URL temporaneo per il blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Crea un elemento <a> temporaneo per scaricare il file
+      const link = document.createElement("a");
+      link.href = url;
+
+      // Estrai il nome del file dall'header Content-Disposition o usa un nome di default
+      const contentDisposition = response.headers.get("Content-Disposition");
+      let fileName = "Presenze.pdf";
+
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(
+          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+        );
+        if (fileNameMatch && fileNameMatch[1]) {
+          fileName = fileNameMatch[1].replace(/['"]/g, "");
+        }
+      }
+
+      link.download = fileName;
+
+      // Aggiungi il link al DOM, clicca e rimuovi
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Pulisci l'URL temporaneo
+      window.URL.revokeObjectURL(url);
+
+      toast.success("PDF scaricato con successo!");
+    } catch (error) {
+      console.error("Errore nel download del PDF:", error);
+      toast.error(`Errore nel download del PDF: ${error.message}`);
+    }
+  };
+
   // Funzione helper per ottenere il nome della persona in modo consistente
   const getPersonName = (row) => {
     // Prima priorità: campi diretti nomeDipendente e cognomeDipendente
@@ -422,6 +484,9 @@ const TimbratureMonitor = () => {
           <UpdateIcon style={{ marginRight: "8px" }} />
           Aggiorna
         </button>
+        <button onClick={downloadPresenzePdf} className="download-pdf-btn">
+          Scarica PDF Presenze
+        </button>
       </div>{" "}
       <div className="table-container">
         {loading ? (
@@ -440,6 +505,14 @@ const TimbratureMonitor = () => {
           />
         )}
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
     </div>
   );
 };

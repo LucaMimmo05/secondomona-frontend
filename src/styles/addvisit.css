@@ -278,6 +278,26 @@ input[type="checkbox"]:focus + .custom-checkbox::before {
         font-size: 18px;
     }
     .form-section {
-        padding: 16px;
+    padding: 16px;
     }
+}
+
+/* === Info Text === */
+.info-text {
+    margin-top: 10px;
+    padding: 12px;
+    background-color: #e7f3ff;
+    border: 1px solid #b3d9ff;
+    border-radius: 6px;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.info-text p {
+    margin: 0;
+    color: #0066cc;
+    font-weight: 500;
+}
+
+.info-text small {
+    font-size: 13px;
 }

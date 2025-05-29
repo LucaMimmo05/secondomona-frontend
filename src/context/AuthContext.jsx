@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import {
   getRoleFromToken,
+  getUserIdFromToken,
   refreshAccessToken,
   apiCall,
 } from "../utils/apiUtils";
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }) => {
   });
 
   const role = token ? getRoleFromToken(token) : null;
+  const userId = token ? getUserIdFromToken(token) : null;
 
   // Funzione per aggiornare il token
   const updateToken = (newToken) => {
@@ -41,10 +43,11 @@ export const AuthProvider = ({ children }) => {
     );
 
     // Dopo il login, verifica lo stato delle timbrature dal server
-    // per sincronizzare con eventuali stati salvati localmente
+    // Aspetta un po' per assicurarsi che i dati della persona siano stati salvati
     setTimeout(() => {
+      console.log("🔄 Avvio controllo stato timbrature dopo login...");
       checkWorkingStatus();
-    }, 100);
+    }, 500);
   };
   const logout = () => {
     // Salva lo stato delle timbrature prima di pulire tutto
@@ -87,51 +90,126 @@ export const AuthProvider = ({ children }) => {
     } else {
       localStorage.removeItem("lastPunch");
     }
-  };
-  // Funzione per controllare lo stato attuale dalle timbrature del server
+  }; // Funzione per controllare lo stato attuale dalle timbrature del server
   const checkWorkingStatus = async () => {
     const idPersona = localStorage.getItem("idPersona");
+    const idTessera = localStorage.getItem("idTessera");
 
-    if (!idPersona) return;
+    if (!idPersona && !idTessera) {
+      console.log("❌ Nessun ID disponibile per il controllo stato timbrature");
+      return;
+    }
+
+    console.log("🔍 Controllo stato timbrature dal server per:", {
+      idPersona,
+      idTessera,
+    });
 
     try {
-      const response = await apiCall(`/api/timbrature/oggi/${idPersona}`, {
-        method: "GET",
-      });
+      // Prova diversi endpoint per ottenere le timbrature di oggi
+      const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+      const endpoints = [
+        `/api/timbrature/persona/${idPersona}`,
+        `/api/timbrature/oggi/${idPersona}`,
+        `/api/timbrature?data=${today}`,
+        `/api/timbrature/dipendente/${idPersona}`,
+        `/api/timbrature`,
+      ];
 
-      if (response.ok) {
-        const data = await response.json();
-        const sortedData = data.sort(
-          (a, b) =>
-            new Date(a.timestamp || a.dataOraTimbratura) -
-            new Date(b.timestamp || b.dataOraTimbratura)
-        );
+      let data = null;
 
-        if (sortedData.length > 0) {
-          const lastPunch = sortedData[sortedData.length - 1];
-          const isCurrentlyWorking =
-            (lastPunch.tipo || lastPunch.tipoTimbratura) === "ENTRATA";
-          const punchData = {
-            tipo: lastPunch.tipo || lastPunch.tipoTimbratura,
-            timestamp: lastPunch.timestamp || lastPunch.dataOraTimbratura,
-            note: lastPunch.note,
-          };
+      for (const endpoint of endpoints) {
+        try {
+          console.log("🔍 Tentativo endpoint:", endpoint);
+          const response = await apiCall(endpoint, { method: "GET" });
 
-          setIsWorking(isCurrentlyWorking);
-          setLastPunch(punchData);
-
-          // Persisti lo stato nel localStorage
-          localStorage.setItem("isWorking", isCurrentlyWorking.toString());
-          localStorage.setItem("lastPunch", JSON.stringify(punchData));
-        } else {
-          setIsWorking(false);
-          setLastPunch(null);
-          localStorage.setItem("isWorking", "false");
-          localStorage.removeItem("lastPunch");
+          // apiCall restituisce già i dati parsati
+          if (Array.isArray(response)) {
+            data = response;
+            console.log(
+              "✅ Endpoint funzionante:",
+              endpoint,
+              "Dati:",
+              data.length
+            );
+            break;
+          }
+        } catch (error) {
+          console.log("❌ Endpoint fallito:", endpoint, error.message);
+          continue;
         }
       }
+
+      if (!data) {
+        console.log(
+          "❌ Nessun endpoint ha funzionato per recuperare le timbrature"
+        );
+        return;
+      }
+
+      // Filtra per la data di oggi e per l'utente corrente
+      const todayPunches = data.filter((punch) => {
+        // Filtra per data di oggi
+        const punchDate = new Date(punch.dataOraTimbratura || punch.timestamp)
+          .toISOString()
+          .split("T")[0];
+
+        if (punchDate !== today) return false;
+
+        // Filtra per utente corrente
+        const punchPersonId = (
+          punch.idPersona ||
+          punch.idTessera ||
+          punch.id
+        )?.toString();
+        return (
+          punchPersonId === idPersona?.toString() ||
+          punchPersonId === idTessera?.toString()
+        );
+      });
+
+      console.log("📊 Timbrature di oggi filtrate:", todayPunches);
+
+      if (todayPunches.length > 0) {
+        // Ordina per timestamp (più recente in alto)
+        const sortedData = todayPunches.sort(
+          (a, b) =>
+            new Date(b.timestamp || b.dataOraTimbratura) -
+            new Date(a.timestamp || a.dataOraTimbratura)
+        );
+
+        const lastPunch = sortedData[0]; // La più recente
+        const isCurrentlyWorking =
+          (lastPunch.tipo || lastPunch.tipoTimbratura) === "ENTRATA";
+
+        const punchData = {
+          tipo: lastPunch.tipo || lastPunch.tipoTimbratura,
+          timestamp: lastPunch.timestamp || lastPunch.dataOraTimbratura,
+          note: lastPunch.note,
+        };
+
+        console.log(
+          "🎯 Ultima timbratura:",
+          punchData,
+          "Al lavoro:",
+          isCurrentlyWorking
+        );
+
+        setIsWorking(isCurrentlyWorking);
+        setLastPunch(punchData);
+
+        // Persisti lo stato nel localStorage
+        localStorage.setItem("isWorking", isCurrentlyWorking.toString());
+        localStorage.setItem("lastPunch", JSON.stringify(punchData));
+      } else {
+        console.log("📭 Nessuna timbratura oggi - stato: non al lavoro");
+        setIsWorking(false);
+        setLastPunch(null);
+        localStorage.setItem("isWorking", "false");
+        localStorage.removeItem("lastPunch");
+      }
     } catch (error) {
-      console.error("Errore nel controllo stato timbrature:", error);
+      console.error("❌ Errore nel controllo stato timbrature:", error);
     }
   };
   useEffect(() => {
@@ -159,11 +237,11 @@ export const AuthProvider = ({ children }) => {
       }
     }
   }, []);
-  return (
-    <AuthContext.Provider
+  return (    <AuthContext.Provider
       value={{
         token,
         role,
+        userId,
         login,
         logout,
         updateToken,

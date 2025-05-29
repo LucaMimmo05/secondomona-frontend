@@ -5,8 +5,6 @@ import "../styles/login.css";
 import { toast, ToastContainer } from "react-toastify";
 import { parseJwt } from "../utils/parseJwt";
 
-const BASE_URL = "http://localhost:8080";
-
 // Spinner Component
 function Spinner() {
   return (
@@ -33,7 +31,7 @@ export default function LoginPage() {
     setLoading(true); // << Aggiunto per attivare lo spinner
 
     try {
-      const response = await fetch(`${BASE_URL}/api/auth/login`, {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -45,6 +43,7 @@ export default function LoginPage() {
         toast.success("Accesso effettuato con successo");
         const decodedToken = parseJwt(data.accessToken);
         console.log("Token decodificato:", decodedToken);
+
         localStorage.setItem("name", decodedToken?.name);
         localStorage.setItem("surname", decodedToken?.surname);
 
@@ -61,15 +60,12 @@ export default function LoginPage() {
         }
 
         localStorage.setItem("accessToken", data.accessToken);
-        if (data.refreshToken) {
-          localStorage.setItem("refreshToken", data.refreshToken);
-        }
+        localStorage.setItem("refreshToken", data.refreshToken);
 
         const groups = decodedToken?.groups || [];
         const userRole = groups.find((g) => g !== "access-token") || null;
 
-        // Passa anche il refresh token al context
-        login(data.accessToken, data.refreshToken);
+        login(data.accessToken);
         if (userRole === "Admin") navigate("/admin");
         else if (userRole === "Portineria") navigate("/portineria");
         else if (userRole === "Dipendente") navigate("/employee");
@@ -79,7 +75,7 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error("Errore durante il login:", error);
-      toast.error("Email o password errati");
+      toast.error("Errore di connessione al server");
     } finally {
       setLoading(false);
     }
@@ -87,19 +83,15 @@ export default function LoginPage() {
 
   return (
     <>
-      {loading && <Spinner />}
-
+      {loading && <Spinner />}{" "}
       <div className="mainContainer">
         <ToastContainer
           position="top-center"
-          autoClose={2000}
-          hideProgressBar
+          autoClose={3000}
+          hideProgressBar={false}
           closeOnClick
+          pauseOnHover
           draggable
-          className="toastContainer"
-          toastClassName="customToast"
-          bodyClassName="toastBody"
-          closeButton={false}
         />
 
         <div className="formContainer">

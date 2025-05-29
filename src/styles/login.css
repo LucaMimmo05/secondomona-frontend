@@ -19,56 +19,6 @@
 }
 
 /* Stile fedele all'immagine */
-.customToast {
-  position: relative !important;
-  min-width: 388px !important;
-  min-height: 56px !important;
-  background:#FF000033!important;
-  border: 1px solid #FF3B30 !important;
-  border-radius: 8px !important;
-  margin: 8px auto !important;
-  font-family: 'Inter', sans-serif !important;
-  color: #FF3B30 !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  display: flex !important;
-  align-items: center !important;
-}
-
-.toastBody {
-  position: relative !important;
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  width: 100% !important;
-}
-
-/* Icona X assoluta a destra */
-.customToast::after {
-  content: '';
-  position: absolute !important;
-  right: 24px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 20px !important;
-  height: 20px !important;
-  cursor: pointer;
-  background-size: contain !important;
-}
-
-.error_toast {
-  border-color: #FF3B30 !important;
-  color: #FF3B30 !important;
-}
-
-/* Per mantenere il posizionamento corretto */
-.toastContainer {
-  width: 100% !important;
-  max-width: 388px !important;
-  top: 20px !important;
-  padding: 0 20px !important;
-}
-
 .logo {
   width: 180px;
   height: auto;
@@ -94,7 +44,7 @@
   font-size: 14px;
   font-weight: 500;
   color: #1e1e1e;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .inputField {
@@ -103,7 +53,7 @@
   border: 1px solid #c8c8c8;
   border-radius: 4px;
   padding: 0 12px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   transition: border-color 0.2s;
 }
@@ -121,7 +71,7 @@
   color: white;
   font-size: 16px;
   font-weight: 600;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -167,4 +117,3 @@
     transform: rotate(360deg);
   }
 }
-  
