@@ -158,6 +158,12 @@ input[type="checkbox"]:focus + .custom-checkbox::before {
     outline-offset: 2px;
 }
 
+textarea {
+    resize: vertical;
+    border: solid 1px #d1d5db !important;
+    border-radius: 6px !important;
+    
+}
 /* === Form Layout & Inputs === */
 .visit-form {
     display: flex;
@@ -242,6 +248,27 @@ input[type="checkbox"]:focus + .custom-checkbox::before {
     transform: translateY(0);
 }
 
+.reset-button {
+    background-color: #b62d3b;
+    color: white;
+    padding: 14px 32px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 20px;
+    align-self: center;
+    min-width: 200px;
+}
+.reset-button:hover {
+    background-color: #dc3545;
+    color: white;
+    transform: translateY(-1px) scale(1.05);
+}
+.reset-button:active {
+    transform: translateY(0) scale(1);
+}
 /* === Responsive === */
 @media (max-width: 768px) {
     .add-visit-container {

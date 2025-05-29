@@ -1,12 +1,70 @@
+/* Keyframes per le animazioni */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 53%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40%, 43% {
+        transform: translateY(-8px);
+    }
+    70% {
+        transform: translateY(-4px);
+    }
+    90% {
+        transform: translateY(-2px);
+    }
+}
+
 /* Timbrature Monitor Styles */
 .timbrature-monitor {
     padding: 20px;
     background-color: #ffffff;
     min-height: 100vh;
+    animation: fadeIn 0.6s ease-out;
 }
 
 .monitor-header {
     margin-bottom: 30px;
+    animation: slideUp 0.8s ease-out;
 }
 
 .monitor-header h1 {
@@ -15,6 +73,7 @@
     font-size: 32px;
     font-weight: 400;
     margin-bottom: 4rem;
+    animation: slideUp 0.8s ease-out 0.2s both;
 }
 
 .stats-cards {
@@ -22,6 +81,7 @@
     gap: 20px;
     justify-content: center;
     margin-bottom: 20px;
+    animation: fadeIn 1s ease-out 0.4s both;
 }
 
 .stat-card {
@@ -32,12 +92,32 @@
     border-radius: 12px;
     text-align: center;
     min-width: 150px;
+    animation: slideUp 0.6s ease-out;
+    transition: all 0.3s ease;
+}
+
+.stat-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.stat-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.stat-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .stat-value {
     font-size: 36px;
     font-weight: 700;
     margin-bottom: 5px;
+    animation: pulse 2s infinite;
 }
 
 .stat-label {
@@ -55,12 +135,26 @@
     border-radius: 8px;
     border: 1px solid #e9ecef;
     flex-wrap: wrap;
+    animation: slideIn 0.8s ease-out 0.6s both;
 }
 
 .filter-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.filter-group:nth-child(1) {
+    animation-delay: 0.7s;
+}
+
+.filter-group:nth-child(2) {
+    animation-delay: 0.8s;
+}
+
+.filter-group:nth-child(3) {
+    animation-delay: 0.9s;
 }
 
 .filter-group label {
@@ -79,6 +173,7 @@
     background-color: #ffffff;
     min-width: 150px;
     min-height: 40px;
+    transition: all 0.3s ease;
 }
 
 .status-select {
@@ -95,6 +190,7 @@
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    transform: translateY(-1px);
 }
 
 .search-group {
@@ -117,11 +213,17 @@
     height: fit-content;
     transition: all 0.2s ease;
     min-height: 40px;
+    animation: slideIn 0.6s ease-out 1s both;
 }
 
 .refresh-btn:hover {
     background-color: #218838;
     transform: translateY(-1px);
+    animation: bounce 0.6s ease;
+}
+
+.refresh-btn:active {
+    animation: pulse 0.3s ease;
 }
 
 .table-container {
@@ -129,6 +231,12 @@
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.8s ease-out 0.8s both;
+    transition: all 0.3s ease;
+}
+
+.table-container:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .loading {
@@ -136,6 +244,7 @@
     padding: 40px;
     font-size: 18px;
     color: #666;
+    animation: pulse 1.5s infinite;
 }
 
 /* Status Badges */
@@ -149,6 +258,12 @@
     font-weight: 500;
     text-transform: uppercase;
     min-width: 100px;
+    animation: fadeIn 0.5s ease-out;
+    transition: all 0.3s ease;
+}
+
+.status-badge:hover {
+    transform: scale(1.05);
 }
 
 .status-badge.entrata {
@@ -169,11 +284,18 @@
     border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
+    animation: fadeIn 0.6s ease-out;
+    transition: all 0.3s ease;
+}
+
+.current-status:hover {
+    transform: scale(1.1);
 }
 
 .current-status.al_lavoro {
     background-color: #d4edda;
     color: #155724;
+    animation: pulse 2s infinite;
 }
 
 .current-status.non_al_lavoro {
@@ -186,6 +308,7 @@
     background-color: #f8f9fa;
     font-weight: 600;
     border-bottom: 2px solid #007bff;
+    animation: slideIn 0.6s ease-out;
 }
 
 .timbrature-monitor .rdt_TableHead .rdt_TableCell {
@@ -196,15 +319,35 @@
 
 .timbrature-monitor .rdt_TableRow {
     border-bottom: 1px solid #e9ecef;
+    animation: fadeIn 0.5s ease-out;
+    transition: all 0.3s ease;
+}
+
+.timbrature-monitor .rdt_TableRow:nth-child(even) {
+    animation-delay: 0.1s;
+}
+
+.timbrature-monitor .rdt_TableRow:nth-child(odd) {
+    animation-delay: 0.2s;
 }
 
 .timbrature-monitor .rdt_TableRow:hover {
     background-color: #f8f9fa;
+    transform: translateX(4px);
 }
 
 .timbrature-monitor .rdt_TableCell {
     padding: 10px 8px;
     vertical-align: middle;
+}
+
+/* Animazioni per nuove righe */
+.new-row-enter {
+    animation: slideIn 0.6s ease-out;
+}
+
+.row-update {
+    animation: pulse 0.8s ease-out;
 }
 
 /* Responsive Design */
@@ -220,6 +363,7 @@
     .stats-cards {
         flex-direction: column;
         align-items: center;
+        animation: slideUp 0.8s ease-out 0.4s both;
     }
 
     .stat-card {

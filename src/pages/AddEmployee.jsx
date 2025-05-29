@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import "../styles/addemployee.css";
+import { apiCall } from "../utils/apiUtils";
 
 const AddEmployee = () => {
   const [formData, setFormData] = useState({
-    // Informazioni personali obbligatorie
+    // Campi obbligatori secondo il database
     nome: "",
     cognome: "",
     cf: "",
@@ -13,13 +14,9 @@ const AddEmployee = () => {
     numeroDocumento: "",
     dataScadenzaDocumento: "",
 
-    // Informazioni personali opzionali
+    // Campi opzionali che corrispondono al database
     diminutivo: "",
-    luogoNascita: "",
-    dataNascita: "",
-    foto: "",
-
-    // Informazioni contatto
+    azienda: "",
     indirizzo: "",
     citta: "",
     provincia: "",
@@ -27,9 +24,6 @@ const AddEmployee = () => {
     telefono: "",
     cellulare: "",
     fax: "",
-
-    // Informazioni aziendali
-    azienda: "",
     pIva: "",
     dataAssunzione: "",
     matricola: "",
@@ -37,45 +31,46 @@ const AddEmployee = () => {
     idMansione: "",
     idDeposito: "",
     idRiferimento: "",
-
-    // Documento identità
-    tipoDocumento: "",
-
-    // Certificazioni mediche e sicurezza
+    visitatore: false,
+    accessNumber: "",
+    accessCount: "",
+    accessUpdate: "",
+    luogoNascita: "",
+    dataNascita: "",
     dataScadCertificato: "",
     preposto: false,
     antincendio: false,
     primoSoccorso: false,
+    tipoDocumento: "",
     duvri: false,
-
-    // Privacy
     flagPrivacy: false,
     dataConsegnaPrivacy: "",
-
-    // Altri campi
-    visitatore: false,
+    idCentroCosto: "",
     idRuna: "",
+    foto: ""
   });
 
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState({ type: "", text: "" });
 
-  // Campi obbligatori secondo il modello backend
+  // Campi obbligatori secondo il database (Non Null)
   const requiredFields = [
     "nome",
-    "cognome",
+    "cognome", 
     "cf",
     "mail",
     "passwordHash",
     "ruolo",
     "numeroDocumento",
-    "dataScadenzaDocumento",
+    "dataScadenzaDocumento"
   ];
 
   const validateField = (name, value) => {
     let error = "";
 
-    if (requiredFields.includes(name) && !value.trim()) {
+    if (requiredFields.includes(name) && !value.toString().trim()) {
       error = "Questo campo è obbligatorio";
     } else if (name === "cf" && value && value.length !== 16) {
       error = "Il codice fiscale deve essere di 16 caratteri";
@@ -87,6 +82,10 @@ const AddEmployee = () => {
       error = "Inserisci un indirizzo email valido";
     } else if (name === "passwordHash" && value && value.length < 6) {
       error = "La password deve essere di almeno 6 caratteri";
+    } else if (name === "pIva" && value && value.length > 20) {
+      error = "Partita IVA troppo lunga (max 20 caratteri)";
+    } else if (name === "numeroDocumento" && value && value.length > 100) {
+      error = "Numero documento troppo lungo (max 100 caratteri)";
     }
 
     return error;
@@ -94,7 +93,12 @@ const AddEmployee = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const newValue = type === "checkbox" ? checked : value;
+    let newValue = type === "checkbox" ? checked : value;
+
+    // Conversione dei campi numerici
+    if (["idFiliale", "idMansione", "idDeposito", "idRiferimento", "accessNumber", "accessCount", "idCentroCosto"].includes(name)) {
+      newValue = value === "" ? "" : parseInt(value) || "";
+    }
 
     setFormData((prev) => ({
       ...prev,
@@ -125,8 +129,31 @@ const AddEmployee = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const prepareDataForSubmission = (data) => {
+    const cleanedData = { ...data };
+    
+    // Rimuovi campi vuoti per evitare problemi con il backend
+    Object.keys(cleanedData).forEach(key => {
+      if (cleanedData[key] === "" || cleanedData[key] === null) {
+        delete cleanedData[key];
+      }
+    });
+
+    // Assicurati che i campi booleani siano corretti
+    const booleanFields = ["visitatore", "preposto", "antincendio", "primoSoccorso", "duvri", "flagPrivacy"];
+    booleanFields.forEach(field => {
+      if (cleanedData[field] !== undefined) {
+        cleanedData[field] = Boolean(cleanedData[field]);
+      }
+    });
+
+    return cleanedData;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage({ type: "", text: "" });
 
     // Marca tutti i campi come toccati
     const allTouched = {};
@@ -145,18 +172,99 @@ const AddEmployee = () => {
 
     // Se ci sono errori, non inviare
     if (Object.keys(newErrors).length > 0) {
-      console.log("Form has errors:", newErrors);
+      setSubmitMessage({
+        type: "error",
+        text: "Correggi gli errori nel form prima di inviare",
+      });
+      setIsSubmitting(false);
       return;
     }
 
-    console.log("Form data:", formData);
-    // Qui implementerai la chiamata API per salvare il dipendente
-    alert("Dipendente aggiunto con successo!");
+    try {
+      const dataToSend = prepareDataForSubmission(formData);
+      
+      const response = await apiCall("http://localhost:8080/api/visitatori", {
+        method: "POST",
+        body: dataToSend,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Errore durante il salvataggio");
+      }
+
+      const result = await response.json();
+      setSubmitMessage({
+        type: "success",
+        text: `Dipendente ${result.nome} ${result.cognome} aggiunto con successo! ID: ${result.idPersona}`,
+      });
+      
+      // Reset del form
+      setFormData({
+        nome: "",
+        cognome: "",
+        cf: "",
+        mail: "",
+        passwordHash: "",
+        ruolo: "EMPLOYEE",
+        numeroDocumento: "",
+        dataScadenzaDocumento: "",
+        diminutivo: "",
+        azienda: "",
+        indirizzo: "",
+        citta: "",
+        provincia: "",
+        nazione: "",
+        telefono: "",
+        cellulare: "",
+        fax: "",
+        pIva: "",
+        dataAssunzione: "",
+        matricola: "",
+        idFiliale: "",
+        idMansione: "",
+        idDeposito: "",
+        idRiferimento: "",
+        visitatore: false,
+        accessNumber: "",
+        accessCount: "",
+        accessUpdate: "",
+        luogoNascita: "",
+        dataNascita: "",
+        dataScadCertificato: "",
+        preposto: false,
+        antincendio: false,
+        primoSoccorso: false,
+        tipoDocumento: "",
+        duvri: false,
+        flagPrivacy: false,
+        dataConsegnaPrivacy: "",
+        idCentroCosto: "",
+        idRuna: "",
+        foto: ""
+      });
+      setTouched({});
+    } catch (error) {
+      console.error("Errore API:", error);
+      setSubmitMessage({
+        type: "error",
+        text: error.message || "Errore durante l'operazione",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="add-employee-container">
       <h1>Aggiungi Dipendente</h1>
+      
+      {submitMessage.text && (
+        <div className={`submit-message ${submitMessage.type}`}>
+          {submitMessage.text}
+        </div>
+      )}
+
       <form className="employee-form" onSubmit={handleSubmit}>
         {/* Sezione Informazioni Personali */}
         <div className="form-section">
@@ -171,7 +279,7 @@ const AddEmployee = () => {
                 onChange={handleInputChange}
                 onBlur={handleBlur}
                 className={errors.nome ? "error" : ""}
-                required
+                maxLength="100"
               />
               {errors.nome && (
                 <span className="error-message">{errors.nome}</span>
@@ -186,7 +294,7 @@ const AddEmployee = () => {
                 onChange={handleInputChange}
                 onBlur={handleBlur}
                 className={errors.cognome ? "error" : ""}
-                required
+                maxLength="100"
               />
               {errors.cognome && (
                 <span className="error-message">{errors.cognome}</span>
@@ -203,6 +311,7 @@ const AddEmployee = () => {
                 value={formData.diminutivo}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                maxLength="50"
               />
             </div>
             <div className="input-group">
@@ -215,7 +324,6 @@ const AddEmployee = () => {
                 onBlur={handleBlur}
                 className={errors.cf ? "error" : ""}
                 maxLength="16"
-                required
               />
               {errors.cf && <span className="error-message">{errors.cf}</span>}
             </div>
@@ -231,7 +339,7 @@ const AddEmployee = () => {
                 onChange={handleInputChange}
                 onBlur={handleBlur}
                 className={errors.mail ? "error" : ""}
-                required
+                maxLength="200"
               />
               {errors.mail && (
                 <span className="error-message">{errors.mail}</span>
@@ -246,7 +354,7 @@ const AddEmployee = () => {
                 onChange={handleInputChange}
                 onBlur={handleBlur}
                 className={errors.passwordHash ? "error" : ""}
-                required
+                maxLength="255"
               />
               {errors.passwordHash && (
                 <span className="error-message">{errors.passwordHash}</span>
@@ -263,6 +371,7 @@ const AddEmployee = () => {
                 value={formData.luogoNascita}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                maxLength="100"
               />
             </div>
             <div className="input-group">
@@ -277,6 +386,7 @@ const AddEmployee = () => {
             </div>
           </div>
         </div>
+        
         {/* Sezione Informazioni di Contatto */}
         <div className="form-section">
           <h3>Informazioni di Contatto</h3>
@@ -289,6 +399,7 @@ const AddEmployee = () => {
                 value={formData.indirizzo}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                maxLength="200"
               />
             </div>
             <div className="input-group">
@@ -299,6 +410,7 @@ const AddEmployee = () => {
                 value={formData.citta}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                maxLength="200"
               />
             </div>
           </div>
@@ -312,6 +424,7 @@ const AddEmployee = () => {
                 value={formData.provincia}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                maxLength="50"
               />
             </div>
             <div className="input-group">
@@ -322,6 +435,7 @@ const AddEmployee = () => {
                 value={formData.nazione}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                maxLength="100"
               />
             </div>
           </div>
@@ -335,6 +449,7 @@ const AddEmployee = () => {
                 value={formData.telefono}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                maxLength="50"
               />
             </div>
             <div className="input-group">
@@ -345,6 +460,7 @@ const AddEmployee = () => {
                 value={formData.cellulare}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                maxLength="50"
               />
             </div>
           </div>
@@ -358,6 +474,7 @@ const AddEmployee = () => {
                 value={formData.fax}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                maxLength="50"
               />
             </div>
             <div className="input-group">
@@ -368,10 +485,12 @@ const AddEmployee = () => {
                 value={formData.azienda}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                maxLength="200"
               />
             </div>
           </div>
         </div>
+        
         {/* Sezione Informazioni Aziendali */}
         <div className="form-section">
           <h3>Informazioni Aziendali</h3>
@@ -384,7 +503,12 @@ const AddEmployee = () => {
                 value={formData.pIva}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                className={errors.pIva ? "error" : ""}
+                maxLength="20"
               />
+              {errors.pIva && (
+                <span className="error-message">{errors.pIva}</span>
+              )}
             </div>
             <div className="input-group">
               <label>Matricola</label>
@@ -394,6 +518,7 @@ const AddEmployee = () => {
                 value={formData.matricola}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                maxLength="50"
               />
             </div>
           </div>
@@ -417,9 +542,7 @@ const AddEmployee = () => {
                 onChange={handleInputChange}
                 onBlur={handleBlur}
                 className={errors.ruolo ? "error" : ""}
-                required
               >
-                {" "}
                 <option value="EMPLOYEE">Dipendente</option>
                 <option value="ADMIN">Amministratore</option>
                 <option value="PORTINERIA">Portineria</option>
@@ -475,7 +598,69 @@ const AddEmployee = () => {
               />
             </div>
           </div>
+
+          <div className="form-row">
+            <div className="input-group">
+              <label>ID Centro Costo</label>
+              <input
+                type="number"
+                name="idCentroCosto"
+                value={formData.idCentroCosto}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+              />
+            </div>
+            <div className="input-group">
+              <label>Visitatore</label>
+              <input
+                type="checkbox"
+                name="visitatore"
+                checked={formData.visitatore}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
         </div>
+        
+        {/* Sezione Accessi */}
+        <div className="form-section">
+          <h3>Informazioni Accessi</h3>
+          <div className="form-row">
+            <div className="input-group">
+              <label>Numero Accesso</label>
+              <input
+                type="number"
+                name="accessNumber"
+                value={formData.accessNumber}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+              />
+            </div>
+            <div className="input-group">
+              <label>Conteggio Accessi</label>
+              <input
+                type="number"
+                name="accessCount"
+                value={formData.accessCount}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+              />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="input-group">
+              <label>Aggiornamento Accesso</label>
+              <input
+                type="datetime-local"
+                name="accessUpdate"
+                value={formData.accessUpdate}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+              />
+            </div>
+          </div>
+        </div>
+        
         {/* Sezione Documento di Identità */}
         <div className="form-section">
           <h3>Documento di Identità</h3>
@@ -503,7 +688,7 @@ const AddEmployee = () => {
                 onChange={handleInputChange}
                 onBlur={handleBlur}
                 className={errors.numeroDocumento ? "error" : ""}
-                required
+                maxLength="100"
               />
               {errors.numeroDocumento && (
                 <span className="error-message">{errors.numeroDocumento}</span>
@@ -521,7 +706,6 @@ const AddEmployee = () => {
                 onChange={handleInputChange}
                 onBlur={handleBlur}
                 className={errors.dataScadenzaDocumento ? "error" : ""}
-                required
               />
               {errors.dataScadenzaDocumento && (
                 <span className="error-message">
@@ -540,7 +724,8 @@ const AddEmployee = () => {
               />
             </div>
           </div>
-        </div>{" "}
+        </div>
+        
         {/* Sezione Certificazioni e Sicurezza */}
         <div className="form-section">
           <h3>Certificazioni e Sicurezza</h3>
@@ -595,9 +780,8 @@ const AddEmployee = () => {
                 DUVRI
               </label>
             </div>
-          </div>{" "}
+          </div>
           <div className="checkbox-group">
-            
             <div className="checkbox-item">
               <input
                 type="checkbox"
@@ -611,7 +795,8 @@ const AddEmployee = () => {
               </label>
             </div>
           </div>
-        </div>{" "}
+        </div>
+        
         {/* Sezione Privacy */}
         <div className="form-section">
           <h3>Privacy</h3>
@@ -628,6 +813,7 @@ const AddEmployee = () => {
             </div>
           </div>
         </div>
+        
         {/* Sezione Altri Dati */}
         <div className="form-section">
           <h3>Altri Dati</h3>
@@ -640,6 +826,7 @@ const AddEmployee = () => {
                 value={formData.idRuna}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                maxLength="50"
               />
             </div>
             <div className="input-group">
@@ -655,8 +842,13 @@ const AddEmployee = () => {
             </div>
           </div>
         </div>
-        <button type="submit" className="submit-button">
-          Aggiungi Dipendente
+        
+        <button 
+          type="submit" 
+          className="submit-button"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Invio in corso..." : "Aggiungi Dipendente"}
         </button>
       </form>
     </div>
