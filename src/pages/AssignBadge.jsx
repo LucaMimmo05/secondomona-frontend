@@ -309,7 +309,7 @@ const AssignBadge = () => {
     },
     {
       name: "Stato",
-      selector: (row) => row.stato || "IN_ATTESA",
+      selector: (row) => row.stato || "IN ATTESA",
       sortable: true,
       width: "120px",
       cell: (row) => (
@@ -318,7 +318,7 @@ const AssignBadge = () => {
             .toLowerCase()
             .replace("_", "-")}`}
         >
-          {row.stato || "IN_ATTESA"}
+          {row.stato || "IN ATTESA"}
         </span>
       ),
     },
