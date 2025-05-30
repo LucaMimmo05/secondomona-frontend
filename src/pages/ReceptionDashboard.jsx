@@ -10,12 +10,16 @@ import AddVisitor from "./AddVisitor";
 import TimbratureMonitor from "./TimbratureMonitor";
 import TimeTracking from "./TimeTracking";
 import { useTokenValidation } from "../hooks/useTokenValidation";
+import { useTokenRefresh } from "../hooks/useTokenRefresh";
 
 const ReceptionDashboard = () => {
   const [activeSelector, setActiveSelector] = useState("Visite Attive");
 
   // Controllo automatico validità token
   useTokenValidation();
+
+  // Refresh automatico del token
+  useTokenRefresh();
   const renderContent = () => {
     switch (activeSelector) {
       case "Visite Attive":

@@ -15,6 +15,8 @@ import TimbratureMonitor from "./pages/TimbratureMonitor";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
+
+
 // Component to prevent access to login if already authenticated
 const RequireNoAuth = ({ children }) => {
   const { token, role } = useAuth() || {};

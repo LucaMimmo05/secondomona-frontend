@@ -6,17 +6,22 @@ import AssignBadge from "./AssignBadge";
 import Employee from "./Employee";
 import AddVisit from "./AddVisit";
 import AddVisitor from "./AddVisitor";
-import TimeTracking     from "./TimeTracking";
+import TimeTracking from "./TimeTracking";
 import TimbratureMonitor from "./TimbratureMonitor";
 import "../styles/home.css";
 import AddEmployee from "./AddEmployee";
 import { useTokenValidation } from "../hooks/useTokenValidation";
+import { useTokenRefresh } from "../hooks/useTokenRefresh";
+import RefreshTokenDebugger from "../components/RefreshTokenDebugger";
 
 const AdminDashboard = () => {
   const [activeSelector, setActiveSelector] = useState("Visite Attive");
 
   // Controllo automatico validità token
   useTokenValidation();
+
+  // Refresh automatico del token
+  useTokenRefresh();
 
   const renderContent = () => {
     switch (activeSelector) {

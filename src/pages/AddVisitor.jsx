@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { apiCall } from "../utils/apiUtils";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../styles/addvisitor.css";
 
 const initialVisitorData = () => ({
@@ -32,19 +34,7 @@ const initialVisitorData = () => ({
 
 const AddVisitor = () => {
   const [visitorData, setVisitorData] = useState(initialVisitorData());
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Auto-hide success message after 5 seconds
-  useEffect(() => {
-    if (successMsg) {
-      const timer = setTimeout(() => {
-        setSuccessMsg("");
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [successMsg]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -101,21 +91,20 @@ const AddVisitor = () => {
 
     return errors;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMsg("");
-    setSuccessMsg("");
     setIsSubmitting(true);
+
     const validationErrors = validateForm();
     if (validationErrors.length > 0) {
-      setErrorMsg(
+      const errorMessage =
         validationErrors.length === 1
           ? validationErrors[0]
           : `Sono stati riscontrati ${
               validationErrors.length
-            } errori:\n• ${validationErrors.join("\n• ")}`
-      );
+            } errori:\n• ${validationErrors.join("\n• ")}`;
+
+      toast.error(errorMessage);
       setIsSubmitting(false);
       return;
     }
@@ -183,104 +172,61 @@ const AddVisitor = () => {
         JSON.stringify(dataToSend, null, 2)
       );
 
-      const response = await apiCall("http://localhost:8080/api/visitatori", {
+      // La funzione apiCall gestisce già gli errori e restituisce i dati parsati
+      const result = await apiCall("/api/visitatori", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
         body: JSON.stringify(dataToSend),
       });
 
-      console.log("Status risposta:", response.status);
-      console.log("Headers risposta:", [...response.headers.entries()]);
-      if (!response.ok) {
-        let errorMessage;
-        const contentType = response.headers.get("content-type");
-
-        if (contentType && contentType.includes("application/json")) {
-          const errorData = await response.json();
-
-          // Messaggi di errore più specifici e user-friendly
-          if (response.status === 400) {
-            if (
-              errorData.message &&
-              errorData.message.includes("codice fiscale")
-            ) {
-              errorMessage =
-                "Il codice fiscale inserito non è valido o è già presente nel sistema.";
-            } else if (
-              errorData.message &&
-              errorData.message.includes("email")
-            ) {
-              errorMessage =
-                "L'indirizzo email inserito non è valido o è già presente nel sistema.";
-            } else if (
-              errorData.message &&
-              errorData.message.includes("centro costo")
-            ) {
-              errorMessage =
-                "Il centro costo specificato non esiste nel sistema.";
-            } else {
-              errorMessage =
-                errorData.message ||
-                "Dati inseriti non validi. Controlla tutti i campi.";
-            }
-          } else if (response.status === 409) {
-            errorMessage =
-              "Esiste già un visitatore con questi dati. Controlla codice fiscale e email.";
-          } else if (response.status === 500) {
-            errorMessage =
-              "Errore interno del server. Riprova più tardi o contatta l'assistenza.";
-          } else {
-            errorMessage =
-              errorData.message ||
-              errorData.error ||
-              errorData.detail ||
-              "Errore sconosciuto durante la creazione.";
-          }
-        } else {
-          errorMessage =
-            (await response.text()) || "Errore di comunicazione con il server.";
-        }
-
-        console.error("Errore dal server:", errorMessage);
-        throw new Error(errorMessage);
-      }
-
-      const result = await response.json();
       console.log("Visitatore creato con successo:", result);
-      setSuccessMsg(
+
+      toast.success(
         `Visitatore "${visitorData.nome} ${visitorData.cognome}" creato con successo! 🎉`
       );
 
       setVisitorData(initialVisitorData());
-
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
       console.error("Errore dettagliato:", error);
 
-      // Messaggi di errore più specifici per problemi di rete
+      // Messaggi di errore più specifici
       let displayError = error.message;
-      if (error.name === "TypeError" && error.message.includes("fetch")) {
+
+      if (error.message.includes("codice fiscale")) {
+        displayError =
+          "Il codice fiscale inserito non è valido o è già presente nel sistema.";
+      } else if (error.message.includes("email")) {
+        displayError =
+          "L'indirizzo email inserito non è valido o è già presente nel sistema.";
+      } else if (error.message.includes("centro costo")) {
+        displayError = "Il centro costo specificato non esiste nel sistema.";
+      } else if (
+        error.message.includes("409") ||
+        error.message.includes("conflict")
+      ) {
+        displayError =
+          "Esiste già un visitatore con questi dati. Controlla codice fiscale e email.";
+      } else if (error.message.includes("500")) {
+        displayError =
+          "Errore interno del server. Riprova più tardi o contatta l'assistenza.";
+      } else if (
+        error.name === "TypeError" &&
+        error.message.includes("fetch")
+      ) {
         displayError =
           "Impossibile connettersi al server. Controlla la connessione internet e riprova.";
       } else if (error.message.includes("NetworkError")) {
         displayError = "Errore di rete. Controlla la connessione e riprova.";
       }
 
-      setErrorMsg(displayError);
-
+      toast.error(displayError);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
       setIsSubmitting(false);
     }
   };
-
   const handleReset = () => {
     setVisitorData(initialVisitorData());
-    setErrorMsg("");
-    setSuccessMsg("");
   };
   const renderInputGroup = (
     name,
@@ -348,42 +294,10 @@ const AddVisitor = () => {
       </label>
     </div>
   );
-
   return (
     <div className="add-visitor-container">
-      <h1>Aggiungi Nuovo Visitatore</h1>{" "}
-      {successMsg && (
-        <div className="success-msg enhanced-alert success-alert">
-          <div className="alert-icon">✅</div>
-          <div className="alert-content">
-            <strong>Successo!</strong>
-            <p>{successMsg}</p>
-          </div>
-          <button
-            className="alert-close"
-            onClick={() => setSuccessMsg("")}
-            aria-label="Chiudi notifica"
-          >
-            ×
-          </button>
-        </div>
-      )}
-      {errorMsg && (
-        <div className="error-msg enhanced-alert error-alert">
-          <div className="alert-icon">⚠️</div>
-          <div className="alert-content">
-            <strong>Errore!</strong>
-            <p>{errorMsg}</p>
-          </div>
-          <button
-            className="alert-close"
-            onClick={() => setErrorMsg("")}
-            aria-label="Chiudi notifica"
-          >
-            ×
-          </button>
-        </div>
-      )}
+      <h1>Aggiungi Nuovo Visitatore</h1>
+
       <form className="visitor-form" onSubmit={handleSubmit}>
         <div className="form-section">
           <h3>Dati Anagrafici</h3>
@@ -527,7 +441,7 @@ const AddVisitor = () => {
               )}
             </div>
           )}
-        </div>
+        </div>{" "}
         <div className="form-actions">
           <button
             type="submit"
@@ -538,6 +452,15 @@ const AddVisitor = () => {
           </button>
         </div>
       </form>
+
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
     </div>
   );
 };

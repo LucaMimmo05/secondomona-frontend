@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
 import "../styles/timetracking.css";
+import { apiCall } from "../utils/apiUtils";
+import { useAuth } from "../context/AuthContext";
 
 const TimeTracking = () => {
   const { isWorking, lastPunch, updateWorkingStatus, checkWorkingStatus } =
@@ -17,33 +18,41 @@ const TimeTracking = () => {
 
     return () => clearInterval(timer);
   }, []);
-
   // Carica le timbrature del giorno
   useEffect(() => {
+    console.log(
+      "🔍 TimeTracking: Componente montato, caricamento timbrature..."
+    );
     fetchTodayPunches();
+    // Sincronizza anche con il context per assicurarsi che abbia i dati più recenti
+    checkWorkingStatus();
   }, []);
   const fetchTodayPunches = async () => {
-    const token =
-      localStorage.getItem("accessToken") ||
-      localStorage.getItem("refreshToken");
+    console.log("🔍 fetchTodayPunches: Inizio caricamento timbrature"); // Ottieni l'ID dell'utente dal localStorage
+    const idPersona =
+      localStorage.getItem("idTessera") ||
+      localStorage.getItem("idPersona") ||
+      "1"; // Fallback per test
 
-    // Ottieni l'ID della persona dal localStorage per recuperare le timbrature
-    // idPersona identifica la persona nel sistema
-    const idPersona = localStorage.getItem("idPersona");
+    console.log("🔍 fetchTodayPunches: ID Persona:", idPersona);
+
+    // Verifica token
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+    console.log("🔍 fetchTodayPunches: Access Token presente:", !!accessToken);
+    console.log(
+      "🔍 fetchTodayPunches: Refresh Token presente:",
+      !!refreshToken
+    );
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/timbrature/oggi/${idPersona}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
+      console.log("🔍 fetchTodayPunches: Chiamata API in corso...");
+      const data = await apiCall(`/api/timbrature/oggi/${idPersona}`, {
+        method: "GET",
+      });
+      console.log("🔍 fetchTodayPunches: Risposta ricevuta:", data);
+
+      if (data) {
         // Ordina le timbrature per timestamp
         const sortedData = data.sort(
           (a, b) =>
@@ -51,62 +60,75 @@ const TimeTracking = () => {
             new Date(b.timestamp || b.dataOraTimbratura)
         );
 
+        console.log("🔍 fetchTodayPunches: Timbrature ordinate:", sortedData);
         setTodayPunches(sortedData);
+
+        // Determina se il dipendente è attualmente al lavoro
+        if (sortedData.length > 0) {
+          const lastPunch = sortedData[sortedData.length - 1];
+          console.log("🔍 fetchTodayPunches: Ultima timbratura:", lastPunch);
+
+          const working =
+            (lastPunch.tipo || lastPunch.tipoTimbratura) === "ENTRATA";
+          console.log("🔍 fetchTodayPunches: Stato lavoro:", working);
+          updateWorkingStatus(working, {
+            tipo: lastPunch.tipo || lastPunch.tipoTimbratura,
+            timestamp: lastPunch.timestamp || lastPunch.dataOraTimbratura,
+            note: lastPunch.note,
+          });
+        }
+      } else {
+        console.log("🔍 fetchTodayPunches: Nessun dato ricevuto");
       }
     } catch (error) {
-      console.error("Errore nel caricamento delle timbrature:", error);
+      console.error(
+        "❌ fetchTodayPunches: Errore nel caricamento delle timbrature:",
+        error
+      );
+      // Non mostriamo alert per errori di caricamento, solo log
     }
   };
   const handlePunch = async (tipo) => {
+    console.log("🔍 handlePunch: Inizio timbratura tipo:", tipo);
     setLoading(true);
-    const token =
-      localStorage.getItem("accessToken") ||
-      localStorage.getItem("refreshToken");
 
-    // Ottieni l'ID tessera dal localStorage (necessario per registrare le timbrature)
-    // idTessera identifica la tessera fisica associata alla persona
-    const idTessera = localStorage.getItem("idTessera");
+    // Ottieni l'ID tessera o ID persona dal localStorage
+    const idTessera =
+      localStorage.getItem("idTessera") ||
+      localStorage.getItem("idPersona") ||
+      "1"; // Fallback minimo per test
 
-    if (!idTessera) {
-      alert("Errore: ID tessera non trovato. Contattare l'amministratore.");
-      setLoading(false);
-      return;
-    }
+    console.log("🔍 handlePunch: ID Tessera:", idTessera);
 
     try {
       const now = new Date();
       const punchData = {
         idTessera: parseInt(idTessera),
         tipoTimbratura: tipo,
-        dataOraTimbratura: now.toISOString(), // Formato ISO standard per OffsetDateTime
+        dataOraTimbratura: now.toISOString().slice(0, 19), // Formato ISO senza millisecondi
         note: `Timbratura di ${
           tipo === "ENTRATA" ? "entrata" : "uscita"
         } - ${now.toLocaleTimeString("it-IT")}`,
       };
 
-      console.log("Dati timbratura:", punchData);
+      console.log("🔍 handlePunch: Dati timbratura:", punchData);
 
-      const response = await fetch("http://localhost:8080/api/timbrature", {
+      const result = await apiCall("/api/timbrature", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(punchData),
       });
+      console.log("🔍 handlePunch: Risultato API:", result);
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Timbratura registrata:", result);
+      if (result) {
+        console.log("✅ handlePunch: Timbratura registrata:", result);
 
-        // Aggiorna lo stato globale delle timbrature
+        // Aggiorna lo stato tramite context
         updateWorkingStatus(tipo === "ENTRATA", {
           tipo: tipo,
           timestamp: now.toISOString(),
           note: punchData.note,
-        });
-
-        // Ricarica le timbrature del giorno
+        }); // Ricarica le timbrature del giorno
+        console.log("🔍 handlePunch: Ricaricamento timbrature...");
         await fetchTodayPunches();
 
         alert(
@@ -114,22 +136,10 @@ const TimeTracking = () => {
             tipo === "ENTRATA" ? "entrata" : "uscita"
           } registrata con successo!`
         );
-      } else {
-        const errorData = await response
-          .json()
-          .catch(() => ({ message: "Errore sconosciuto" }));
-        console.error("Errore dettagliato dal server:", errorData);
-        console.error("Status:", response.status);
-        console.error("Dati inviati:", punchData);
-        alert(
-          `Errore nella timbratura: ${
-            errorData.message || errorData.error || "Errore sconosciuto"
-          }`
-        );
       }
     } catch (error) {
-      console.error("Errore nella timbratura:", error);
-      alert("Errore di connessione. Riprova più tardi.");
+      console.error("❌ handlePunch: Errore nella timbratura:", error);
+      alert(error.message || "Errore di connessione. Riprova più tardi.");
     } finally {
       setLoading(false);
     }
@@ -235,39 +245,9 @@ const TimeTracking = () => {
           {loading ? "Registrando..." : "Timbra Uscita"}
         </button>
       </div>
-      <div className="punches-list">
-        <h3>Timbrature di Oggi</h3>
-        {todayPunches.length === 0 ? (
-          <p className="no-punches">Nessuna timbratura registrata oggi</p>
-        ) : (
-          <div className="punches-timeline">
-            {todayPunches.map((punch, index) => (
-              <div
-                key={index}
-                className={`punch-item ${(
-                  punch.tipo || punch.tipoTimbratura
-                ).toLowerCase()}`}
-              >
-                <div className="punch-header">
-                  <div className="punch-type">
-                    {punch.tipo || punch.tipoTimbratura}
-                  </div>
-                  <div className="punch-time">
-                    {formatPunchTime(
-                      punch.timestamp || punch.dataOraTimbratura
-                    )}
-                  </div>
-                </div>
-                {punch.note && (
-                  <div className="punch-note">
-                    <small>{punch.note}</small>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+     
+
+      
     </div>
   );
 };

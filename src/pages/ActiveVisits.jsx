@@ -146,17 +146,10 @@ const ActiveVisits = () => {
       try {
         setLoading(true);
 
-        const response = await apiCall(
-          "http://localhost:8080/api/visite/attive",
-          {
-            method: "GET",
-          }
-        );
+        const result = await apiCall("/api/visite/attive", {
+          method: "GET",
+        });
 
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
         console.log("Dati visite attive:", result);
         setData(result);
       } catch (error) {
