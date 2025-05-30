@@ -5,6 +5,7 @@ import {
   isTokenExpired,
   getValidToken,
 } from "../utils/apiUtils";
+import UpdateIcon from "../assets/update.tsx";
 
 const RefreshTokenDebugger = () => {
   const [testResults, setTestResults] = useState([]);
@@ -99,10 +100,12 @@ const RefreshTokenDebugger = () => {
         return "#6c757d";
     }
   };
-
   return (
     <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
-      <h2>🔄 Refresh Token System Debugger</h2>
+      <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <UpdateIcon style={{ width: "24px", height: "24px" }} />
+        Refresh Token System Debugger
+      </h2>
 
       <div style={{ marginBottom: "20px" }}>
         <button

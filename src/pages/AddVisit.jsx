@@ -196,7 +196,7 @@ const AddVisit = () => {
     } // Per il richiedente, recuperiamo i dati completi dell'utente loggato
     let richiedenteData;
     try {
-      console.log("🔄 Recupero dati richiedente...");
+      console.log("[LOADING] Recupero dati richiedente...");
       richiedenteData = await apiCall(`/api/dipendenti/${actualUserId}`);
       console.log("✅ Dati richiedente recuperati:", richiedenteData);
     } catch (error) {
@@ -240,7 +240,7 @@ const AddVisit = () => {
     );
 
     try {
-      console.log("🔄 Invio richiesta API...");
+      console.log("[LOADING] Invio richiesta API...");
       const result = await apiCall("/api/visite", {
         method: "POST",
         body: JSON.stringify(visitData),

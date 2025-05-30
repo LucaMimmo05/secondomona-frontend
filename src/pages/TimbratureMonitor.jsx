@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
-import UpdateIcon from "../assets/update";
+import UpdateIcon from "../assets/update.tsx";
 import "../styles/timbraturemonitor.css";
 import { apiCall } from "../utils/apiUtils";
 import { useTokenRefresh } from "../hooks/useTokenRefresh";
@@ -226,7 +226,9 @@ const TimbratureMonitor = () => {
 
       // Estrai il nome del file dall'header Content-Disposition o usa un nome di default
       const contentDisposition = response.headers.get("Content-Disposition");
-      let fileName = "Presenze.pdf";
+      let today = new Date();
+      let dateString = today.toISOString().split("T")[0]; // formato YYYY-MM-DD
+      let fileName = `Presenze_${dateString}.pdf`;
 
       if (contentDisposition) {
         const fileNameMatch = contentDisposition.match(
@@ -330,24 +332,27 @@ const TimbratureMonitor = () => {
     },
     {
       name: "Orario",
-      selector: (row) =>
-        new Date(row.dataOraTimbratura || row.timestamp).toLocaleTimeString(
-          "it-IT",
-          {
-            hour: "2-digit",
-            minute: "2-digit",
-          }
-        ),
+      selector: (row) => {
+        const date = new Date(row.dataOraTimbratura || row.timestamp);
+        // Aggiungi 2 ore per compensare il fuso orario (UTC+2 per l'Italia)
+        const correctedDate = new Date(date.getTime() + 2 * 60 * 60 * 1000);
+        return correctedDate.toLocaleTimeString("it-IT", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      },
       sortable: true,
       grow: 1,
       center: true,
     },
     {
       name: "Data",
-      selector: (row) =>
-        new Date(row.dataOraTimbratura || row.timestamp).toLocaleDateString(
-          "it-IT"
-        ),
+      selector: (row) => {
+        const date = new Date(row.dataOraTimbratura || row.timestamp);
+        // Aggiungi 2 ore per compensare il fuso orario (UTC+2 per l'Italia)
+        const correctedDate = new Date(date.getTime() + 2 * 60 * 60 * 1000);
+        return correctedDate.toLocaleDateString("it-IT");
+      },
       sortable: true,
       grow: 1,
       center: true,
@@ -480,9 +485,12 @@ const TimbratureMonitor = () => {
             className="search-input"
           />
         </div>{" "}
-        <button onClick={fetchTimbrature} className="refresh-btn">
-          <UpdateIcon style={{ marginRight: "8px" }} />
-          Aggiorna
+        <button
+          onClick={fetchTimbrature}
+          className="refresh-btn"
+          title="Aggiorna"
+        >
+          <UpdateIcon />
         </button>
         <button onClick={downloadPresenzePdf} className="download-pdf-btn">
           Scarica PDF Presenze
@@ -490,7 +498,10 @@ const TimbratureMonitor = () => {
       </div>{" "}
       <div className="table-container">
         {loading ? (
-          <div className="loading">Caricamento timbrature...</div>
+          <div className="loading">
+            <UpdateIcon className="loading-icon" />
+            <span>Caricamento timbrature...</span>
+          </div>
         ) : (
           <DataTable
             columns={columns}

@@ -245,52 +245,9 @@ const TimeTracking = () => {
           {loading ? "Registrando..." : "Timbra Uscita"}
         </button>
       </div>
-      <div className="today-summary">
-        <h3>Riepilogo Giornaliero</h3>
-        <div className="summary-grid">
-          <div className="summary-item">
-            <span className="summary-label">Ore Lavorate</span>
-            <span className="summary-value">{calculateWorkHours()}</span>
-          </div>
-          <div className="summary-item">
-            <span className="summary-label">Timbrature</span>
-            <span className="summary-value">{todayPunches.length}</span>
-          </div>
-        </div>
-      </div>{" "}
-      <div className="punches-list">
-        <h3>Timbrature di Oggi</h3>
-        {todayPunches.length === 0 ? (
-          <p className="no-punches">Nessuna timbratura registrata oggi</p>
-        ) : (
-          <div className="punches-timeline">
-            {todayPunches.map((punch, index) => (
-              <div
-                key={index}
-                className={`punch-item ${(
-                  punch.tipo || punch.tipoTimbratura
-                ).toLowerCase()}`}
-              >
-                <div className="punch-header">
-                  <div className="punch-type">
-                    {punch.tipo || punch.tipoTimbratura}
-                  </div>
-                  <div className="punch-time">
-                    {formatPunchTime(
-                      punch.timestamp || punch.dataOraTimbratura
-                    )}
-                  </div>
-                </div>
-                {punch.note && (
-                  <div className="punch-note">
-                    <small>{punch.note}</small>
-                  </div>
-                )}{" "}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+     
+
+      
     </div>
   );
 };

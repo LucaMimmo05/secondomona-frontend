@@ -37,7 +37,7 @@
 /* assignbadge.css */
 
 .assign-badge-container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 2rem auto;
     padding: 1rem;
     font-family: "Inter", sans-serif;
@@ -48,48 +48,155 @@
 .assign-badge-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 1.5rem;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
-.assign-badge-title {
+.assign-badge-header h1 {
     color: var(--text-color);
-    text-align: center;
     font-size: 32px;
     font-weight: 400;
-    animation: fadeIn 0.8s ease-in;
+    margin: 0;
 }
 
-.filter-results svg {
-    margin-right: 0.5rem;
+/* Tab Navigation */
+.tab-navigation {
+    display: flex;
+    gap: 0.5rem;
+    background: var(--input-bg);
+    padding: 0.25rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tab-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    background: transparent;
+    color: var(--subtext-color);
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    background: rgba(0, 123, 255, 0.1);
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Filters Section */
+.filters-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 1rem;
+    background: var(--input-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-group, .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.search-input, .status-select, .form-select, .form-input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--stroke);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: white;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.search-input:focus, .status-select:focus, .form-select:focus, .form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.search-input {
+    min-width: 250px;
+}
+
+.new-assignment-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.new-assignment-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.refresh-btn {
+    background: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--stroke);
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.refresh-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.refresh-btn svg {
     width: 1rem;
     height: 1rem;
-    stroke: var(--subtext-color);
-    transition: transform 0.3s ease;
-}
-.filter-results:hover svg {
-    transform: rotate(20deg) scale(1.1);
 }
 
-.assign-badge-table-wrapper {
-    background: #fff;
+.results-info {
+    margin-left: auto;
+    color: var(--subtext-color);
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 123, 255, 0.1);
+    border-radius: 6px;
+}
+
+/* Table Container */
+.table-container {
+    background: white;
     border-radius: 8px;
-    padding: 0.5rem;
-    animation: slideUp 0.8s ease-out;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Badge button */
-.badge-flag-button {
-    background: transparent;
-    border: none;
-    padding: 0.25rem;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-/* Status Badges */
+/* Badge and Status Styling */
 .status-badge {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     padding: 4px 12px;
@@ -97,25 +204,264 @@
     font-size: 12px;
     font-weight: 500;
     text-transform: uppercase;
-    min-width: 100px;
+    min-width: 80px;
 }
 
-.status-badge.in-attesa {
-    background-color: #ffecac;
-    color: #b58800;
-    border: 1px solid #ffdf74;
+.status-badge.in-attesa, .status-badge.in_attesa {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-badge.attivo {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-badge.terminato {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.status-badge.scaduto {
+    background-color: #e2e3e5;
+    color: #383d41;
+    border: 1px solid #d6d8db;
+}
+
+.type-badge {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    min-width: 80px;
+}
+
+.type-badge.dipendente {
+    background-color: #e7f3ff;
+    color: #0066cc;
+    border: 1px solid #b3d7ff;
+}
+
+.type-badge.visitatore {
+    background-color: #fff2e7;
+    color: #cc6600;
+    border: 1px solid #ffccb3;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.terminate-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.terminate-btn:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.terminate-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Badge assignment button */
+.badge-flag-button {
+    background: transparent;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.badge-flag-button.assign-btn {
+    background: var(--primary-color);
+    color: white;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+}
+
+.badge-flag-button.assign-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
 }
 
 .badge-flag-icon {
     width: 1rem;
     height: 1rem;
-    color: var(--primary-color);
+    color: currentColor;
     transition: 0.2s all;
 }
 
 .badge-flag-button:hover .badge-flag-icon {
-    color: var(--primary-hover);
-    transform: scale(1.4);
+    transform: scale(1.2);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 0;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--stroke);
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--subtext-color);
+    cursor: pointer;
+    padding: 0;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: var(--input-bg);
+    color: var(--text-color);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.form-select, .form-input {
+    width: 100%;
+    min-height: 2.5rem;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--stroke);
+    justify-content: flex-end;
+}
+
+.cancel-btn, .confirm-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn {
+    background: var(--input-bg);
+    color: var(--text-color);
+}
+
+.cancel-btn:hover {
+    background: var(--stroke);
+}
+
+.confirm-btn {
+    background: var(--primary-color);
+    color: white;
+}
+
+.confirm-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.confirm-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Loader */
+.loader-small {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Animations */
@@ -171,4 +517,12 @@
     to {
         width: 50px;
     }
+}
+
+/* Loading Icon Styles */
+.loading-icon {
+    width: 1rem;
+    height: 1rem;
+    animation: spin 1s linear infinite;
+    color: currentColor;
 }

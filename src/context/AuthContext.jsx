@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
     // Dopo il login, verifica lo stato delle timbrature dal server
     // Aspetta un po' per assicurarsi che i dati della persona siano stati salvati
     setTimeout(() => {
-      console.log("🔄 Avvio controllo stato timbrature dopo login...");
+      console.log("[LOADING] Avvio controllo stato timbrature dopo login...");
       checkWorkingStatus();
     }, 500);
   };
