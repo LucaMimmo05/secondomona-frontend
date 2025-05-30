@@ -112,17 +112,28 @@ export const AuthProvider = ({ children }) => {
       const id = idPersona || idTessera;
       const endpoint = `/api/timbrature/oggi/${id}`;
       console.log("🔍 Chiamata all'endpoint:", endpoint);
-
       let data = null;
       try {
         data = await apiCall(endpoint, { method: "GET" });
         console.log("✅ Dati ricevuti:", data?.length || 0, "timbrature");
       } catch (error) {
         console.log("❌ Errore nel recupero timbrature:", error.message);
+        // Non modificare lo stato se c'è un errore di rete
+        // Mantieni lo stato attuale per evitare reset involontari
         return;
       }
 
       if (!data || !Array.isArray(data) || data.length === 0) {
+        // Controlla se siamo già in uno stato "al lavoro" nel localStorage
+        const currentWorkingState = localStorage.getItem("isWorking");
+
+        if (currentWorkingState === "true") {
+          console.log(
+            "📭 Nessuna timbratura dal server, ma stato locale indica 'al lavoro' - mantengo stato attuale"
+          );
+          return; // Non sovrascrivere lo stato esistente
+        }
+
         console.log("📭 Nessuna timbratura oggi - stato: non al lavoro");
         setIsWorking(false);
         setLastPunch(null);

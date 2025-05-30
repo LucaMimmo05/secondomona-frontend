@@ -128,6 +128,10 @@ export const getValidToken = async () => {
 };
 
 export const clearAuthData = () => {
+  // Salva i dati delle timbrature prima di rimuovere tutto
+  const currentIsWorking = localStorage.getItem("isWorking");
+  const currentLastPunch = localStorage.getItem("lastPunch");
+
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
   localStorage.removeItem("token");
@@ -136,9 +140,18 @@ export const clearAuthData = () => {
   localStorage.removeItem("surname");
   localStorage.removeItem("idPersona");
   localStorage.removeItem("idTessera");
-  localStorage.removeItem("isWorking");
-  localStorage.removeItem("lastPunch");
-  console.log("Dati di autenticazione rimossi dal localStorage");
+
+  // Ripristina i dati delle timbrature per mantenere lo stato del timbro
+  if (currentIsWorking) {
+    localStorage.setItem("isWorking", currentIsWorking);
+  }
+  if (currentLastPunch) {
+    localStorage.setItem("lastPunch", currentLastPunch);
+  }
+
+  console.log(
+    "Dati di autenticazione rimossi dal localStorage - stato timbrature preservato"
+  );
 };
 
 export const apiCall = async (url, options = {}) => {
